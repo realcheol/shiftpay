@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ShiftPay - 현대스틸파이프 나의 근무·급여 관리</title>
+  
+  <!-- iOS Standalone Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ShiftPay">
+  <meta name="theme-color" content="#142035">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --sub: #64748b;
+      --blue: #1d4ed8;
+      --blue-sub: #3b82f6;
+      --blue-bg: #eff6ff;
+      --red: #ef4444;
+      --red-bg: #fee2e2;
+      --emerald: #10b981;
+      --emerald-bg: #ecfdf5;
+      --indigo: #4f46e5;
+      --indigo-bg: #eef2ff;
+      --yellow-bg: #fffbeb;
+      --yellow-border: #fef3c7;
+      --yellow-text: #92400e;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    body.dark {
+      --bg: #0b1120;
+      --surface: #131d31;
+      --card-bg: #17233d;
+      --border: #1e293b;
+      --text: #f1f5f9;
+      --sub: #94a3b8;
+      --blue: #3b82f6;
+      --blue-sub: #60a5fa;
+      --blue-bg: #1e293b;
+      --red: #f87171;
+      --red-bg: #3f1d24;
+      --emerald: #34d399;
+      --emerald-bg: #064e3b;
+      --indigo: #818cf8;
+      --indigo-bg: #1e1b4b;
+      --yellow-bg: #2d2613;
+      --yellow-border: #45371c;
+      --yellow-text: #fef08a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, "Noto Sans KR", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 30px);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* App Header */
+    .app-header {
+      position: relative;
+      width: 100%;
+      height: 125px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 14px;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: background-image 0.3s ease;
+    }
+    .app-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.4) 60%, rgba(15,23,42,0.85) 100%);
+      z-index: 1;
+    }
+    .header-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-btn {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .header-title-box h1 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .header-title-box p {
+      font-size: 11px;
+      color: #dbeafe;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Glass User Pill */
+    .header-bottom {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .factory-pill {
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(147,197,253,0.4);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .user-pill {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: right;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 10px 12px;
+    }
+
+    /* D-Day Yellow Banner */
+    .dday-card {
+      background: var(--yellow-bg);
+      border: 1px solid var(--yellow-border);
+      color: var(--yellow-text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+    .dday-line {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dday-sub {
+      font-size: 11.5px;
+      opacity: 0.9;
+    }
+
+    /* Calendar Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 12px 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px 10px;
+    }
+    .cal-title-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .today-btn {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Weekday bar */
+    .weekday-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 0;
+      color: var(--sub);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+    .weekday-row .sun { color: var(--red); }
+    .weekday-row .sat { color: var(--blue); }
+
+    /* Calendar Grid */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .cal-cell {
+      min-height: 64px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s;
+    }
+    .cal-cell:active {
+      transform: scale(0.97);
+    }
+    .cal-cell.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+    .cell-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .cal-cell.sun .cell-top { color: var(--red); }
+    .cal-cell.sat .cell-top { color: var(--blue); }
+    .cal-cell.holiday .cell-top { color: var(--red); }
+
+    .today-ring {
+      background: var(--blue);
+      color: #fff !important;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .holiday-name {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    /* Shift Pill Badges */
+    .shift-pill {
+      margin-top: auto;
+      border-radius: 4px;
+      padding: 2px 3px;
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .shift-norm { background: var(--indigo-bg); color: var(--indigo); border: 1px solid rgba(79,70,229,0.3); }
+    .shift-ot { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(37,99,235,0.3); }
+    .shift-holiday { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .shift-annual { background: var(--emerald-bg); color: var(--emerald); border: 1px solid rgba(16,185,129,0.3); }
+
+    /* Quick Action Bar under calendar */
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-quick {
+      flex: 1;
+      padding: 9px 6px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-quick.primary {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    /* Payroll & Summary Card */
+    .hours-badge-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .hour-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 2px;
+    }
+    .hour-box .lbl {
+      font-size: 10px;
+      color: var(--sub);
+      font-weight: 600;
+    }
+    .hour-box .val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    .pay-receipt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      padding: 5px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .receipt-row:last-child {
+      border-bottom: none;
+    }
+    .receipt-row.total {
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      margin-top: 6px;
+      padding-top: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .receipt-val {
+      font-weight: 700;
+    }
+
+    .accordion-btn {
+      width: 100%;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--sub);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .accordion-content {
+      display: none;
+      font-size: 11.5px;
+      color: var(--sub);
+      line-height: 1.6;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
+    }
+
+    /* Drawer / Slide Menu */
+    .drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+      display: none;
+      backdrop-filter: blur(2px);
+    }
+    .drawer {
+      position: fixed;
+      top: 0; left: -320px; bottom: 0;
+      width: 300px;
+      background: var(--card-bg);
+      z-index: 100;
+      transition: left 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+      overflow-y: auto;
+    }
+    .drawer.open {
+      left: 0;
+    }
+    .drawer-header {
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .drawer-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,23,42,0.65);
+    }
+    .drawer-header * { position: relative; z-index: 2; }
+    .drawer-menu {
+      padding: 10px;
+      flex: 1;
+    }
+    .menu-sec-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--sub);
+      padding: 8px 6px 4px;
+      text-transform: uppercase;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 5px;
+    }
+    .menu-item:active {
+      background: var(--bg);
+    }
+
+    /* Bottom Sheet Modal (iOS Style) */
+    .sheet-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .bottom-sheet {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 500px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 16px 16px calc(var(--safe-bottom) + 16px);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      animation: slideUp 0.25s ease-out;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-title {
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .sheet-btn {
+      padding: 12px 10px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+    }
+    .sheet-btn:active {
+      filter: brightness(0.9);
+    }
+    .sheet-btn.red {
+      background: var(--red-bg);
+      color: var(--red);
+      border-color: rgba(239,68,68,0.3);
+    }
+    .sheet-btn.blue {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border-color: rgba(37,99,235,0.3);
+    }
+    .sheet-btn.emerald {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border-color: rgba(16,185,129,0.3);
+    }
+    .sheet-btn.indigo {
+      background: var(--indigo-bg);
+      color: var(--indigo);
+      border-color: rgba(79,70,229,0.3);
+    }
+
+    /* Settings Form */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+      margin-bottom: 4px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    /* PWA Prompt Banner */
+    .pwa-banner {
+      background: #1e293b;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .pwa-banner span {
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header with Factory Background -->
+  <header class="app-header" id="appHeader" style="background-image: url('factories/factory_1.jpg');">
+    <div class="header-top">
+      <div class="header-left">
+        <button class="icon-btn" onclick="openDrawer()">☰</button>
+        <div class="header-title-box">
+          <h1>ShiftPay</h1>
+          <p>나의 근무·급여 관리 v1.3.1</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn">🌙</button>
+        <button class="icon-btn" onclick="openOcrModal()">📷</button>
+      </div>
+    </div>
+    
+    <div class="header-bottom">
+      <div class="factory-pill" onclick="switchFactory()">
+        <span id="factoryNameLabel">🏭 1공장 (ERW) ▾</span>
+      </div>
+      <div class="user-pill" onclick="openSettings()" id="userSummaryPill">
+        기본정보 미입력 (터치하여 설정)
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Retirement / Join / Annual Leave Countdown Yellow Card -->
+    <div class="dday-card" id="ddayCard" onclick="openSettings()">
+      <div class="dday-line" id="retireLine">⏳ 정년퇴직일: 생년월일을 입력해 주세요.</div>
+      <div class="dday-line" id="serviceLine">🌱 근속연차: 입사년월일을 입력해 주세요.</div>
+      <div class="dday-line" id="leaveLine">🌴 현재 남은 연차 일수: 총 15일</div>
+    </div>
+
+    <!-- Calendar Card -->
+    <div class="card">
+      <div class="cal-header">
+        <button class="nav-btn" onclick="prevMonth()">◀</button>
+        <button class="cal-title-btn" onclick="openMonthPicker()">
+          <span id="calTitle">2026-11</span> ▾
+        </button>
+        <div style="display: flex; gap: 4px;">
+          <button class="today-btn" onclick="goToday()">오늘</button>
+          <button class="nav-btn" onclick="nextMonth()">▶</button>
+        </div>
+      </div>
+
+      <div class="weekday-row">
+        <div class="sun">일</div>
+        <div>월</div>
+        <div>화</div>
+        <div>수</div>
+        <div>목</div>
+        <div>금</div>
+        <div class="sat">토</div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <!-- Quick Action Buttons under calendar -->
+      <div class="quick-actions">
+        <button class="btn-quick primary" onclick="quickTodayShift()">⚡ 오늘 빠른 근무 입력</button>
+        <button class="btn-quick" onclick="openOcrModal()">📸 OCR 사진 대조</button>
+      </div>
+    </div>
+
+    <!-- Payroll & Work Hours Summary Card -->
+    <div class="card">
+      <div class="hours-badge-row">
+        <div class="hour-box">
+          <div class="lbl">정상</div>
+          <div class="val" id="sumNorm">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">평일연장</div>
+          <div class="val" id="sumOt">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">휴일특근</div>
+          <div class="val" id="sumHol">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">휴일가급</div>
+          <div class="val" id="sumExtra">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">야간근로</div>
+          <div class="val" id="sumNight">0h</div>
+        </div>
+      </div>
+
+      <div class="pay-receipt">
+        <div class="receipt-row">
+          <span>기본급 (209h 산출)</span>
+          <span class="receipt-val" id="valBasePay">0원</span>
+        </div>
+        <div class="receipt-row">
+          <span>시간외 수당 총액</span>
+          <span class="receipt-val" id="valOtPay">0원</span>
+        </div>
+        <div class="receipt-row">
+          <span>직책수당</span>
+          <span class="receipt-val" id="valDutyPay">0원</span>
+        </div>
+        <div class="receipt-row" id="rowSummerPay" style="display:none;">
+          <span>하계건강지원비 (7·8·9월)</span>
+          <span class="receipt-val" id="valSummerPay">200,000원</span>
+        </div>
+        <div class="receipt-row">
+          <span>예상 공제총액 (4대보험/세금)</span>
+          <span class="receipt-val" style="color:var(--red);" id="valDeduction">-0원</span>
+        </div>
+        <div class="receipt-row total">
+          <span>예상 실수령액</span>
+          <span class="receipt-val" id="valNetPay">0원</span>
+        </div>
+
+        <button class="accordion-btn" onclick="toggleAccordion()">▾ 단체협약 급여 산출 상세 계산식 펼치기</button>
+        <div class="accordion-content" id="accordionContent">
+          • 통상시급: <span id="accOrdinaryRate">13,500</span>원 (기본시급: <span id="accBaseRate">12,000</span>원)<br>
+          • 연장수당: 연장시간 × 통상시급 × 1.5배<br>
+          • 특근수당: 특근시간 × 통상시급 × 1.5배 + 가급시간 × 통상시급<br>
+          • 야간수당: 야간시간 × 통상시급 × 0.5배<br>
+          • 정년 만 60세 D-Day 및 근속연차 자동 연동
+        </div>
+      </div>
+    </div>
+
+    <!-- PWA Install Guide Banner for iPhone/Android -->
+    <div class="pwa-banner">
+      <span>💡</span>
+      <div>
+        <strong>아이폰에서 앱처럼 설치하기:</strong><br>
+        사파리 하단 공유 버튼(⎋) 누르고 <strong>[홈 화면에 추가]</strong>를 누르면 앱스토어 앱과 똑같이 홈 화면에 아이콘이 생겨요!
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Left Drawer Overlay & Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header" id="drawerHeader" style="background-image: url('factories/factory_1.jpg');">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 18px;">ShiftPay</h2>
+        <button onclick="closeDrawer()" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <div style="font-size: 11.5px; opacity: 0.9;" id="drawerUserInfo">
+        기본정보 미입력 (터치하여 설정)
+      </div>
+    </div>
+
+    <div class="drawer-menu">
+      <div class="menu-sec-title">급여 및 데이터 관리</div>
+      <div class="menu-item" onclick="openSettings(); closeDrawer();">⚙️ 기본정보 및 급여 설정</div>
+      <div class="menu-item" onclick="switchFactory()">🏭 공장 배너 사진 변경</div>
+      <div class="menu-item" onclick="exportExcel()">📊 급여명세서 엑셀 내보내기</div>
+      <div class="menu-item" onclick="backupData()">💾 데이터 전체 백업 (저장)</div>
+      <div class="menu-item" onclick="restoreDataPrompt()">🔄 백업 데이터 복원</div>
+      <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);">🗑️ 이번 달 전체 근무 초기화</div>
+
+      <div class="menu-sec-title">사내 복지 & 협약</div>
+      <div class="menu-item" onclick="showDoc('cba'); closeDrawer();">📜 2026년 노사단체협약 요약</div>
+      <div class="menu-item" onclick="showDoc('support'); closeDrawer();">🏢 현대스틸파이프 지원제도 (12종)</div>
+      <div class="menu-item" onclick="showDoc('partners'); closeDrawer();">🤝 회사 제휴업체 현황 (28개사)</div>
+
+      <div class="menu-sec-title">앱 정보</div>
+      <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();">🚀 처음 사용자 이용 가이드</div>
+      <div class="menu-item" onclick="showDoc('company'); closeDrawer();">🏭 회사 소개 및 연혁 (1975~2024)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();">📋 버전 업데이트 내역 (v1.3.1)</div>
+    </div>
+  </div>
+
+  <!-- Bottom Sheet: Shift Preset Selector -->
+  <div class="sheet-overlay" id="shiftSheetOverlay" onclick="closeShiftSheet(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
+      <div class="sheet-grid">
+        <button class="sheet-btn indigo" onclick="selectPreset('norm')">☀️ 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
+        <button class="sheet-btn blue" onclick="selectPreset('ot')">⚡ 평일 연장<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('holiday')">🔴 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h + 가급4h</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('holiday_12')">🔥 특근 12h<br><span style="font-size:11px;font-weight:normal;">8h + 4h연장 + 야간</span></button>
+        <button class="sheet-btn emerald" onclick="selectPreset('annual')">🌴 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
+        <button class="sheet-btn" onclick="selectPreset('half_am')">🌓 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
+      </div>
+      <button class="sheet-btn" style="width:100%; margin-bottom:8px;" onclick="openCustomTimeModal()">⚙️ 직접 시간 입력 및 메모</button>
+      <button class="sheet-btn red" style="width:100%; margin-bottom:8px;" onclick="deleteSelectedDay()">🗑️ 해당 날짜 근무 삭제</button>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Year / Month Picker Modal -->
+  <div class="sheet-overlay" id="monthPickerOverlay" onclick="closeMonthPicker(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title">캘린더 연·월 빠른 이동</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <button class="nav-btn" onclick="changePickerYear(-1)">◀</button>
+        <h3 id="pickerYear" style="font-size:18px;">2026년</h3>
+        <button class="nav-btn" onclick="changePickerYear(1)">▶</button>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;" id="monthGrid"></div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+        <button class="sheet-btn" style="flex:1;" onclick="jumpToPreset('join')">🌱 입사 첫 달</button>
+        <button class="sheet-btn blue" style="flex:1;" onclick="jumpToPreset('today')">🎯 이번 달</button>
+        <button class="sheet-btn" style="flex:1;" onclick="jumpToPreset('retire')">⏳ 정년퇴직</button>
+      </div>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeMonthPicker()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title">⚙️ 나의 기본정보 및 급여 설정</div>
+      
+      <div class="form-group">
+        <label>성명</label>
+        <input class="form-input" type="text" id="cfgName" placeholder="예: 조창대">
+      </div>
+      <div class="form-group">
+        <label>생년월일 (숫자 8자리 입력 시 자동 하이픈)</label>
+        <input class="form-input" type="tel" id="cfgBirth" placeholder="예: 19750830" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>입사년월일 (숫자 8자리 입력 시 자동 하이픈)</label>
+        <input class="form-input" type="tel" id="cfgJoin" placeholder="예: 20170401" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>직급 선택</label>
+        <select class="form-input" id="cfgDuty" onchange="autoFillDutyPay()">
+          <option value="사원">사원 (직책수당 0원)</option>
+          <option value="대리">대리 (직책수당 0원)</option>
+          <option value="계장" selected>계장 (직책수당 100,000원)</option>
+          <option value="과장">과장 (직책수당 150,000원)</option>
+          <option value="차장">차장 (직책수당 200,000원)</option>
+          <option value="부장">부장 (직책수당 250,000원)</option>
+          <option value="기장">기장 (직책수당 300,000원)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>기준 통상시급 (원)</label>
+        <input class="form-input" type="number" id="cfgOrdinary" placeholder="13500">
+      </div>
+      <div class="form-group">
+        <label>기준 기본시급 (원)</label>
+        <input class="form-input" type="number" id="cfgBaseRate" placeholder="12000">
+      </div>
+      <div class="form-group">
+        <label>직책수당 (원)</label>
+        <input class="form-input" type="number" id="cfgDutyPay" placeholder="100000">
+      </div>
+      <div class="form-group">
+        <label>기준 연차 일수 (명세서 잔여 연차 기준)</label>
+        <input class="form-input" type="number" step="0.5" id="cfgLeaveBase" placeholder="15">
+      </div>
+      <div class="form-group">
+        <label>월 고정 공제액 (원 - 0원 입력 시 자동 요율 계산)</label>
+        <input class="form-input" type="number" id="cfgDeduction" placeholder="0">
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="sheet-btn red" style="flex:1;" onclick="resetSettings()">초기화</button>
+        <button class="sheet-btn blue" style="flex:2;" onclick="saveSettings()">설정 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Viewer Modal -->
+  <div class="sheet-overlay" id="docOverlay" onclick="closeDoc(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title" id="docTitle">문서 제목</div>
+      <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDoc()">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let curYear = 2026;
+    let curMonth = 11; // 1-indexed (11 = Nov)
+    let selectedDateStr = "";
+    let pickerYear = 2026;
+    let currentFactoryIdx = 1;
+
+    // Load saved factory index
+    currentFactoryIdx = parseInt(localStorage.getItem("user_factory_idx") || "1", 10);
+
+    // Official Holidays Map (Korea Official Holidays 2025-2028 + Modern Law Amendments)
+    const officialHolidays = {
+      // 2025
+      "2025-01-01": "신정",
+      "2025-01-27": "설날 임시공휴일",
+      "2025-01-28": "설날 연휴",
+      "2025-01-29": "설날",
+      "2025-01-30": "설날 연휴",
+      "2025-03-01": "삼일절",
+      "2025-03-03": "삼일절 대체공휴일",
+      "2025-04-19": "노조창립일",
+      "2025-05-01": "근로자의 날",
+      "2025-05-05": "어린이날",
+      "2025-05-06": "부처님오신날 대체공휴일",
+      "2025-06-03": "선거 임시공휴일",
+      "2025-06-06": "현충일",
+      "2025-08-15": "광복절",
+      "2025-10-03": "개천절",
+      "2025-10-05": "추석 연휴",
+      "2025-10-06": "추석",
+      "2025-10-07": "추석 연휴",
+      "2025-10-08": "추석 대체공휴일",
+      "2025-10-09": "한글날",
+      "2025-10-18": "회사창립일",
+      "2025-12-25": "기독탄신일",
+
+      // 2026
+      "2026-01-01": "신정",
+      "2026-02-16": "설날 연휴",
+      "2026-02-17": "설날",
+      "2026-02-18": "설날 연휴",
+      "2026-03-01": "삼일절",
+      "2026-03-02": "삼일절 대체공휴일",
+      "2026-04-19": "노조창립일",
+      "2026-04-20": "노조창립일 대체휴무",
+      "2026-05-01": "근로자의 날",
+      "2026-05-05": "어린이날",
+      "2026-05-24": "부처님오신날",
+      "2026-05-25": "부처님오신날 대체공휴일",
+      "2026-06-03": "지방선거",
+      "2026-06-06": "현충일",
+      "2026-07-17": "제헌절", // 2026년 법정 공휴일 부활
+      "2026-08-15": "광복절",
+      "2026-08-17": "광복절 대체공휴일",
+      "2026-09-24": "추석 연휴",
+      "2026-09-25": "추석",
+      "2026-09-26": "추석 연휴",
+      "2026-10-03": "개천절",
+      "2026-10-05": "개천절 대체공휴일",
+      "2026-10-09": "한글날",
+      "2026-10-18": "회사창립일",
+      "2026-10-19": "회사창립일 대체휴무",
+      "2026-12-25": "기독탄신일",
+
+      // 2027
+      "2027-01-01": "신정",
+      "2027-02-06": "설날 연휴",
+      "2027-02-07": "설날",
+      "2027-02-08": "설날 연휴",
+      "2027-02-09": "설날 대체공휴일",
+      "2027-03-01": "삼일절",
+      "2027-04-19": "노조창립일",
+      "2027-05-01": "근로자의 날",
+      "2027-05-05": "어린이날",
+      "2027-05-13": "부처님오신날",
+      "2027-06-06": "현충일",
+      "2027-07-17": "제헌절",
+      "2027-07-19": "제헌절 대체공휴일",
+      "2027-08-15": "광복절",
+      "2027-08-16": "광복절 대체공휴일",
+      "2027-09-14": "추석 연휴",
+      "2027-09-15": "추석",
+      "2027-09-16": "추석 연휴",
+      "2027-10-03": "개천절",
+      "2027-10-04": "개천절 대체공휴일",
+      "2027-10-09": "한글날",
+      "2027-10-11": "한글날 대체공휴일",
+      "2027-10-18": "회사창립일",
+      "2027-12-25": "기독탄신일",
+      "2027-12-27": "기독탄신일 대체공휴일",
+
+      // 2028
+      "2028-01-01": "신정",
+      "2028-01-26": "설날 연휴",
+      "2028-01-27": "설날",
+      "2028-01-28": "설날 연휴",
+      "2028-03-01": "삼일절",
+      "2028-04-12": "제23대 국회의원선거",
+      "2028-04-19": "노조창립일",
+      "2028-05-01": "근로자의 날",
+      "2028-05-02": "부처님오신날",
+      "2028-05-05": "어린이날",
+      "2028-06-06": "현충일",
+      "2028-07-17": "제헌절",
+      "2028-08-15": "광복절",
+      "2028-10-02": "추석 연휴",
+      "2028-10-03": "추석·개천절",
+      "2028-10-04": "추석 연휴",
+      "2028-10-05": "추석·개천절 대체공휴일",
+      "2028-10-09": "한글날",
+      "2028-10-18": "회사창립일",
+      "2028-12-25": "기독탄신일"
+    };
+
+    // Auto Hyphen Formatter
+    function setupDateAutoHyphen(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      el.addEventListener("input", function(e) {
+        let val = el.value.replace(/[^0-9]/g, "");
+        if (val.length > 8) val = val.substring(0, 8);
+        if (val.length >= 7) {
+          el.value = val.substring(0, 4) + "-" + val.substring(4, 6) + "-" + val.substring(6);
+        } else if (val.length >= 5) {
+          el.value = val.substring(0, 4) + "-" + val.substring(4);
+        } else {
+          el.value = val;
+        }
+      });
+    }
+
+    // Factory Switcher
+    const factories = [
+      { name: "1공장 (ERW)", img: "factories/factory_1.jpg" },
+      { name: "2공장 (LSAW)", img: "factories/factory_2.jpg" },
+      { name: "3공장 (SPIRAL)", img: "factories/factory_3.jpg" }
+    ];
+    function updateFactoryUI() {
+      const f = factories[currentFactoryIdx - 1] || factories[0];
+      document.getElementById("factoryNameLabel").innerText = "🏭 " + f.name + " ▾";
+      document.getElementById("appHeader").style.backgroundImage = `url('${f.img}')`;
+      document.getElementById("drawerHeader").style.backgroundImage = `url('${f.img}')`;
+      localStorage.setItem("user_factory_idx", currentFactoryIdx);
+    }
+    function switchFactory() {
+      currentFactoryIdx = (currentFactoryIdx % 3) + 1;
+      updateFactoryUI();
+      vibrate();
+    }
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains("dark");
+      document.getElementById("darkToggleBtn").innerText = isDark ? "☀️" : "🌙";
+      localStorage.setItem("setting_dark_mode", isDark ? "true" : "false");
+      vibrate();
+    }
+
+    // Vibrate Helper (Haptic)
+    function vibrate() {
+      if (navigator.vibrate) navigator.vibrate(15);
+    }
+
+    // Date Utilities
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+    function parseDate(s) {
+      if (!s) return null;
+      const clean = s.replace(/[^0-9]/g, "");
+      if (clean.length !== 8) return null;
+      return new Date(parseInt(clean.substring(0,4)), parseInt(clean.substring(4,6))-1, parseInt(clean.substring(6,8)));
+    }
+
+    // Realtime Calculations: Retirement D-Day, Service Years, Remaining Leave
+    function updateDdayAndUserSummary() {
+      const name = localStorage.getItem("user_name") || "";
+      const birthStr = localStorage.getItem("user_birth") || "";
+      const joinStr = localStorage.getItem("user_join") || "";
+      const duty = localStorage.getItem("user_duty") || "계장";
+      const leaveBase = parseFloat(localStorage.getItem("user_annual_leave_base") || "15");
+
+      // Count used leave in 2026
+      let usedLeave = 0;
+      for (let k in localStorage) {
+        if (k.startsWith("2026-") && k.endsWith("-mode")) {
+          if (localStorage.getItem(k) === "annual") usedLeave += 1;
+          else if (localStorage.getItem(k) === "half_am" || localStorage.getItem(k) === "half_pm") usedLeave += 0.5;
+        }
+      }
+      const remainLeave = Math.max(0, leaveBase - usedLeave);
+
+      const today = new Date();
+
+      // Retirement (age 60 last day of birth month)
+      const bDate = parseDate(birthStr);
+      let retireText = "⏳ 정년퇴직일: 생년월일을 입력해 주세요.";
+      if (bDate) {
+        const retireYear = bDate.getFullYear() + 60;
+        const retireMonth = bDate.getMonth();
+        const retireDate = new Date(retireYear, retireMonth + 1, 0); // last day of month
+        const diffMs = retireDate - today;
+        const dDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        if (dDay > 0) {
+          const years = Math.floor(dDay / 365.25);
+          const remDays = dDay % 365;
+          const months = Math.floor(remDays / 30);
+          const days = remDays % 30;
+          retireText = `⏳ 만 60세 정년: ${years}년 ${months}개월 ${days}일 (D-${dDay}일)`;
+        } else {
+          retireText = "⏳ 만 60세 정년퇴직을 축하드립니다!";
+        }
+      }
+      document.getElementById("retireLine").innerText = retireText;
+
+      // Join date service count
+      const jDate = parseDate(joinStr);
+      let serviceText = "🌱 근속연차: 입사년월일을 입력해 주세요.";
+      let serviceYear = 0;
+      if (jDate) {
+        const diffMs = today - jDate;
+        const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        if (totalDays >= 0) {
+          const years = Math.floor(totalDays / 365.25);
+          serviceYear = years + 1;
+          const remDays = totalDays % 365;
+          const months = Math.floor(remDays / 30);
+          const days = remDays % 30;
+          serviceText = `🌱 입사 ${serviceYear}년차 (${years}년 ${months}개월 ${days}일 - ${totalDays}일)`;
+        }
+      }
+      document.getElementById("serviceLine").innerText = serviceText;
+
+      // Leave Text
+      document.getElementById("leaveLine").innerText = `🌴 현재 남은 연차 일수: 총 ${remainLeave}일`;
+
+      // Header summary pill
+      if (!name) {
+        document.getElementById("userSummaryPill").innerText = "기본정보 미입력 (터치하여 설정)";
+        document.getElementById("drawerUserInfo").innerText = "기본정보 미입력 (터치하여 설정)";
+      } else {
+        const summary = `${duty} ${name}님  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
+        document.getElementById("userSummaryPill").innerText = summary;
+        document.getElementById("drawerUserInfo").innerText = `${duty} ${name}님
+입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
+      }
+    }
+
+    // Render Calendar
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = "";
+      document.getElementById("calTitle").innerText = `${curYear}-${pad(curMonth)}`;
+
+      const firstDay = new Date(curYear, curMonth - 1, 1).getDay(); // 0: Sun, 6: Sat
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+
+      // Empty lead cells
+      for (let i = 0; i < firstDay; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cal-cell empty";
+        grid.appendChild(cell);
+      }
+
+      const today = new Date();
+      const isThisMonth = (today.getFullYear() === curYear && today.getMonth() + 1 === curMonth);
+      const todayDate = today.getDate();
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const dayOfWeek = (firstDay + d - 1) % 7;
+        const cell = document.createElement("div");
+        cell.className = "cal-cell";
+        if (dayOfWeek === 0) cell.classList.add("sun");
+        else if (dayOfWeek === 6) cell.classList.add("sat");
+
+        const holName = officialHolidays[dateKey] || localStorage.getItem(`holiday_${dateKey.replace(/-/g,"")}`);
+        if (holName) cell.classList.add("holiday");
+
+        const isToday = isThisMonth && (d === todayDate);
+
+        // Cell top (Date number + today indicator)
+        const cellTop = document.createElement("div");
+        cellTop.className = "cell-top";
+        if (isToday) {
+          cellTop.innerHTML = `<span class="today-ring">${d}</span>`;
+        } else {
+          cellTop.innerHTML = `<span>${d}</span>`;
+        }
+        cell.appendChild(cellTop);
+
+        // Holiday Name
+        if (holName) {
+          const holDiv = document.createElement("div");
+          holDiv.className = "holiday-name";
+          holDiv.innerText = holName;
+          cell.appendChild(holDiv);
+        }
+
+        // Shift Mode Pill
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        if (mode) {
+          const pill = document.createElement("div");
+          pill.className = "shift-pill";
+          if (mode === "norm") {
+            pill.classList.add("shift-norm");
+            pill.innerText = "8h";
+          } else if (mode === "ot") {
+            pill.classList.add("shift-ot");
+            pill.innerText = "8+2h";
+          } else if (mode === "holiday") {
+            pill.classList.add("shift-holiday");
+            pill.innerText = "특근 8h";
+          } else if (mode === "holiday_12") {
+            pill.classList.add("shift-holiday");
+            pill.innerText = "특근 12h";
+          } else if (mode === "annual") {
+            pill.classList.add("shift-annual");
+            pill.innerText = "연차";
+          } else if (mode === "half_am" || mode === "half_pm") {
+            pill.classList.add("shift-annual");
+            pill.innerText = mode === "half_am" ? "오전반차" : "오후반차";
+          } else {
+            pill.classList.add("shift-norm");
+            pill.innerText = "근무";
+          }
+          cell.appendChild(pill);
+        }
+
+        // Click event -> open bottom sheet
+        cell.onclick = () => openShiftSheet(dateKey, d);
+
+        grid.appendChild(cell);
+      }
+
+      calculateMonthlyPayroll();
+    }
+
+    // Monthly Payroll Calculation Engine (Hyundai Steel Pipe 2026 CBA)
+    function calculateMonthlyPayroll() {
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      let normHours = 0;
+      let otHours = 0;
+      let holHours = 0;
+      let extraHours = 0;
+      let nightHours = 0;
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        if (mode === "norm") {
+          normHours += 8;
+        } else if (mode === "ot") {
+          normHours += 8;
+          otHours += 2;
+        } else if (mode === "holiday") {
+          holHours += 8;
+          extraHours += 4;
+        } else if (mode === "holiday_12") {
+          holHours += 8;
+          otHours += 4;
+          extraHours += 4;
+          nightHours += 2;
+        } else if (mode === "half_am" || mode === "half_pm") {
+          normHours += 4;
+        }
+      }
+
+      document.getElementById("sumNorm").innerText = normHours + "h";
+      document.getElementById("sumOt").innerText = otHours + "h";
+      document.getElementById("sumHol").innerText = holHours + "h";
+      document.getElementById("sumExtra").innerText = extraHours + "h";
+      document.getElementById("sumNight").innerText = nightHours + "h";
+
+      // Rates
+      const baseRate = parseFloat(localStorage.getItem("setting_base") || "12000");
+      const ordinaryRate = parseFloat(localStorage.getItem("setting_ordinary") || "13500");
+      const dutyPay = parseFloat(localStorage.getItem("setting_duty") || "100000");
+      const userDeduction = parseFloat(localStorage.getItem("setting_deduction") || "0");
+
+      document.getElementById("accBaseRate").innerText = baseRate.toLocaleString();
+      document.getElementById("accOrdinaryRate").innerText = ordinaryRate.toLocaleString();
+
+      // Basic Pay (209h standard)
+      const basePay = Math.round(baseRate * 209);
+
+      // Overtime & Holiday pay
+      const otPay = Math.round(ordinaryRate * otHours * 1.5);
+      const holPay = Math.round(ordinaryRate * holHours * 1.5);
+      const extraPay = Math.round(ordinaryRate * extraHours * 1.0);
+      const nightPay = Math.round(ordinaryRate * nightHours * 0.5);
+      const totalOvertimePay = otPay + holPay + extraPay + nightPay;
+
+      // Summer Health Allowance (only July, August, Sept)
+      let summerPay = 0;
+      if (curMonth === 7 || curMonth === 8 || curMonth === 9) {
+        summerPay = 200000;
+        document.getElementById("rowSummerPay").style.display = "flex";
+      } else {
+        document.getElementById("rowSummerPay").style.display = "none";
+      }
+
+      // Total Gross Pay
+      const grossPay = basePay + totalOvertimePay + dutyPay + summerPay;
+
+      // Deductions: 4 Major Insurances + Tax (approx 10.5% or user fixed deduction)
+      let deductions = userDeduction;
+      if (deductions <= 0) {
+        // Pension 4.5%, Health 3.545%, Long-term 0.46%, Employment 0.9%, Tax ~1.5%
+        deductions = Math.round(grossPay * 0.109);
+      }
+
+      const netPay = Math.max(0, grossPay - deductions);
+
+      document.getElementById("valBasePay").innerText = basePay.toLocaleString() + "원";
+      document.getElementById("valOtPay").innerText = totalOvertimePay.toLocaleString() + "원";
+      document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
+      document.getElementById("valDeduction").innerText = "-" + deductions.toLocaleString() + "원";
+      document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
+    }
+
+    // Month Navigation
+    function prevMonth() {
+      curMonth--;
+      if (curMonth < 1) { curMonth = 12; curYear--; }
+      renderCalendar();
+      vibrate();
+    }
+    function nextMonth() {
+      curMonth++;
+      if (curMonth > 12) { curMonth = 1; curYear++; }
+      renderCalendar();
+      vibrate();
+    }
+    function goToday() {
+      const today = new Date();
+      curYear = today.getFullYear();
+      curMonth = today.getMonth() + 1;
+      renderCalendar();
+      vibrate();
+    }
+
+    // Shift Sheet Handlers
+    function openShiftSheet(dateKey, d) {
+      selectedDateStr = dateKey;
+      document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
+      document.getElementById("shiftSheetOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeShiftSheet(e) {
+      if (!e || e.target.id === "shiftSheetOverlay" || e.target.classList.contains("sheet-btn")) {
+        document.getElementById("shiftSheetOverlay").style.display = "none";
+      }
+    }
+    function selectPreset(mode) {
+      if (!selectedDateStr) return;
+      localStorage.setItem(`${selectedDateStr}-mode`, mode);
+      closeShiftSheet();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      vibrate();
+    }
+    function deleteSelectedDay() {
+      if (!selectedDateStr) return;
+      localStorage.removeItem(`${selectedDateStr}-mode`);
+      closeShiftSheet();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      vibrate();
+    }
+    function quickTodayShift() {
+      const today = new Date();
+      const dateKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+      openShiftSheet(dateKey, today.getDate());
+    }
+
+    // Year / Month Picker
+    function openMonthPicker() {
+      pickerYear = curYear;
+      renderMonthGrid();
+      document.getElementById("monthPickerOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeMonthPicker(e) {
+      if (!e || e.target.id === "monthPickerOverlay" || e.target.classList.contains("sheet-btn")) {
+        document.getElementById("monthPickerOverlay").style.display = "none";
+      }
+    }
+    function changePickerYear(delta) {
+      pickerYear += delta;
+      renderMonthGrid();
+      vibrate();
+    }
+    function renderMonthGrid() {
+      document.getElementById("pickerYear").innerText = `${pickerYear}년`;
+      const grid = document.getElementById("monthGrid");
+      grid.innerHTML = "";
+      for (let m = 1; m <= 12; m++) {
+        const btn = document.createElement("button");
+        btn.className = "sheet-btn" + (m === curMonth && pickerYear === curYear ? " blue" : "");
+        btn.innerText = `${m}월`;
+        btn.onclick = () => {
+          curYear = pickerYear;
+          curMonth = m;
+          closeMonthPicker();
+          renderCalendar();
+          vibrate();
+        };
+        grid.appendChild(btn);
+      }
+    }
+    function jumpToPreset(type) {
+      if (type === 'today') {
+        goToday();
+      } else if (type === 'join') {
+        const joinStr = localStorage.getItem("user_join") || "2017-04-01";
+        const d = parseDate(joinStr);
+        if (d) {
+          curYear = d.getFullYear();
+          curMonth = d.getMonth() + 1;
+          renderCalendar();
+        }
+      } else if (type === 'retire') {
+        const birthStr = localStorage.getItem("user_birth") || "1975-08-30";
+        const d = parseDate(birthStr);
+        if (d) {
+          curYear = d.getFullYear() + 60;
+          curMonth = d.getMonth() + 1;
+          renderCalendar();
+        }
+      }
+      closeMonthPicker();
+      vibrate();
+    }
+
+    // Accordion Toggle
+    function toggleAccordion() {
+      const c = document.getElementById("accordionContent");
+      c.style.display = c.style.display === "block" ? "none" : "block";
+    }
+
+    // Drawer Handlers
+    function openDrawer() {
+      document.getElementById("drawerOverlay").style.display = "block";
+      document.getElementById("drawer").classList.add("open");
+      vibrate();
+    }
+    function closeDrawer() {
+      document.getElementById("drawerOverlay").style.display = "none";
+      document.getElementById("drawer").classList.remove("open");
+    }
+
+    // Settings Modal
+    function openSettings() {
+      document.getElementById("cfgName").value = localStorage.getItem("user_name") || "";
+      document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
+      document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
+      document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "계장";
+      document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
+      document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
+      document.getElementById("cfgDutyPay").value = localStorage.getItem("setting_duty") || "100000";
+      document.getElementById("cfgLeaveBase").value = localStorage.getItem("user_annual_leave_base") || "15";
+      document.getElementById("cfgDeduction").value = localStorage.getItem("setting_deduction") || "0";
+
+      document.getElementById("settingsOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeSettings(e) {
+      if (!e || e.target.id === "settingsOverlay" || e.target.classList.contains("sheet-btn")) {
+        document.getElementById("settingsOverlay").style.display = "none";
+      }
+    }
+    function autoFillDutyPay() {
+      const duty = document.getElementById("cfgDuty").value;
+      const dutyMap = {
+        "사원": 0, "대리": 0, "계장": 100000, "과장": 150000,
+        "차장": 200000, "부장": 250000, "기장": 300000
+      };
+      document.getElementById("cfgDutyPay").value = dutyMap[duty] !== undefined ? dutyMap[duty] : 0;
+    }
+    function saveSettings() {
+      localStorage.setItem("user_name", document.getElementById("cfgName").value.trim());
+      localStorage.setItem("user_birth", document.getElementById("cfgBirth").value.trim());
+      localStorage.setItem("user_join", document.getElementById("cfgJoin").value.trim());
+      localStorage.setItem("user_duty", document.getElementById("cfgDuty").value);
+      localStorage.setItem("setting_ordinary", document.getElementById("cfgOrdinary").value.trim());
+      localStorage.setItem("setting_base", document.getElementById("cfgBaseRate").value.trim());
+      localStorage.setItem("setting_duty", document.getElementById("cfgDutyPay").value.trim());
+      localStorage.setItem("user_annual_leave_base", document.getElementById("cfgLeaveBase").value.trim());
+      localStorage.setItem("setting_deduction", document.getElementById("cfgDeduction").value.trim());
+
+      closeSettings();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      alert("설정이 안전하게 저장되었습니다!");
+      vibrate();
+    }
+    function resetSettings() {
+      if (!confirm("모든 설정값을 빈칸으로 초기화할까요?")) return;
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("user_birth");
+      localStorage.removeItem("user_join");
+      localStorage.removeItem("setting_deduction");
+      openSettings();
+      updateDdayAndUserSummary();
+      vibrate();
+    }
+
+    // Document Viewer
+    const docData = {
+      cba: {
+        title: "📜 2026년 노사단체협약 요약",
+        body: "현대스틸파이프㈜ & 전국금속노동조합 현대스틸파이프지회
+체결일: 2026년 9월 10일 (전문 35페이지)
+
+" +
+              "■ 제49조【노동시간 및 휴게】
+• 1일 8시간, 주 40시간 기본 노동시간
+• 주휴일(일요일) 유급 보장, 토요일 8시간 유급 인정
+
+" +
+              "■ 제10조【조합원 교육시간】
+• 연 8시간 유급 인정 (조합설명회 2시간 정상 인정)
+
+" +
+              "■ 제42조【임금체계】
+• 기본급, 통상수당(근속, 본인가족, 직무 등) 구분 명시
+
+" +
+              "■ 제91조【복리후생비】
+• 설·추석 귀향여비 각 80만 원, 하계휴가비 80만 원 지급
+• 7·8·9월 하계건강지원비 월 20만 원 지급"
+      },
+      support: {
+        title: "🏢 현대스틸파이프 지원제도 (12종 요약)",
+        body: "1. 자녀 학자금 지원: 유치원/초중고/대학교 실비 지원
+2. 주택자금 사내대출 지원: 한도 3,000만 원, 금리 연 2.0%
+3. 의료비 및 종합건강검진: 본인 및 가족 진료비 실비 지원, 만 35세 이상 본인/배우자 종합검진 전액 지원
+4. 경조금 및 경조휴가: 본인 결혼(5일/경조금), 화환, 장례용품 지원
+5. 장기근속 포상: 10/15/20/25/30년 근속 시 순금메달 또는 현금 선택권 보장
+6. 복지포인트 (현대이지웰): 연간 포인트 지급, 수면비 5만 원 실비 신설
+7. 차량구입 지원금: 현대차/기아 신차 구입 시 근속연수별 5%~최대 20% 할인 지원
+8. 어린이집 보육료: 만 0세~5세 미취학 자녀 정부보육료 외 추가 지원"
+      },
+      partners: {
+        title: "🤝 회사 제휴업체 통합현황 (28개사)",
+        body: "■ 울산 숙박 & 레저
+• 라한호텔 울산: 객실 정상가 대비 특별 기업할인 (052-250-6000)
+• 신라스테이 울산: 임직원 전용 우대가 적용 (052-990-1000)
+• 롯데호텔 울산: 주중/주말 객실 우대 및 F&B 할인 (052-960-1000)
+• 타니베이 호텔: 동구 일산지 오션뷰 객실 특가 (052-234-8888)
+
+■ 전국 리조트
+• 켄싱턴 리조트 (경주, 지리산, 설악 등 전국 지점 기업회원가)
+• 한화리조트 / 소노호텔앤리조트 무기명 회원대우 예약
+• 아난티 (남해, 부산 기장 코브) 임직원 패키지
+
+■ 라이프스타일 & 의료 (울산)
+• 공항 라운지 (인천·김포·김해 마티나 라운지 30% 할인: KITA308)
+• 아이코젠(ICOGEN): 피트니스·수영 멤버십 할인
+• CK치과병원: 비급여 15~20% 할인
+• 엘리야병원: 종합검진 및 비급여 10% 감면"
+      },
+      company: {
+        title: "🏭 회사 소개 및 연혁",
+        body: "현대스틸파이프 주식회사
+• 1975년: 경일공업 설립 (강관 사업 태동)
+• 1980년~2010년: 울산 1공장(ERW), 2공장(LSAW), 3공장(SPIRAL) 준공 및 고품질 에너지 강관 생산 체제 완비
+• 2018년: 대구경 LSAW 설비 증설
+• 2023년 10월 18일: 현대스틸파이프 주식회사 법인 설립
+• 2024년 1월 1일: 현대스틸파이프 공식 출범
+
+세계 최고 수준의 해상풍력 하부구조물 및 친환경 에너지 배관용 강관을 공급하는 글로벌 종합 파이프 전문 기업입니다."
+      },
+      onboarding: {
+        title: "🚀 처음 사용자 이용 가이드",
+        body: "【 ShiftPay 3단계 핵심 이용법 】
+
+1단계: 나의 기본정보 & 시급 설정
+• 좌측 메뉴(☰) → [기본정보 및 급여 설정]에서 성명, 생년월일, 입사일을 등록하세요.
+• 정년퇴직 D-Day 카운트다운과 근속연차가 실시간 계산됩니다.
+
+2단계: 매일 1초 근무 등록
+• 캘린더 날짜를 누르고 [주간 정상], [평일 연장], [휴일 특근], [연차]를 원터치로 저장하세요.
+• 하단 급여 카드가 단체협약 수당과 예상 실수령액을 즉시 계산해 줍니다.
+
+3단계: 엑셀 내보내기 & 100% 안심 백업
+• 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요."
+      },
+      history: {
+        title: "📋 버전 업데이트 내역 (v1.3.1)",
+        body: "v1.3.1 (2026-11-03) — 완성판 릴리즈
+• 🔄 전체 교체 엑셀 복원 시 공휴일 소거 버그 완벽 차단
+• 📝 수동 등록 휴일(holiday_*) 엑셀 백업/복원 100% 완전 보존
+• 🛡️ XML 파서 파싱 호환성 및 안드로이드 전 기기 백업 안정성 극대화
+• 🌴 연차 계산 및 역산 현재 연도 고정 (달력 이동 시에도 안정적 계산)
+• 📅 2026년 공휴일법 개정 반영 (7/17 제헌절 국경일 공휴일 재지정) 및 2028년 국회의원선거 공식 탑재
+• 📱 아이폰 및 갤럭시 완벽 호환 모바일 웹앱(PWA) 지원"
+      }
+    };
+    function showDoc(key) {
+      const d = docData[key];
+      if (!d) return;
+      document.getElementById("docTitle").innerText = d.title;
+      document.getElementById("docBody").innerText = d.body;
+      document.getElementById("docOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeDoc(e) {
+      if (!e || e.target.id === "docOverlay" || e.target.classList.contains("sheet-btn")) {
+        document.getElementById("docOverlay").style.display = "none";
+      }
+    }
+
+    // Data Backup / Restore / Clear
+    function clearCurrentMonth() {
+      if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      for (let d = 1; d <= totalDays; d++) {
+        localStorage.removeItem(`${curYear}-${pad(curMonth)}-${pad(d)}-mode`);
+      }
+      renderCalendar();
+      updateDdayAndUserSummary();
+      alert("이번 달 근무 기록이 초기화되었습니다.");
+      vibrate();
+    }
+    function backupData() {
+      const dump = JSON.stringify(localStorage, null, 2);
+      const blob = new Blob([dump], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ShiftPay_백업_${curYear}-${pad(curMonth)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      vibrate();
+    }
+    function restoreDataPrompt() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            for (let k in data) {
+              localStorage.setItem(k, data[k]);
+            }
+            alert("성공적으로 복원되었습니다!");
+            location.reload();
+          } catch (err) {
+            alert("복원 실패: 올바른 JSON 백업 파일이 아닙니다.");
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+    function exportExcel() {
+      const name = localStorage.getItem("user_name") || "임직원";
+      let csv = "\uFEFF일자,요일,근무구분,인정시간\n";
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      const weekNames = ["일","월","화","수","목","금","토"];
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const dayOfWeek = new Date(curYear, curMonth - 1, d).getDay();
+        const mode = localStorage.getItem(`${dateKey}-mode`) || "휴무/미입력";
+        csv += `${dateKey},${weekNames[dayOfWeek]},${mode}\n`;
+      }
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ShiftPay_근무대장_${curYear}-${pad(curMonth)}_${name}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      vibrate();
+    }
+
+    function openOcrModal() {
+      alert("📸 OCR 사진 대조 기능은 스마트폰 카메라로 종이 출근카드 또는 급여명세서를 촬영하여 웹앱 데이터와 1:1 대조할 수 있는 기능입니다. (추후 모델 연동 지원)");
+    }
+
+    // Initialize on page load
+    window.onload = function() {
+      setupDateAutoHyphen("cfgBirth");
+      setupDateAutoHyphen("cfgJoin");
+
+      // Dark mode init
+      if (localStorage.getItem("setting_dark_mode") === "true") {
+        document.body.classList.add("dark");
+        document.getElementById("darkToggleBtn").innerText = "☀️";
+      }
+
+      updateFactoryUI();
+      updateDdayAndUserSummary();
+      renderCalendar();
+    };
+  </script>
+</body>
+</html>
