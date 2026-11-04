@@ -824,9 +824,11 @@
       <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
       <div class="sheet-grid">
         <button class="sheet-btn indigo" onclick="selectPreset('norm')">☀️ 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
-        <button class="sheet-btn blue" onclick="selectPreset('ot')">⚡ 평일 연장<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('holiday')">🔴 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h + 가급4h</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('holiday_12')">🔥 특근 12h<br><span style="font-size:11px;font-weight:normal;">8h + 4h연장 + 야간</span></button>
+        <button class="sheet-btn blue" onclick="selectPreset('ot')">⚡ 주간 10h<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
+        <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')">🌙 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
+        <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')">🌌 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('holiday')">🔴 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')">🔥 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
         <button class="sheet-btn emerald" onclick="selectPreset('annual')">🌴 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
         <button class="sheet-btn" onclick="selectPreset('half_am')">🌓 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
       </div>
@@ -875,13 +877,21 @@
       <div class="form-group">
         <label>직급 선택</label>
         <select class="form-input" id="cfgDuty" onchange="autoFillDutyPay()">
-          <option value="사원">사원 (직책수당 0원)</option>
-          <option value="대리">대리 (직책수당 0원)</option>
-          <option value="계장" selected>계장 (직책수당 100,000원)</option>
-          <option value="과장">과장 (직책수당 150,000원)</option>
-          <option value="차장">차장 (직책수당 200,000원)</option>
-          <option value="부장">부장 (직책수당 250,000원)</option>
-          <option value="기장">기장 (직책수당 300,000원)</option>
+          <option value="사원">기술직 - 사원 (직책수당 0원)</option>
+          <option value="주임">기술직 - 주임 (직책수당 50,000원)</option>
+          <option value="계장" selected>기술직 - 계장 (직책수당 100,000원)</option>
+          <option value="기장">기술직 - 기장 (직책수당 200,000원)</option>
+          <option value="G1 매니저">일반직 - G1 매니저 (직책수당 0원)</option>
+          <option value="G2 매니저">일반직 - G2 매니저 (직책수당 50,000원)</option>
+          <option value="G3 책임매니저">일반직 - G3 책임매니저 (직책수당 100,000원)</option>
+          <option value="G4 책임매니저">일반직 - G4 책임매니저 (직책수당 200,000원)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>근무 형태 선택 (수당 및 프리셋 연동)</label>
+        <select class="form-input" id="cfgShiftType" onchange="updateShiftTypeUI()">
+          <option value="normal" selected>🏢 상주근무 (주간 8h • 상주휴게수당)</option>
+          <option value="shift">🔄 교대근무 (주야 10h • 교대수당 20만원)</option>
         </select>
       </div>
       <div class="form-group">
@@ -1212,7 +1222,8 @@
         document.getElementById("userSummaryPill").innerText = "기본정보 미입력 (터치하여 설정)";
         document.getElementById("drawerUserInfo").innerText = "기본정보 미입력 (터치하여 설정)";
       } else {
-        const summary = `${duty} ${name}님  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
+        const shift = localStorage.getItem("user_shift_type") === "shift" ? "교대" : "상주";
+        const summary = `${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
         document.getElementById("userSummaryPill").innerText = summary;
         document.getElementById("drawerUserInfo").innerText = `${duty} ${name}님
 입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
@@ -1281,6 +1292,18 @@
           } else if (mode === "ot") {
             pill.classList.add("shift-ot");
             pill.innerText = "8+2h";
+          } else if (mode === "night_10") {
+            pill.style.background = "#581c87";
+            pill.style.color = "#f3e8ff";
+            pill.innerText = "야간 10h";
+          } else if (mode === "night_8") {
+            pill.style.background = "#3b0764";
+            pill.style.color = "#e9d5ff";
+            pill.innerText = "야간 8h";
+          } else if (mode === "night_holiday_10") {
+            pill.style.background = "#701a75";
+            pill.style.color = "#fdf4ff";
+            pill.innerText = "🌙특근 10h";
           } else if (mode === "holiday") {
             pill.classList.add("shift-holiday");
             pill.innerText = "특근 8h";
@@ -1326,9 +1349,19 @@
         } else if (mode === "ot") {
           normHours += 8;
           otHours += 2;
+        } else if (mode === "night_10") {
+          normHours += 8;
+          otHours += 2;
+          nightHours += 7.5;
+        } else if (mode === "night_8") {
+          normHours += 8;
+          nightHours += 6.0;
         } else if (mode === "holiday") {
           holHours += 8;
-          extraHours += 4;
+        } else if (mode === "night_holiday_10") {
+          holHours += 8;
+          otHours += 2;
+          nightHours += 7.5;
         } else if (mode === "holiday_12") {
           holHours += 8;
           otHours += 4;
@@ -1373,8 +1406,12 @@
         document.getElementById("rowSummerPay").style.display = "none";
       }
 
+      // Shift allowance (200,000 won if shift worker)
+      const isShift = localStorage.getItem("user_shift_type") === "shift";
+      const shiftPay = isShift ? 200000 : 0;
+
       // Total Gross Pay
-      const grossPay = basePay + totalOvertimePay + dutyPay + summerPay;
+      const grossPay = basePay + totalOvertimePay + dutyPay + shiftPay + summerPay;
 
       // Deductions: 4 Major Insurances + Tax (approx 10.5% or user fixed deduction)
       let deductions = userDeduction;
@@ -1529,6 +1566,7 @@
       document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
       document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
       document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "계장";
+      document.getElementById("cfgShiftType").value = localStorage.getItem("user_shift_type") || "normal";
       document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
       document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
       document.getElementById("cfgDutyPay").value = localStorage.getItem("setting_duty") || "100000";
@@ -1546,16 +1584,20 @@
     function autoFillDutyPay() {
       const duty = document.getElementById("cfgDuty").value;
       const dutyMap = {
-        "사원": 0, "대리": 0, "계장": 100000, "과장": 150000,
-        "차장": 200000, "부장": 250000, "기장": 300000
+        "사원": 0, "주임": 50000, "계장": 100000, "기장": 200000,
+        "G1 매니저": 0, "G2 매니저": 50000, "G3 책임매니저": 100000, "G4 책임매니저": 200000
       };
       document.getElementById("cfgDutyPay").value = dutyMap[duty] !== undefined ? dutyMap[duty] : 0;
+    }
+    function updateShiftTypeUI() {
+      renderCalendar();
     }
     function saveSettings() {
       localStorage.setItem("user_name", document.getElementById("cfgName").value.trim());
       localStorage.setItem("user_birth", document.getElementById("cfgBirth").value.trim());
       localStorage.setItem("user_join", document.getElementById("cfgJoin").value.trim());
       localStorage.setItem("user_duty", document.getElementById("cfgDuty").value);
+      localStorage.setItem("user_shift_type", document.getElementById("cfgShiftType").value);
       localStorage.setItem("setting_ordinary", document.getElementById("cfgOrdinary").value.trim());
       localStorage.setItem("setting_base", document.getElementById("cfgBaseRate").value.trim());
       localStorage.setItem("setting_duty", document.getElementById("cfgDutyPay").value.trim());
@@ -1647,7 +1689,13 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.1)",
-        body: `v1.3.1 (2026-11-03) — 완성판 릴리즈
+        body: `v1.3.1 (2026-11-04) — 교대근무 및 기장 직책수당 개편
+• 🔄 상주근무 / 교대근무(주야 격주) 선택 스위치 및 교대수당 200,000원 자동 연동
+• 🌙 교대근무조 맞춤 1초 퀵 프리셋: [야간 10h (8+2h, 심야7.5h)], [야간 정상 8h], [야간 특근 10h]
+• 💼 기장 직책수당 200,000원 교정 (G4 책임매니저 동시 적용)
+• 💊 달력 야간근무 퍼플(Purple) 캡슐 칩 신설: 주야간 교대근무 패턴 시각화
+
+v1.3.1 (2026-11-03) — 완성판 릴리즈
 • 🔄 전체 교체 엑셀 복원 시 공휴일 소거 버그 완벽 차단
 • 📝 수동 등록 휴일(holiday_*) 엑셀 백업/복원 100% 완전 보존
 • 🛡️ XML 파서 파싱 호환성 및 안드로이드 전 기기 백업 안정성 극대화
