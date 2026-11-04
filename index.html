@@ -12,6 +12,7 @@
   <meta name="theme-color" content="#142035">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
     :root {
@@ -920,6 +921,56 @@
     </div>
   </div>
 
+  <!-- Hidden File Inputs for Camera and Gallery -->
+  <input type="file" id="ocrCameraInput" accept="image/*" capture="environment" style="display:none;" onchange="onOcrFileSelected(event)">
+  <input type="file" id="ocrGalleryInput" accept="image/*" style="display:none;" onchange="onOcrFileSelected(event)">
+
+  <!-- OCR Modal -->
+  <div class="sheet-overlay" id="ocrOverlay" onclick="closeOcrModal(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title">📸 출근카드 & 급여명세서 OCR 대조</div>
+      
+      <div style="font-size:12px; color:var(--sub); text-align:center; margin-bottom:12px;">
+        스마트폰 카메라로 종이 출근카드나 명세서를 찍으면 텍스트를 자동 인식합니다.
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button class="sheet-btn blue" style="flex:1; padding:12px 6px;" onclick="triggerOcrCamera()">📷 카메라로 촬영</button>
+        <button class="sheet-btn indigo" style="flex:1; padding:12px 6px;" onclick="triggerOcrGallery()">🖼️ 앨범에서 선택</button>
+      </div>
+
+      <!-- Preview Image -->
+      <div id="ocrPreviewBox" style="display:none; margin-bottom:12px; text-align:center;">
+        <img id="ocrPreviewImg" src="" style="max-width:100%; max-height:180px; border-radius:8px; border:1px solid var(--border); object-fit:contain; background:#000;">
+      </div>
+
+      <!-- Loading / Progress -->
+      <div id="ocrLoadingBox" style="display:none; padding:16px; text-align:center; background:var(--bg); border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:20px; margin-bottom:6px;">🔍</div>
+        <div id="ocrProgressText" style="font-size:13px; font-weight:700; color:var(--blue);">AI 글자 분석 준비 중...</div>
+        <div style="font-size:11px; color:var(--sub); margin-top:4px;">기기에서 텍스트를 직접 판독하고 있습니다</div>
+      </div>
+
+      <!-- Results & Analysis -->
+      <div id="ocrResultBox" style="display:none;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--sub); margin-bottom:4px;">인식된 텍스트 원문 (수정 가능)</div>
+        <textarea id="ocrRawText" class="form-input" style="height:90px; font-size:11.5px; font-family:monospace; resize:vertical; margin-bottom:10px;" oninput="reparseOcr()"></textarea>
+
+        <div id="ocrAnalysisSummary" style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px; font-size:12px; margin-bottom:12px; line-height:1.6;"></div>
+
+        <div style="display:flex; gap:8px; flex-direction:column;">
+          <button class="sheet-btn emerald" id="btnApplyOcrCalendar" onclick="applyOcrToCalendar()" style="display:none; width:100%;">📅 감지된 근무 기록 캘린더에 저장</button>
+          <button class="sheet-btn blue" id="btnSyncOcrSettings" onclick="syncOcrToSettings()" style="display:none; width:100%;">⚙️ 감지된 시급·연차 설정에 동기화</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeOcrModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // State
     let curYear = 2026;
@@ -1687,8 +1738,230 @@
       vibrate();
     }
 
+    // OCR Logic & Parser
+    let parsedOcrData = { shifts: [], payslip: {} };
+
     function openOcrModal() {
-      alert("📸 OCR 사진 대조 기능은 스마트폰 카메라로 종이 출근카드 또는 급여명세서를 촬영하여 웹앱 데이터와 1:1 대조할 수 있는 기능입니다. (추후 모델 연동 지원)");
+      document.getElementById("ocrOverlay").style.display = "flex";
+      vibrate();
+    }
+
+    function closeOcrModal(e) {
+      if (!e || e.target.id === "ocrOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText === "닫기")) {
+        document.getElementById("ocrOverlay").style.display = "none";
+      }
+    }
+
+    function triggerOcrCamera() {
+      const inp = document.getElementById("ocrCameraInput");
+      inp.value = "";
+      inp.click();
+    }
+
+    function triggerOcrGallery() {
+      const inp = document.getElementById("ocrGalleryInput");
+      inp.value = "";
+      inp.click();
+    }
+
+    async function onOcrFileSelected(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const imgUrl = URL.createObjectURL(file);
+      document.getElementById("ocrPreviewImg").src = imgUrl;
+      document.getElementById("ocrPreviewBox").style.display = "block";
+      document.getElementById("ocrLoadingBox").style.display = "block";
+      document.getElementById("ocrResultBox").style.display = "none";
+      document.getElementById("ocrProgressText").innerText = "사진 로딩 중...";
+
+      try {
+        if (typeof Tesseract === "undefined") {
+          throw new Error("OCR 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+        }
+        document.getElementById("ocrProgressText").innerText = "AI 텍스트 분석 시작...";
+        
+        const worker = await Tesseract.createWorker(["kor", "eng"], 1, {
+          logger: m => {
+            if (m.status === "recognizing text") {
+              const pct = Math.round(m.progress * 100);
+              document.getElementById("ocrProgressText").innerText = `글자 판독 중... ${pct}%`;
+            } else if (m.status === "loading tesseract core" || m.status === "loading language traineddata") {
+              document.getElementById("ocrProgressText").innerText = "언어 모델 로딩 중...";
+            }
+          }
+        });
+
+        const ret = await worker.recognize(file);
+        const text = ret.data.text;
+        await worker.terminate();
+
+        displayOcrResult(text);
+      } catch (err) {
+        console.error("OCR Error:", err);
+        document.getElementById("ocrLoadingBox").style.display = "none";
+        document.getElementById("ocrResultBox").style.display = "block";
+        document.getElementById("ocrRawText").value = "텍스트 판독 중 지연이 발생했습니다.\n사진을 보시면서 날짜와 근무시간(예: 4일 8h)을 직접 적어주셔도 즉시 분석됩니다.";
+        reparseOcr();
+      }
+    }
+
+    function displayOcrResult(rawText) {
+      document.getElementById("ocrLoadingBox").style.display = "none";
+      document.getElementById("ocrResultBox").style.display = "block";
+      document.getElementById("ocrRawText").value = rawText;
+      reparseOcr();
+    }
+
+    function reparseOcr() {
+      const text = document.getElementById("ocrRawText").value || "";
+      parsedOcrData = parseOcrContent(text);
+      
+      const summaryBox = document.getElementById("ocrAnalysisSummary");
+      const btnCal = document.getElementById("btnApplyOcrCalendar");
+      const btnSet = document.getElementById("btnSyncOcrSettings");
+
+      let html = "";
+      if (parsedOcrData.shifts.length > 0) {
+        html += `<strong>📅 근무일자 감지 (${parsedOcrData.shifts.length}건):</strong><br>`;
+        html += parsedOcrData.shifts.map(s => `• ${curMonth}월 ${s.day}일: ${s.modeName} (${s.hours}h)`).join("<br>");
+        btnCal.style.display = "block";
+        btnCal.innerText = `📅 감지된 근무 ${parsedOcrData.shifts.length}건 캘린더에 일괄 저장`;
+      } else {
+        btnCal.style.display = "none";
+      }
+
+      if (Object.keys(parsedOcrData.payslip).length > 0) {
+        if (html) html += "<hr style='margin:8px 0; border:none; border-top:1px dashed var(--border);'>";
+        html += "<strong>💰 급여명세서 항목 감지:</strong><br>";
+        if (parsedOcrData.payslip.ordinary) html += `• 통상시급: ${parsedOcrData.payslip.ordinary.toLocaleString()}원<br>`;
+        if (parsedOcrData.payslip.base) html += `• 기본시급: ${parsedOcrData.payslip.base.toLocaleString()}원<br>`;
+        if (parsedOcrData.payslip.leave !== undefined) html += `• 잔여연차: ${parsedOcrData.payslip.leave}일<br>`;
+        btnSet.style.display = "block";
+      } else {
+        btnSet.style.display = "none";
+      }
+
+      if (!html) {
+        html = "<span style='color:var(--sub);'>날짜나 근무시간이 뚜렷하게 감지되지 않았습니다. 위 텍스트 상자에서 [1일 8h] 형식으로 확인·수정해 주세요.</span>";
+      }
+
+      summaryBox.innerHTML = html;
+    }
+
+    function parseOcrContent(raw) {
+      const lines = raw.split(/\r?\n/);
+      const shifts = [];
+      const payslip = {};
+
+      for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        // Salary terms
+        if (line.includes("통상시급") || line.includes("통상임금") || line.includes("통상")) {
+          const m = line.match(/\b\d{1,3}(?:,\d{3})+\b|\b\d{4,6}\b/);
+          if (m) payslip.ordinary = parseInt(m[0].replace(/,/g, ""), 10);
+        }
+        if (line.includes("기본시급") || line.includes("기본급")) {
+          const m = line.match(/\b\d{1,3}(?:,\d{3})+\b|\b\d{4,6}\b/);
+          if (m && (!payslip.base || m[0].length <= 6)) payslip.base = parseInt(m[0].replace(/,/g, ""), 10);
+        }
+        if (line.includes("연차") || line.includes("잔여")) {
+          const m = line.match(/(\d+(?:\.\d+)?)\s*(?:일|개)?/);
+          if (m && parseFloat(m[1]) <= 35) payslip.leave = parseFloat(m[1]);
+        }
+
+        // Shift rows: e.g. "4일 8.0", "4 8", "11/4 8h", "4 정상"
+        const dayMatch = line.match(/(?:^|\s|\[)(\d{1,2})[일\s\.\/]+(.+)$/);
+        if (dayMatch) {
+          const d = parseInt(dayMatch[1], 10);
+          if (d >= 1 && d <= 31) {
+            const rest = dayMatch[2];
+            const numMatch = rest.match(/\b\d+(?:\.\d+)?\b/);
+            let hours = 8;
+            let mode = "normal";
+            let modeName = "주간 정상";
+
+            if (rest.includes("연차") || rest.includes("휴가")) {
+              mode = "leave";
+              modeName = "연차 유급";
+              hours = 8;
+              shifts.push({ day: d, hours, mode, modeName });
+            } else if (rest.includes("반차")) {
+              mode = "half_leave";
+              modeName = "오전 반차";
+              hours = 4;
+              shifts.push({ day: d, hours, mode, modeName });
+            } else if (rest.includes("특근") || rest.includes("휴일")) {
+              if (numMatch && parseFloat(numMatch[0]) >= 12) {
+                mode = "ot12";
+                modeName = "특근 12h";
+                hours = 12;
+              } else {
+                mode = "holiday";
+                modeName = "휴일 특근";
+                hours = 8;
+              }
+              shifts.push({ day: d, hours, mode, modeName });
+            } else if (rest.includes("연장")) {
+              mode = "overtime";
+              modeName = "평일 연장";
+              hours = 10;
+              shifts.push({ day: d, hours, mode, modeName });
+            } else if (numMatch) {
+              const parsedH = parseFloat(numMatch[0]);
+              if (parsedH === 8) {
+                mode = "normal"; modeName = "주간 정상"; hours = 8;
+              } else if (parsedH === 10) {
+                mode = "overtime"; modeName = "평일 연장"; hours = 10;
+              } else if (parsedH >= 12) {
+                mode = "ot12"; modeName = "특근 12h"; hours = 12;
+              } else if (parsedH > 0 && parsedH <= 24) {
+                mode = "normal"; modeName = `근무 (${parsedH}h)`; hours = parsedH;
+              }
+              shifts.push({ day: d, hours, mode, modeName });
+            }
+          }
+        }
+      }
+
+      const uniqueShifts = [];
+      const seenDays = new Set();
+      for (const s of shifts) {
+        if (!seenDays.has(s.day)) {
+          seenDays.add(s.day);
+          uniqueShifts.push(s);
+        }
+      }
+      return { shifts: uniqueShifts, payslip };
+    }
+
+    function applyOcrToCalendar() {
+      if (!parsedOcrData.shifts || parsedOcrData.shifts.length === 0) return;
+      for (const s of parsedOcrData.shifts) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(s.day)}`;
+        localStorage.setItem(`${dateKey}-mode`, s.mode);
+      }
+      renderCalendar();
+      updateDdayAndUserSummary();
+      closeOcrModal();
+      alert(`✅ ${parsedOcrData.shifts.length}건의 근무 기록이 ${curMonth}월 캘린더에 성공적으로 저장되었습니다!`);
+      vibrate();
+    }
+
+    function syncOcrToSettings() {
+      const p = parsedOcrData.payslip;
+      if (!p) return;
+      if (p.ordinary) localStorage.setItem("setting_ordinary", p.ordinary.toString());
+      if (p.base) localStorage.setItem("setting_base_rate", p.base.toString());
+      if (p.leave !== undefined) localStorage.setItem("user_annual_leave_base", p.leave.toString());
+      
+      updateDdayAndUserSummary();
+      renderCalendar();
+      closeOcrModal();
+      alert("✅ 급여 시급 및 잔여 연차 설정이 성공적으로 동기화되었습니다!");
+      vibrate();
     }
 
     // Initialize on page load
