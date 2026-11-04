@@ -682,13 +682,19 @@
     <!-- Calendar Card -->
     <div class="card">
       <div class="cal-header">
-        <button class="nav-btn" onclick="prevMonth()">◀</button>
-        <button class="cal-title-btn" onclick="openMonthPicker()">
-          <span id="calTitle">2026-11</span> ▾
-        </button>
-        <div style="display: flex; gap: 4px;">
-          <button class="today-btn" onclick="goToday()">오늘</button>
-          <button class="nav-btn" onclick="nextMonth()">▶</button>
+        <div class="cal-nav-left" style="display:flex; align-items:center; gap:5px;">
+          <button class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:14px; padding:4px 8px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px;">↺</button>
+          <button class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay()" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 7px; font-weight:700; border-radius:8px;">💰소급ON</button>
+        </div>
+        <div class="cal-nav-center" style="display:flex; align-items:center; gap:5px;">
+          <button class="nav-btn" onclick="prevMonth()" style="padding:4px 10px; font-size:13px;">◀</button>
+          <button class="cal-title-btn" onclick="openMonthPicker()" style="padding:4px 10px; font-size:16px;">
+            <span id="calTitle">2026-11</span> ▾
+          </button>
+          <button class="nav-btn" onclick="nextMonth()" style="padding:4px 10px; font-size:13px;">▶</button>
+        </div>
+        <div class="cal-nav-right" style="display:flex; align-items:center;">
+          <button class="today-btn" onclick="goToday()" style="padding:4px 10px; font-size:12px;">오늘</button>
         </div>
       </div>
 
@@ -752,6 +758,10 @@
         <div class="receipt-row" id="rowSummerPay" style="display:none;">
           <span>하계건강지원비 (7·8·9월)</span>
           <span class="receipt-val" id="valSummerPay">200,000원</span>
+        </div>
+        <div class="receipt-row" id="rowRetroPay" style="display:none; color:#b46400; font-weight:600;">
+          <span>💰 소급분 (임단협 타결)</span>
+          <span class="receipt-val" id="valRetroPay" style="color:#b46400;">+1,452,800원</span>
         </div>
         <div class="receipt-row">
           <span>예상 공제총액 (4대보험/세금)</span>
@@ -1059,6 +1069,7 @@
       "2026-09-24": "추석 연휴",
       "2026-09-25": "추석",
       "2026-09-26": "추석 연휴",
+      "2026-09-28": "추석 대체공휴일", // 단협 제52조: 공휴일 토·일 겹침 시 익일 평일 대체
       "2026-10-03": "개천절",
       "2026-10-05": "개천절 대체공휴일",
       "2026-10-09": "한글날",
@@ -1430,8 +1441,42 @@
       const isShift = localStorage.getItem("user_shift_type") === "shift";
       const shiftPay = isShift ? 200000 : 0;
 
+      // Retroactive Pay (2026 단협 타결 소급분)
+      const retroKey = `retro_active_${curYear}_${curMonth}`;
+      let isRetro = localStorage.getItem(retroKey);
+      if (isRetro === null) {
+        // 기본값: 2026년 9월(타결월)이면 기본 ON, 그 외 달은 OFF
+        isRetro = (curYear === 2026 && curMonth === 9) ? "true" : "false";
+      }
+      const retroActive = (isRetro === "true");
+      const retroPayAmount = parseInt(localStorage.getItem("retro_fixed_amount") || "1452800", 10);
+      const retroPay = retroActive ? retroPayAmount : 0;
+
+      // 상단 바 소급 버튼 UI 상태 갱신
+      const btnRetro = document.getElementById("btnRetroToggle");
+      if (btnRetro) {
+        if (retroActive) {
+          btnRetro.innerText = "💰소급ON";
+          btnRetro.style.color = "#b46400";
+          btnRetro.style.borderColor = "#e6a028";
+          btnRetro.style.background = "rgba(230, 160, 40, 0.12)";
+        } else {
+          btnRetro.innerText = "소급OFF";
+          btnRetro.style.color = "var(--sub)";
+          btnRetro.style.borderColor = "var(--border)";
+          btnRetro.style.background = "var(--surface)";
+        }
+      }
+
+      if (retroActive) {
+        document.getElementById("rowRetroPay").style.display = "flex";
+        document.getElementById("valRetroPay").innerText = "+" + retroPay.toLocaleString() + "원";
+      } else {
+        document.getElementById("rowRetroPay").style.display = "none";
+      }
+
       // Total Gross Pay
-      const grossPay = basePay + totalOvertimePay + dutyPay + shiftPay + summerPay;
+      const grossPay = basePay + totalOvertimePay + dutyPay + shiftPay + summerPay + retroPay;
 
       // Deductions: 4 Major Insurances + Tax (approx 10.5% or user fixed deduction)
       let deductions = userDeduction;
@@ -1447,6 +1492,32 @@
       document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
       document.getElementById("valDeduction").innerText = "-" + deductions.toLocaleString() + "원";
       document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
+    }
+
+    // 소급분 토글 함수
+    function toggleRetroPay() {
+      const retroKey = `retro_active_${curYear}_${curMonth}`;
+      let isRetro = localStorage.getItem(retroKey);
+      if (isRetro === null) {
+        isRetro = (curYear === 2026 && curMonth === 9) ? "true" : "false";
+      }
+      const nextVal = (isRetro === "true") ? "false" : "true";
+      localStorage.setItem(retroKey, nextVal);
+      calculateSalary();
+    }
+
+    function confirmResetCurrentMonth() {
+      if (confirm(`${curYear}년 ${curMonth}월의 모든 근무 기록을 초기화하시겠습니까?`)) {
+        const prefix = `shift_${curYear}_${pad(curMonth)}_`;
+        const toRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(prefix)) toRemove.push(k);
+        }
+        toRemove.forEach(k => localStorage.removeItem(k));
+        renderCalendar();
+        calculateSalary();
+      }
     }
 
     // Month Navigation
