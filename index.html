@@ -1503,7 +1503,7 @@
       }
       const nextVal = (isRetro === "true") ? "false" : "true";
       localStorage.setItem(retroKey, nextVal);
-      calculateSalary();
+      calculateMonthlyPayroll();
     }
 
     function confirmResetCurrentMonth() {
@@ -1516,7 +1516,7 @@
         }
         toRemove.forEach(k => localStorage.removeItem(k));
         renderCalendar();
-        calculateSalary();
+        calculateMonthlyPayroll();
       }
     }
 
