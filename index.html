@@ -684,7 +684,7 @@
       <div class="cal-header">
         <div class="cal-nav-left" style="display:flex; align-items:center; gap:5px;">
           <button class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:14px; padding:4px 8px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px;">↺</button>
-          <button class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay()" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 7px; font-weight:700; border-radius:8px;">💰소급ON</button>
+          <button type="button" class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 7px; font-weight:700; border-radius:8px;">💰소급ON</button>
         </div>
         <div class="cal-nav-center" style="display:flex; align-items:center; gap:5px;">
           <button class="nav-btn" onclick="prevMonth()" style="padding:4px 10px; font-size:13px;">◀</button>
@@ -1174,7 +1174,7 @@
 
     // Vibrate Helper (Haptic)
     function vibrate() {
-      if (navigator.vibrate) navigator.vibrate(15);
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch(e) {}
     }
 
     // Date Utilities
@@ -1510,7 +1510,8 @@
     };
 
     // 소급분 토글 함수
-    function toggleRetroPay() {
+    function toggleRetroPay(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       try {
         const retroKey = `retro_active_${curYear}_${curMonth}`;
         let isRetro = safeStorage.getItem(retroKey);
