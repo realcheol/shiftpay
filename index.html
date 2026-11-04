@@ -800,6 +800,7 @@
     <div class="drawer-menu">
       <div class="menu-sec-title">급여 및 데이터 관리</div>
       <div class="menu-item" onclick="openSettings(); closeDrawer();">⚙️ 기본정보 및 급여 설정</div>
+      <div class="menu-item" onclick="openBonusCalc(); closeDrawer();">💰 2026년 성과·격려금 계산기</div>
       <div class="menu-item" onclick="switchFactory()">🏭 공장 배너 사진 변경</div>
       <div class="menu-item" onclick="exportExcel()">📊 급여명세서 엑셀 내보내기</div>
       <div class="menu-item" onclick="backupData()">💾 데이터 전체 백업 (저장)</div>
@@ -907,6 +908,13 @@
         <input class="form-input" type="number" id="cfgDutyPay" placeholder="100000">
       </div>
       <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label>근속수당 (원)</label>
+          <span style="font-size:11px; color:var(--blue); font-weight:700; cursor:pointer;" onclick="autoFillTenurePay()">⚡ 2026 단협 자동계산</span>
+        </div>
+        <input class="form-input" type="number" id="cfgTenurePay" placeholder="58500">
+      </div>
+      <div class="form-group">
         <label>기준 연차 일수 (명세서 잔여 연차 기준)</label>
         <input class="form-input" type="number" step="0.5" id="cfgLeaveBase" placeholder="15">
       </div>
@@ -928,6 +936,18 @@
       <div class="sheet-title" id="docTitle">문서 제목</div>
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDoc()">닫기</button>
+    </div>
+  </div>
+
+  <!-- 2026년 성과·격려금 계산기 Modal -->
+  <div class="sheet-overlay" id="bonusOverlay" onclick="closeBonusCalc(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title">💰 2026년 성과·격려금 계산기</div>
+      <div id="bonusContent" style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:16px;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="sheet-btn blue" style="flex:1;" onclick="closeBonusCalc(); openSettings();">⚙️ 나의 시급·수당 변경</button>
+        <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeBonusCalc()">닫기</button>
+      </div>
     </div>
   </div>
 
@@ -1570,6 +1590,7 @@
       document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
       document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
       document.getElementById("cfgDutyPay").value = localStorage.getItem("setting_duty") || "100000";
+      document.getElementById("cfgTenurePay").value = localStorage.getItem("setting_tenure") || calcTenureAllowance(localStorage.getItem("user_join") || "");
       document.getElementById("cfgLeaveBase").value = localStorage.getItem("user_annual_leave_base") || "15";
       document.getElementById("cfgDeduction").value = localStorage.getItem("setting_deduction") || "0";
 
@@ -1589,6 +1610,38 @@
       };
       document.getElementById("cfgDutyPay").value = dutyMap[duty] !== undefined ? dutyMap[duty] : 0;
     }
+    function calcTenureAllowance(joinStr) {
+      if (!joinStr || joinStr.length < 8) return 22500;
+      const clean = joinStr.replace(/[^0-9]/g, "");
+      if (clean.length < 8) return 22500;
+      const y = parseInt(clean.substring(0, 4));
+      const m = parseInt(clean.substring(4, 6)) - 1;
+      const d = parseInt(clean.substring(6, 8));
+      const joinDate = new Date(y, m, d);
+      const now = new Date();
+      let fullYears = now.getFullYear() - joinDate.getFullYear();
+      if (now.getMonth() < joinDate.getMonth() || (now.getMonth() === joinDate.getMonth() && now.getDate() < joinDate.getDate())) {
+        fullYears--;
+      }
+      if (fullYears < 1) return 2000;
+      else if (fullYears < 2) return 12500;
+      else if (fullYears < 3) return 22500;
+      else if (fullYears < 5) return 32500;
+      else if (fullYears < 7) return 42500;
+      else if (fullYears < 9) return 50500;
+      else if (fullYears < 11) return 58500;
+      else if (fullYears < 13) return 65500;
+      else if (fullYears < 15) return 72500;
+      else if (fullYears < 17) return 78500;
+      else if (fullYears < 19) return 84500;
+      else return 89500;
+    }
+    function autoFillTenurePay() {
+      const joinStr = document.getElementById("cfgJoin").value;
+      const amt = calcTenureAllowance(joinStr);
+      document.getElementById("cfgTenurePay").value = amt;
+      alert(`입사일 기준 2026년 단협 공식 근속수당: ${amt.toLocaleString()}원이 자동 입력되었습니다!`);
+    }
     function updateShiftTypeUI() {
       renderCalendar();
     }
@@ -1601,6 +1654,7 @@
       localStorage.setItem("setting_ordinary", document.getElementById("cfgOrdinary").value.trim());
       localStorage.setItem("setting_base", document.getElementById("cfgBaseRate").value.trim());
       localStorage.setItem("setting_duty", document.getElementById("cfgDutyPay").value.trim());
+      localStorage.setItem("setting_tenure", document.getElementById("cfgTenurePay").value.trim());
       localStorage.setItem("user_annual_leave_base", document.getElementById("cfgLeaveBase").value.trim());
       localStorage.setItem("setting_deduction", document.getElementById("cfgDeduction").value.trim());
 
@@ -1625,22 +1679,83 @@
     const docData = {
       cba: {
         title: "📜 2026년 노사단체협약 요약",
-        body: "현대스틸파이프㈜ & 전국금속노동조합 현대스틸파이프지회\n체결일: 2026년 9월 10일 (전문 35페이지)\n\n" +
-              "■ 제49조【노동시간 및 휴게】\n• 1일 8시간, 주 40시간 기본 노동시간\n• 주휴일(일요일) 유급 보장, 토요일 8시간 유급 인정\n\n" +
-              "■ 제10조【조합원 교육시간】\n• 연 8시간 유급 인정 (조합설명회 2시간 정상 인정)\n\n" +
-              "■ 제42조【임금체계】\n• 기본급, 통상수당(근속, 본인가족, 직무 등) 구분 명시\n\n" +
-              "■ 제91조【복리후생비】\n• 설·추석 귀향여비 각 80만 원, 하계휴가비 80만 원 지급\n• 7·8·9월 하계건강지원비 월 20만 원 지급"
+        body: `현대스틸파이프㈜ & 전국금속노동조합 현대스틸파이프지회
+체결일: 2026년 9월 10일 (유효기간: 2028년 3월 31일까지)
+
+■ 제116조【유효기간 연장】
+• 2026년 3월 31일 → ★ 2028년 3월 31일까지 연장
+
+■ 2026년 기본급 및 임금 인상 타결
+• 기본급 76,000원 + 제도개선분 49,400원 = 총 125,400원 인상
+• 시급 환산 516원 인상 (월 243시간 기준, 2026.01.01 소급)
+• 소급분: 516원 × 월평균 340h × 8개월 = 약 1,450,000원
+
+■ 제90조【진료비 지원 대폭 확대】(2027년부 시행)
+• 본인 입원 진료 시: 본인부담금 정산 후 ★ 본인부담금 전액 지원 (10만 원 초과 제한 폐지)
+• 가족(배우자·자녀·양가부모): 연간 누계 100만 원 이하 반액, ★ 100만 원 초과분 전액 지원
+
+■ 제49조 & 제51조【노동시간 및 휴게·수당】
+• 상주근무자: 08:30 ~ 17:30 (휴게 1시간 유급 상주휴게수당 가급 인정)
+• 교대근무자: 실근무 10시간 (기본 8h + 연장 2h, 심야 7.5h 인정, 고정 교대수당 20만 원)
+• 연장근로: 150% / 야간근로(22~06시): 50% 가산
+• 휴일근로(8시간 이내): 150% / ★ 휴일연장근로(8시간 초과): 200%
+
+■ 상주조 돌발여비 및 현장 수당 신설 (2026년부)
+• ★ 상주조 돌발여비: 소정근로 외 돌발 대응 시 심야(22~06시) 7만 원/건, 그 외 5만 원/건
+• 보수쿠폰: 1일 6시간 이상 보수작업 투입 시 2,000원/장
+
+■ 제91조【복리후생비 및 통상임금 전원합의체 판결 반영】
+• 귀향여비 설·추석 각 80만 원(연 160만), 하계휴가비 80만 원, 하계건강지원비
+• 대법원 전원합의체 판결(2020다247190) 취지에 따라 통상임금에 전액 산입
+  (통상시급 고열 933원, 비고열 878원 상승 반영)
+
+■ 제52조【유급휴일 및 대체휴무】
+• 주휴일(일), 노동절(5/1), 설·추석 연휴, 국경일·공휴일
+• 회사창립일(10/18), 노조창립일(4/19)
+• 유급휴일 중복 시 익일 순차 대체휴일 100% 보장`
       },
       support: {
-        title: "🏢 현대스틸파이프 지원제도 (12종 요약)",
-        body: `1. 자녀 학자금 지원: 유치원/초중고/대학교 실비 지원
-2. 주택자금 사내대출 지원: 한도 3,000만 원, 금리 연 2.0%
-3. 의료비 및 종합건강검진: 본인 및 가족 진료비 실비 지원, 만 35세 이상 본인/배우자 종합검진 전액 지원
-4. 경조금 및 경조휴가: 본인 결혼(5일/경조금), 화환, 장례용품 지원
-5. 장기근속 포상: 10/15/20/25/30년 근속 시 순금메달 또는 현금 선택권 보장
-6. 복지포인트 (현대이지웰): 연간 포인트 지급, 수면비 5만 원 실비 신설
-7. 차량구입 지원금: 현대차/기아 신차 구입 시 근속연수별 5%~최대 20% 할인 지원
-8. 어린이집 보육료: 만 0세~5세 미취학 자녀 정부보육료 외 추가 지원`
+        title: "🏢 현대스틸파이프 지원제도 (2026 별도합의 신설 복지)",
+        body: `★ [2026년 별도합의 신설 복지]
+
+1. 선택형 복지포인트제 신설 (연 60만 P)
+• 사내근로복지기금 주체, 연간 총 60만 포인트 지급
+• 지급 시기: 5월(가정의 달) 30만 P, 8월(혹서기) 30만 P (해당 월 첫째 주 금요일 지급)
+
+2. 자녀 출산 및 첫 등교 바우처 신설
+• 초등학교 첫 등교: 첫째 50만, 둘째 100만, 셋째 이상 150만 포인트 (2026년 입학 자녀부터)
+• 자녀 출산: 첫째 50만, 둘째 100만, 셋째 이상 150만 포인트 (타결일 이후 출산 자녀)
+
+3. 차량구입 지원제도 개선
+• 첫 차 구입 지원: 할인율 17% → ★ 18% (그룹사 할인 5% 포함)
+• 재구입연한 및 의무보유기간: 5년 → ★ 4년으로 단축
+• 전기차 구입지원 확대: 현대 IONIQ9, 기아 EV9 추가
+
+4. 국내출장 운영 기준 개선
+• 국내출장 여비: 40,000원/일 (출장일 무관, 사업장 간 출장 동일)
+• 숙박비: 80,000원/박 한도 내 실비 정산
+
+-----------------------------------------
+★ [사내 핵심 지원제도 종합]
+
+5. 의료비 및 종합건강검진
+• 2027년부터 본인 입원비 전액 지원, 가족 100만 원 초과분 전액 지원 (제90조)
+• 난임 시술비 월 100만 원 한도 실비 지원 신설
+• 만 35세 이상 본인/배우자 종합검진 전액 지원
+
+6. 자녀 학자금 지원
+• 유치원/초중고/대학교 실비 지원 (장애인 자녀 교육비 연령 제한 폐지)
+
+7. 주택자금 사내대출 지원
+• 주택구입 및 전세보증금: 한도 3,000만 원, 금리 연 2.0%
+
+8. 장기근속 포상
+• 10년, 15년, 20년, 25년, 30년 근속 시
+• 순금메달 또는 현금(지급 시점 한국금거래소 살 때 시세) 선택권 보장
+
+9. 상주조 돌발여비 & 보수쿠폰 (현장 지원)
+• 소정근로 외 돌발 출동: 심야 7만 원/건, 주간 5만 원/건
+• 6시간 이상 보수작업 투입: 보수쿠폰 2,000원/장`
       },
       partners: {
         title: "🤝 회사 제휴업체 통합현황 (28개사)",
@@ -1715,6 +1830,107 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function closeDoc(e) {
       if (!e || e.target.id === "docOverlay" || e.target.classList.contains("sheet-btn")) {
         document.getElementById("docOverlay").style.display = "none";
+      }
+    }
+
+    // 2026년 성과·격려금 계산기
+    function openBonusCalc() {
+      const baseRate = parseFloat(localStorage.getItem("setting_base") || "13653");
+      const monthlyBase = Math.round(baseRate * 243);
+      const dutyPay = parseFloat(localStorage.getItem("setting_duty") || "100000");
+      const joinStr = localStorage.getItem("user_join") || "";
+      const tenurePay = parseFloat(localStorage.getItem("setting_tenure") || calcTenureAllowance(joinStr));
+      const famSelf = 20000;
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      const shiftAllowance = isShift ? 200000 : 0;
+      const gageubAllowance = !isShift ? Math.min(200000, baseRate * 22.5) : 0;
+
+      const fixedTongsan = famSelf + dutyPay + tenurePay + shiftAllowance;
+      const ordinaryHourly = Math.round((monthlyBase + fixedTongsan) / 243);
+
+      // 정율 100% 산정 기준: 기본급 ÷ 1.65 + 약정통상수당 + 상주휴게수당(최대 20만) + (약정 통상시급 × 40H)
+      const bonus100 = Math.round((monthlyBase / 1.65) + fixedTongsan + gageubAllowance + (ordinaryHourly * 40));
+
+      const bonusBiz = Math.round(bonus100 * 1.0) + 1000000;
+      const bonusSafety = Math.round(bonus100 * 1.5) + 2000000;
+      const bonusCrisis = 2500000;
+      const giftVoucher = 300000;
+      const totalCash = Math.round(bonus100 * 2.5) + 5500000;
+      const totalSum = totalCash + giftVoucher;
+
+      const html = `
+        <div style="background:var(--indigo-bg); border:1px solid rgba(79,70,229,0.25); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; color:var(--indigo); font-size:14px; margin-bottom:2px;">🎯 정율 100% 기준 산정액: ${bonus100.toLocaleString()}원</div>
+          <div style="font-size:11px; color:var(--sub); line-height:1.4;">공식: 기본급÷1.65 + 약정통상수당 + 상주휴게(한도 20만) + (통상시급×40h)</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; margin-bottom:8px;">📋 산정 기초 정보 (나의 설정 연동)</div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">기본급 (243h 기준)</span>
+            <b>${monthlyBase.toLocaleString()}원 (${baseRate.toLocaleString()}원/h)</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">근무 형태</span>
+            <b>${isShift ? "교대근무 (교대수당 20만)" : "상주근무 (상주휴게 22.5일)"}</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">약정통상수당</span>
+            <b>${fixedTongsan.toLocaleString()}원 (직책/근속/가족/교대)</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">상주휴게수당 산입</span>
+            <b>${isShift ? "0원 (교대수당 대체)" : gageubAllowance.toLocaleString() + "원 (한도 20만)"}</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">약정 통상시급</span>
+            <b>${ordinaryHourly.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:var(--sub);">통상시급 × 40h</span>
+            <b>${Math.round(ordinaryHourly * 40).toLocaleString()}원</b>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; margin-bottom:8px;">🎁 2026 타결 성과·격려금 지급 명세</div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">1. 경영 성과금 (100% + 100만)</span>
+            <b>${bonusBiz.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">2. 안전문화 정착 장려금 (150% + 200만)</span>
+            <b>${bonusSafety.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">3. 위기극복 동참 격려금 (정액)</span>
+            <b>${bonusCrisis.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+            <span style="color:var(--sub);">4. 전통시장 온누리 상품권</span>
+            <b>${giftVoucher.toLocaleString()}원</b>
+          </div>
+
+          <div style="border-top:1px dashed var(--border); padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:700; font-size:14px; color:var(--red);">🏆 총 수령 예상액</div>
+            <div style="font-weight:800; font-size:18px; color:var(--red);">${totalSum.toLocaleString()}원</div>
+          </div>
+          <div style="font-size:11px; color:var(--sub); text-align:right; margin-top:3px;">(현금 ${totalCash.toLocaleString()}원 + 상품권 30만 원)</div>
+        </div>
+
+        <div style="background:var(--bg); border-radius:8px; padding:10px; font-size:11px; color:var(--sub); line-height:1.5;">
+          • 💡 <b>2026 기본급 인상 소급분</b>: 약 1,450,000원 (시급 516원 × 340h × 8개월)<br>
+          • 📊 <b>전년 대비</b>: 2025년 평균 1,300만 원 대비 올해 1,330만 원으로 상향
+        </div>
+      `;
+
+      document.getElementById("bonusContent").innerHTML = html;
+      document.getElementById("bonusOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeBonusCalc(e) {
+      if (!e || e.target.id === "bonusOverlay" || e.target.classList.contains("sheet-btn")) {
+        document.getElementById("bonusOverlay").style.display = "none";
       }
     }
 
