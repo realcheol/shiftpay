@@ -304,9 +304,23 @@
     .cell-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
+      gap: 3px;
       font-size: 11.5px;
       font-weight: 700;
+    }
+    .cell-lunar {
+      font-size: 8.5px;
+      font-weight: 500;
+      color: var(--sub);
+      opacity: 0.85;
+      letter-spacing: -0.3px;
+    }
+    .cell-term {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: -0.3px;
     }
     .cal-cell.sun .cell-top { color: var(--red); }
     .cal-cell.sat .cell-top { color: var(--blue); }
@@ -1177,6 +1191,112 @@
       try { if (navigator.vibrate) navigator.vibrate(15); } catch(e) {}
     }
 
+    // 24절기 데이터 (2025~2028년 한국천문연구원 공식)
+    const SOLAR_TERMS_WEB = {
+      // 2025
+      "2025-01-05": "소한", "2025-01-20": "대한", "2025-02-04": "입춘", "2025-02-18": "우수",
+      "2025-03-05": "경칩", "2025-03-20": "춘분", "2025-04-04": "청명", "2025-04-20": "곡우",
+      "2025-05-05": "입하", "2025-05-21": "소만", "2025-06-05": "망종", "2025-06-21": "하지",
+      "2025-07-07": "소서", "2025-07-22": "대서", "2025-08-07": "입추", "2025-08-23": "처서",
+      "2025-09-07": "백로", "2025-09-23": "추분", "2025-10-08": "한로", "2025-10-23": "상강",
+      "2025-11-07": "입동", "2025-11-22": "소설", "2025-12-07": "대설", "2025-12-21": "동지",
+      // 2026
+      "2026-01-05": "소한", "2026-01-20": "대한", "2026-02-04": "입춘", "2026-02-18": "우수",
+      "2026-03-05": "경칩", "2026-03-20": "춘분", "2026-04-05": "청명", "2026-04-20": "곡우",
+      "2026-05-05": "입하", "2026-05-21": "소만", "2026-06-05": "망종", "2026-06-21": "하지",
+      "2026-07-07": "소서", "2026-07-23": "대서", "2026-08-07": "입추", "2026-08-23": "처서",
+      "2026-09-07": "백로", "2026-09-23": "추분", "2026-10-08": "한로", "2026-10-23": "상강",
+      "2026-11-07": "입동", "2026-11-22": "소설", "2026-12-07": "대설", "2026-12-22": "동지",
+      // 2027
+      "2027-01-05": "소한", "2027-01-20": "대한", "2027-02-04": "입춘", "2027-02-19": "우수",
+      "2027-03-06": "경칩", "2027-03-21": "춘분", "2027-04-05": "청명", "2027-04-20": "곡우",
+      "2027-05-06": "입하", "2027-05-21": "소만", "2027-06-06": "망종", "2027-06-21": "하지",
+      "2027-07-07": "소서", "2027-07-23": "대서", "2027-08-08": "입추", "2027-08-23": "처서",
+      "2027-09-08": "백로", "2027-09-23": "추분", "2027-10-08": "한로", "2027-10-24": "상강",
+      "2027-11-07": "입동", "2027-11-22": "소설", "2027-12-07": "대설", "2027-12-22": "동지",
+      // 2028
+      "2028-01-06": "소한", "2028-01-21": "대한", "2028-02-04": "입춘", "2028-02-19": "우수",
+      "2028-03-05": "경칩", "2028-03-20": "춘분", "2028-04-04": "청명", "2028-04-19": "곡우",
+      "2028-05-05": "입하", "2028-05-20": "소만", "2028-06-05": "망종", "2028-06-21": "하지",
+      "2028-07-07": "소서", "2028-07-22": "대서", "2028-08-07": "입추", "2028-08-23": "처서",
+      "2028-09-07": "백로", "2028-09-22": "추분", "2028-10-08": "한로", "2028-10-23": "상강",
+      "2028-11-07": "입동", "2028-11-22": "소설", "2028-12-07": "대설", "2028-12-21": "동지"
+    };
+
+    // 표준 lunarInfo 기반 음력 계산기 (1900~2050)
+    const LUNAR_INFO = [
+      0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+      0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+      0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+      0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+      0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+      0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+      0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+      0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+      0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+      0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+      0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+      0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+      0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+      0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+      0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0
+    ];
+
+    function getLunarDay(y, m, d) {
+      const baseDate = new Date(1900, 0, 31);
+      const targetDate = new Date(y, m - 1, d);
+      let offset = Math.round((targetDate - baseDate) / 86400000);
+      let i = 1900;
+      while (i < 2050 && offset > 0) {
+        const info = LUNAR_INFO[i - 1900];
+        let days = 0;
+        for (let j = 1; j <= 12; j++) {
+          days += (info & (1 << (16 - j))) ? 30 : 29;
+        }
+        const leap = info & 0xf;
+        if (leap) {
+          days += (info & 0x10000) ? 30 : 29;
+        }
+        if (offset < days) break;
+        offset -= days;
+        i++;
+      }
+      const lYear = i;
+      const info = LUNAR_INFO[lYear - 1900];
+      const leap = info & 0xf;
+      let isLeap = false;
+      for (let j = 1; j <= 12; j++) {
+        const mDays = (info & (1 << (16 - j))) ? 30 : 29;
+        if (leap === j && !isLeap) {
+          if (offset < mDays) return { year: lYear, month: j, day: offset + 1, isLeap: false };
+          offset -= mDays;
+          const leapDays = (info & 0x10000) ? 30 : 29;
+          if (offset < leapDays) return { year: lYear, month: j, day: offset + 1, isLeap: true };
+          offset -= leapDays;
+          isLeap = true;
+        } else {
+          if (offset < mDays) return { year: lYear, month: j, day: offset + 1, isLeap: false };
+          offset -= mDays;
+        }
+      }
+      return { year: lYear, month: 12, day: offset + 1, isLeap: false };
+    }
+
+    // 음력 1일, 15일 및 24절기 헬퍼 (창대님 요청 반영)
+    function getLunarOrSolarTermWeb(y, m, d) {
+      const dateKey = `${y}-${pad(m)}-${pad(d)}`;
+      if (SOLAR_TERMS_WEB[dateKey]) {
+        return { text: SOLAR_TERMS_WEB[dateKey], isTerm: true };
+      }
+      try {
+        const lun = getLunarDay(y, m, d);
+        if (lun && (lun.day === 1 || lun.day === 15)) {
+          return { text: `${lun.month}.${lun.day}`, isTerm: false };
+        }
+      } catch (e) {}
+      return null;
+    }
+
     // Date Utilities
     function pad(n) { return n < 10 ? "0" + n : "" + n; }
     function parseDate(s) {
@@ -1294,14 +1414,16 @@
 
         const isToday = isThisMonth && (d === todayDate);
 
-        // Cell top (Date number + today indicator)
+        // Cell top (Date number + today indicator + lunar 1/15 / solar term)
         const cellTop = document.createElement("div");
         cellTop.className = "cell-top";
-        if (isToday) {
-          cellTop.innerHTML = `<span class="today-ring">${d}</span>`;
-        } else {
-          cellTop.innerHTML = `<span>${d}</span>`;
+        let dateHtml = isToday ? `<span class="today-ring">${d}</span>` : `<span>${d}</span>`;
+        const extra = getLunarOrSolarTermWeb(curYear, curMonth, d);
+        if (extra) {
+          const cls = extra.isTerm ? "cell-term" : "cell-lunar";
+          dateHtml += `<span class="${cls}">${extra.text}</span>`;
         }
+        cellTop.innerHTML = dateHtml;
         cell.appendChild(cellTop);
 
         // Holiday Name
