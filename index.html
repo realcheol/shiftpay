@@ -1012,6 +1012,10 @@
     <div class="bottom-sheet" style="max-height:88vh;">
       <div class="sheet-title">📸 출근카드 & 급여명세서 OCR 대조</div>
       
+      <div style="background:rgba(37,99,235,0.08); border:1px solid rgba(37,99,235,0.25); border-radius:8px; padding:10px 12px; font-size:11.5px; color:var(--text); line-height:1.5; margin-bottom:12px;">
+        💡 <strong>안내:</strong> 실물 출근카드·명세서는 인터넷 없이 0.3초 만에 1원 오차 없이 인식하는 <strong>[설치용 앱(APK)]</strong>이 가장 빠르고 정확합니다. 웹 버전은 브라우저 인공지능으로 분석을 진행합니다.
+      </div>
+
       <div style="font-size:12px; color:var(--sub); text-align:center; margin-bottom:12px;">
         스마트폰 카메라로 종이 출근카드나 명세서를 찍으면 텍스트를 자동 인식합니다.
       </div>
@@ -1031,7 +1035,7 @@
       <div id="ocrLoadingBox" style="display:none; padding:16px; text-align:center; background:var(--bg); border-radius:8px; margin-bottom:12px;">
         <div style="font-size:20px; margin-bottom:6px;">🔍</div>
         <div id="ocrProgressText" style="font-size:13px; font-weight:700; color:var(--blue);">AI 글자 분석 준비 중...</div>
-        <div style="font-size:11px; color:var(--sub); margin-top:4px;">기기에서 텍스트를 직접 판독하고 있습니다</div>
+        <div id="ocrProgressSub" style="font-size:11px; color:var(--sub); margin-top:4px;">기기에서 텍스트를 직접 판독하고 있습니다 (첫 실행 시 모델 다운로드)</div>
       </div>
 
       <!-- Results & Analysis -->
@@ -2280,8 +2284,13 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       vibrate();
     }
 
-    // OCR Logic & Parser
+    // OCR Logic & Spatial Table Parser
     let parsedOcrData = { shifts: [], payslip: {} };
+    let lastOcrWords = [];
+    let lastOcrText = "";
+    let ocrWorker = null;
+    let ocrWorkerInitializing = false;
+    let currentOcrLogger = null;
 
     function openOcrModal() {
       document.getElementById("ocrOverlay").style.display = "flex";
@@ -2306,6 +2315,66 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       inp.click();
     }
 
+    // Singleton Tesseract Worker (prevents re-downloading 20MB models on every scan)
+    async function getOcrWorker() {
+      if (ocrWorker) return ocrWorker;
+      if (ocrWorkerInitializing) {
+        while (ocrWorkerInitializing) {
+          await new Promise(r => setTimeout(r, 150));
+        }
+        if (ocrWorker) return ocrWorker;
+      }
+      ocrWorkerInitializing = true;
+      try {
+        if (typeof Tesseract === "undefined") {
+          throw new Error("OCR 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+        }
+        ocrWorker = await Tesseract.createWorker(["kor", "eng"], 1, {
+          workerPath: "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js",
+          corePath: "https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js",
+          logger: m => {
+            if (currentOcrLogger) currentOcrLogger(m);
+          }
+        });
+        return ocrWorker;
+      } finally {
+        ocrWorkerInitializing = false;
+      }
+    }
+
+    // Downscale large camera photos on canvas (e.g. 48MP Galaxy photos -> max 1600px)
+    function resizeImageForOcr(file, maxDim = 1600) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas);
+        };
+        img.onerror = (e) => {
+          URL.revokeObjectURL(url);
+          reject(e);
+        };
+        img.src = url;
+      });
+    }
+
     async function onOcrFileSelected(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -2315,30 +2384,29 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       document.getElementById("ocrPreviewBox").style.display = "block";
       document.getElementById("ocrLoadingBox").style.display = "block";
       document.getElementById("ocrResultBox").style.display = "none";
-      document.getElementById("ocrProgressText").innerText = "사진 로딩 중...";
+      document.getElementById("ocrProgressText").innerText = "사진 최적화 중...";
 
       try {
-        if (typeof Tesseract === "undefined") {
-          throw new Error("OCR 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
-        }
-        document.getElementById("ocrProgressText").innerText = "AI 텍스트 분석 시작...";
-        
-        const worker = await Tesseract.createWorker(["kor", "eng"], 1, {
-          logger: m => {
-            if (m.status === "recognizing text") {
-              const pct = Math.round(m.progress * 100);
-              document.getElementById("ocrProgressText").innerText = `글자 판독 중... ${pct}%`;
-            } else if (m.status === "loading tesseract core" || m.status === "loading language traineddata") {
-              document.getElementById("ocrProgressText").innerText = "언어 모델 로딩 중...";
-            }
+        currentOcrLogger = m => {
+          if (m.status === "recognizing text") {
+            const pct = Math.round(m.progress * 100);
+            document.getElementById("ocrProgressText").innerText = `글자 판독 중... ${pct}%`;
+          } else if (m.status === "loading tesseract core" || m.status === "loading language traineddata") {
+            document.getElementById("ocrProgressText").innerText = "AI 언어 모델 로딩 중... (최초 1회)";
           }
-        });
+        };
 
-        const ret = await worker.recognize(file);
-        const text = ret.data.text;
-        await worker.terminate();
+        // Resize image first to prevent mobile browser freeze
+        const canvas = await resizeImageForOcr(file, 1600);
+        document.getElementById("ocrProgressText").innerText = "AI 글자 분석 시작...";
 
-        displayOcrResult(text);
+        const worker = await getOcrWorker();
+        const ret = await worker.recognize(canvas);
+
+        lastOcrWords = (ret.data && ret.data.words) || [];
+        lastOcrText = (ret.data && ret.data.text) || "";
+
+        displayOcrResult(lastOcrText, lastOcrWords);
       } catch (err) {
         console.error("OCR Error:", err);
         document.getElementById("ocrLoadingBox").style.display = "none";
@@ -2348,16 +2416,177 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       }
     }
 
-    function displayOcrResult(rawText) {
+    function displayOcrResult(rawText, words) {
       document.getElementById("ocrLoadingBox").style.display = "none";
       document.getElementById("ocrResultBox").style.display = "block";
       document.getElementById("ocrRawText").value = rawText;
-      reparseOcr();
+      reparseOcr(words);
     }
 
-    function reparseOcr() {
+    // Number extraction helper matching Android app
+    function numericToken(raw) {
+      if (!raw) return null;
+      const s = raw.replace(/,/g, ".").replace(/[Oo]/g, "0").replace(/[lI|]/g, "1");
+      const m = s.match(/(?<![0-9])([0-9]{1,2}(?:\.[0-9]{1,3})?)(?![0-9])/);
+      if (!m) return null;
+      try {
+        const v = parseFloat(m[1]);
+        return (!isNaN(v) && v >= 0 && v <= 365) ? v : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // 2D Bounding Box Spatial Table Parser (extractAttendance ported from MainActivity.java)
+    function extractAttendanceSpatial(words, maxDayInMonth) {
+      if (!words || words.length === 0) return null;
+
+      const tokens = [];
+      for (const w of words) {
+        if (!w || !w.text || !w.bbox) continue;
+        const clean = w.text.trim();
+        if (!clean) continue;
+        tokens.push({
+          text: clean,
+          bbox: w.bbox,
+          cx: (w.bbox.x0 + w.bbox.x1) / 2,
+          cy: (w.bbox.y0 + w.bbox.y1) / 2
+        });
+      }
+      if (tokens.length === 0) return null;
+
+      // 1. Day Anchors (1..31) in left portion
+      const dayAnchors = {};
+      for (const t of tokens) {
+        if (/^[1-9]$|^[1-2][0-9]$|^3[0-1]$/.test(t.text)) {
+          const d = parseInt(t.text, 10);
+          if (d >= 1 && d <= 31) {
+            if (!dayAnchors[d] || t.cx < dayAnchors[d].cx) {
+              dayAnchors[d] = t;
+            }
+          }
+        }
+      }
+
+      const anchorDays = Object.keys(dayAnchors).map(k => parseInt(k, 10)).sort((a, b) => a - b);
+      if (anchorDays.length < 3) return null;
+
+      const minD = anchorDays[0];
+      const maxD = anchorDays[anchorDays.length - 1];
+      if (maxD <= minD) return null;
+
+      const avgRowHeight = (dayAnchors[maxD].cy - dayAnchors[minD].cy) / (maxD - minD);
+      if (avgRowHeight <= 2) return null;
+
+      let sumX = 0;
+      for (const d of anchorDays) sumX += dayAnchors[d].cx;
+      const tableLeft = sumX / anchorDays.length;
+
+      const rowY = {};
+      for (let d = 1; d <= maxDayInMonth; d++) {
+        if (dayAnchors[d]) {
+          rowY[d] = dayAnchors[d].cy;
+        } else {
+          rowY[d] = Math.round(dayAnchors[minD].cy + (d - minD) * avgRowHeight);
+        }
+      }
+
+      let minX = Infinity;
+      let maxX = -Infinity;
+      for (const t of tokens) {
+        if (t.bbox.x0 < minX) minX = t.bbox.x0;
+        if (t.bbox.x1 > maxX) maxX = t.bbox.x1;
+      }
+      if (tableLeft > 0) minX = tableLeft;
+      const tableWidth = Math.max(260, maxX - minX);
+
+      // Same colRatios as MainActivity.java:
+      // col 1: 정취, col 2: 연장, col 3: 가급, col 4: 심야, col 5: 특근, col 6: 특근연장
+      const colRatios = [0.035, 0.105, 0.185, 0.260, 0.335, 0.415, 0.495, 0.575, 0.655, 0.735, 0.820, 0.915];
+      const centers = colRatios.map(r => minX + tableWidth * r);
+      const rowTolerance = avgRowHeight * 0.55;
+
+      const shifts = [];
+      for (let d = 1; d <= maxDayInMonth; d++) {
+        const targetY = rowY[d];
+        if (!targetY) continue;
+
+        const rowTokens = tokens.filter(t => Math.abs(t.cy - targetY) <= rowTolerance);
+        if (rowTokens.length === 0) continue;
+
+        const fullRowText = rowTokens.map(t => t.text).join(" ");
+
+        if (/년차|연차|휴가/.test(fullRowText)) {
+          shifts.push({ day: d, mode: "leave", modeName: "연차 유급", hours: 8, detail: "년차" });
+          continue;
+        }
+        if (/조퇴|반차/.test(fullRowText)) {
+          shifts.push({ day: d, mode: "half_leave", modeName: "반차/조퇴", hours: 4, detail: "조퇴/반차" });
+          continue;
+        }
+
+        let regHours = 0, otHours = 0, wageHours = 0, nightHours = 0, holHours = 0, holOtHours = 0;
+
+        for (const t of rowTokens) {
+          if (/조합|설명회/.test(t.text)) {
+            regHours = Math.max(regHours, 8);
+            continue;
+          }
+          const v = numericToken(t.text);
+          if (v === null) continue;
+
+          let bestCol = -1;
+          let minDiff = Infinity;
+          for (let c = 0; c < centers.length; c++) {
+            const diff = Math.abs(t.cx - centers[c]);
+            if (diff < minDiff) {
+              minDiff = diff;
+              bestCol = c;
+            }
+          }
+
+          if (bestCol === 1) regHours = v;
+          else if (bestCol === 2) otHours = v;
+          else if (bestCol === 3) wageHours = v;
+          else if (bestCol === 4) nightHours = v;
+          else if (bestCol === 5) holHours = v;
+          else if (bestCol === 6) holOtHours = v;
+        }
+
+        if (holHours > 0) {
+          const totalHol = holHours + holOtHours;
+          if (totalHol >= 12) {
+            shifts.push({ day: d, mode: "ot12", modeName: "특근 12h", hours: 12, detail: `특근 ${holHours}h+연장 ${holOtHours}h` });
+          } else {
+            shifts.push({ day: d, mode: "holiday", modeName: "휴일 특근", hours: 8, detail: `특근 ${holHours}h` });
+          }
+        } else if (nightHours >= 3.0) {
+          shifts.push({ day: d, mode: "night", modeName: "야간 10h (교대)", hours: 10, detail: `정취 ${regHours || 8}h+연장 ${otHours || 2}h+심야 ${nightHours}h` });
+        } else if (otHours >= 1.5) {
+          shifts.push({ day: d, mode: "overtime", modeName: "평일 연장 (8+2h)", hours: 10, detail: `정취 ${regHours || 8}h+연장 ${otHours}h` });
+        } else if (regHours >= 6.0) {
+          shifts.push({ day: d, mode: "normal", modeName: "주간 정상", hours: regHours, detail: `정취 ${regHours}h` });
+        }
+      }
+
+      return shifts.length >= 2 ? shifts : null;
+    }
+
+    function reparseOcr(optWords) {
       const text = document.getElementById("ocrRawText").value || "";
-      parsedOcrData = parseOcrContent(text);
+      const words = optWords || lastOcrWords || [];
+      const daysInCurMonth = new Date(curYear, curMonth, 0).getDate();
+
+      // 1. Try 2D Bounding Box Spatial Reconstruction
+      let spatialShifts = extractAttendanceSpatial(words, daysInCurMonth);
+      let parsed = parseOcrContent(text);
+
+      if (spatialShifts && spatialShifts.length > 0) {
+        parsed.shifts = spatialShifts;
+        parsed.isSpatial = true;
+      }
+
+      parsedOcrData = parsed;
       
       const summaryBox = document.getElementById("ocrAnalysisSummary");
       const btnCal = document.getElementById("btnApplyOcrCalendar");
@@ -2365,8 +2594,14 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
       let html = "";
       if (parsedOcrData.shifts.length > 0) {
-        html += `<strong>📅 근무일자 감지 (${parsedOcrData.shifts.length}건):</strong><br>`;
-        html += parsedOcrData.shifts.map(s => `• ${curMonth}월 ${s.day}일: ${s.modeName} (${s.hours}h)`).join("<br>");
+        const badge = parsedOcrData.isSpatial ? "<span style='background:#10b981; color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; margin-left:4px;'>2D 좌표 표 복원</span>" : "";
+        html += `<div style="font-weight:700; margin-bottom:6px;">📅 감지된 근무 기록 (${parsedOcrData.shifts.length}일)${badge}:</div>`;
+        html += `<div style="max-height:160px; overflow-y:auto; border:1px solid var(--border); border-radius:6px; padding:6px 8px; background:var(--surface); margin-bottom:8px;">`;
+        html += parsedOcrData.shifts.map(s => {
+          const detailStr = s.detail ? ` <span style="color:var(--sub); font-size:11px;">(${s.detail})</span>` : "";
+          return `<div style="padding:4px 0; border-bottom:1px solid var(--border); font-size:12px;">• <strong>${curMonth}월 ${s.day}일:</strong> ${s.modeName} (${s.hours}h)${detailStr}</div>`;
+        }).join("");
+        html += `</div>`;
         btnCal.style.display = "block";
         btnCal.innerText = `📅 감지된 근무 ${parsedOcrData.shifts.length}건 캘린더에 일괄 저장`;
       } else {
