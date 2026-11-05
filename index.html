@@ -107,11 +107,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
     }
-    .header-left {
+    .header-center {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      text-align: center;
+      flex: 1;
+      padding: 0 4px;
+    }
+    .header-center h1 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      margin: 0;
+    }
+    .header-center p {
+      font-size: 11px;
+      color: #d7ebff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      cursor: pointer;
+      margin-top: 2px;
     }
     .icon-btn {
       background: rgba(255,255,255,0.2);
@@ -127,17 +146,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-    }
-    .header-title-box h1 {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.1;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    }
-    .header-title-box p {
-      font-size: 11px;
-      color: #dbeafe;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      flex-shrink: 0;
     }
     .header-right {
       display: flex;
@@ -151,29 +160,22 @@
       z-index: 2;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-    .factory-pill {
-      background: rgba(15,23,42,0.75);
-      border: 1px solid rgba(147,197,253,0.4);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
+      justify-content: center;
+      width: 100%;
     }
     .user-pill {
-      background: rgba(255,255,255,0.18);
+      background: rgba(12, 24, 48, 0.7);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.35);
-      padding: 4px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      padding: 4px 14px;
       border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     /* Main Container */
@@ -387,9 +389,36 @@
       gap: 6px;
     }
     .btn-quick.primary {
-      background: var(--blue);
-      color: #fff;
+      background: var(--blue-bg);
+      color: var(--blue);
       border-color: var(--blue);
+    }
+    body.dark .btn-quick.primary {
+      background: rgba(30, 58, 138, 0.4);
+      color: #93c5fd;
+      border-color: #3b82f6;
+    }
+
+    /* Guide Banner (Native App Style) */
+    .guide-banner {
+      background: #eef5ff;
+      border: 1px solid #c7dcfb;
+      color: #1d4ed8;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    body.dark .guide-banner {
+      background: #172554;
+      border-color: #1e3a8a;
+      color: #93c5fd;
     }
 
     /* Payroll & Summary Card */
@@ -661,36 +690,29 @@
   <!-- App Header with Factory Background -->
   <header class="app-header" id="appHeader" style="background-image: url('factories/factory_1.jpg');">
     <div class="header-top">
-      <div class="header-left">
-        <button class="icon-btn" onclick="openDrawer()">☰</button>
-        <div class="header-title-box">
-          <h1>ShiftPay</h1>
-          <p>나의 근무·급여 관리 v1.3.1</p>
-        </div>
+      <button class="icon-btn" onclick="openDrawer()" title="메뉴 열기">☰</button>
+      <div class="header-center">
+        <h1>나의 근무·급여 관리</h1>
+        <p id="factoryNameLabel" onclick="switchFactory()">🏭 본사 / 울산 1공장 (ERW) ▾</p>
       </div>
       <div class="header-right">
-        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn">🌙</button>
-        <button class="icon-btn" onclick="openOcrModal()">📷</button>
+        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn" title="다크모드 전환">🌙</button>
+        <button class="icon-btn" onclick="openOcrModal()" title="출근카드 OCR 입력" style="background:rgba(20,83,153,0.85); border-color:rgba(147,197,253,0.5);">📷</button>
       </div>
     </div>
     
     <div class="header-bottom">
-      <div class="factory-pill" onclick="switchFactory()">
-        <span id="factoryNameLabel">🏭 1공장 (ERW) ▾</span>
-      </div>
       <div class="user-pill" onclick="openSettings()" id="userSummaryPill">
-        기본정보 미입력 (터치하여 설정)
+        👤 기본정보 미입력 (터치하여 설정)
       </div>
     </div>
   </header>
 
   <div class="container">
 
-    <!-- Retirement / Join / Annual Leave Countdown Yellow Card -->
-    <div class="dday-card" id="ddayCard" onclick="openSettings()">
-      <div class="dday-line" id="retireLine">⏳ 정년퇴직일: 생년월일을 입력해 주세요.</div>
-      <div class="dday-line" id="serviceLine">🌱 근속연차: 입사년월일을 입력해 주세요.</div>
-      <div class="dday-line" id="leaveLine">🌴 현재 남은 연차 일수: 총 15일</div>
+    <!-- Onboarding Guide Banner (Native App Style) -->
+    <div class="guide-banner" id="guideBanner" onclick="showDoc('onboarding')" style="display:none;">
+      <span>💡 처음이신가요? 3단계 이용안내 확인 및 기본정보 입력하기 ❯</span>
     </div>
 
     <!-- Calendar Card -->
@@ -726,8 +748,8 @@
 
       <!-- Quick Action Buttons under calendar -->
       <div class="quick-actions">
-        <button class="btn-quick primary" onclick="quickTodayShift()">⚡ 오늘 빠른 근무 입력</button>
-        <button class="btn-quick" onclick="openOcrModal()">📸 OCR 사진 대조</button>
+        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()">⚡ 빠른 근무 입력 (5일)</button>
+        <button class="btn-quick" onclick="openOcrModal()">📸 OCR 스캔</button>
       </div>
     </div>
 
@@ -917,6 +939,13 @@
           <option value="normal" selected>🏢 상주근무 (주간 8h • 상주휴게수당)</option>
           <option value="shift">🔄 교대근무 (주야 10h • 교대수당 20만원)</option>
         </select>
+      </div>
+
+      <!-- Retirement / Join / Annual Leave Countdown Yellow Card (Settings Internal) -->
+      <div class="dday-card" id="ddayCard" style="margin-top: 6px; margin-bottom: 14px;">
+        <div class="dday-line" id="retireLine">⏳ 정년퇴직일: 생년월일을 입력해 주세요.</div>
+        <div class="dday-line" id="serviceLine">🌱 근속연차: 입사년월일을 입력해 주세요.</div>
+        <div class="dday-line" id="leaveLine">🌴 현재 남은 연차 일수: 총 15일</div>
       </div>
       <div class="form-group">
         <label>기준 통상시급 (원)</label>
@@ -1165,7 +1194,8 @@
     ];
     function updateFactoryUI() {
       const f = factories[currentFactoryIdx - 1] || factories[0];
-      document.getElementById("factoryNameLabel").innerText = "🏭 " + f.name + " ▾";
+      const lbl = document.getElementById("factoryNameLabel");
+      if (lbl) lbl.innerText = "🏭 본사 / 울산 " + f.name + " ▾";
       document.getElementById("appHeader").style.backgroundImage = `url('${f.img}')`;
       document.getElementById("drawerHeader").style.backgroundImage = `url('${f.img}')`;
       localStorage.setItem("user_factory_idx", currentFactoryIdx);
@@ -1367,16 +1397,18 @@
       // Leave Text
       document.getElementById("leaveLine").innerText = `🌴 현재 남은 연차 일수: 총 ${remainLeave}일`;
 
-      // Header summary pill
+      // Header summary pill & guide banner
+      const guideBanner = document.getElementById("guideBanner");
       if (!name) {
-        document.getElementById("userSummaryPill").innerText = "기본정보 미입력 (터치하여 설정)";
-        document.getElementById("drawerUserInfo").innerText = "기본정보 미입력 (터치하여 설정)";
+        document.getElementById("userSummaryPill").innerText = "👤 기본정보 미입력 (터치하여 설정)";
+        document.getElementById("drawerUserInfo").innerText = "👤 기본정보 미입력 (터치하여 설정)";
+        if (guideBanner) guideBanner.style.display = "flex";
       } else {
         const shift = localStorage.getItem("user_shift_type") === "shift" ? "교대" : "상주";
-        const summary = `${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
+        const summary = `👤 ${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
         document.getElementById("userSummaryPill").innerText = summary;
-        document.getElementById("drawerUserInfo").innerText = `${duty} ${name}님
-입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
+        document.getElementById("drawerUserInfo").innerText = `${duty} ${name}님\n입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
+        if (guideBanner) guideBanner.style.display = "none";
       }
     }
 
@@ -1412,11 +1444,19 @@
         if (holName) cell.classList.add("holiday");
 
         const isToday = isThisMonth && (d === todayDate);
+        if (isToday) {
+          cell.style.background = "var(--blue-bg)";
+          cell.style.borderColor = "var(--blue)";
+          cell.style.borderWidth = "2px";
+        }
 
         // Cell top (Date number + today indicator + lunar 1/15 / solar term)
         const cellTop = document.createElement("div");
         cellTop.className = "cell-top";
-        let dateHtml = isToday ? `<span class="today-ring">${d}</span>` : `<span>${d}</span>`;
+        let dateHtml = `<span>${d}</span>`;
+        if (isToday) {
+          dateHtml += `<span class="badge-today" style="background:#2563eb; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">● 오늘</span>`;
+        }
         const extra = getLunarOrSolarTermWeb(curYear, curMonth, d);
         if (extra) {
           const cls = extra.isTerm ? "cell-term" : "cell-lunar";
@@ -1473,12 +1513,32 @@
             pill.innerText = "근무";
           }
           cell.appendChild(pill);
+        } else {
+          // Auto weekend badges if no work mode set (matches native Android app exactly)
+          if (dayOfWeek === 0) {
+            const pill = document.createElement("div");
+            pill.className = "shift-pill shift-sun-auto";
+            pill.style.cssText = "font-size:10px; color:#b91c1c; background:#fee2e2; font-weight:700; padding:1px 4px; border-radius:4px; margin-top:2px; text-align:center;";
+            pill.innerText = "주차 8h";
+            cell.appendChild(pill);
+          } else if (dayOfWeek === 6) {
+            const pill = document.createElement("div");
+            pill.className = "shift-pill shift-sat-auto";
+            pill.style.cssText = "font-size:10px; color:#1e40af; background:#eff6ff; font-weight:700; padding:1px 4px; border-radius:4px; margin-top:2px; text-align:center;";
+            pill.innerText = "유급 8h";
+            cell.appendChild(pill);
+          }
         }
 
         // Click event -> open bottom sheet
         cell.onclick = () => openShiftSheet(dateKey, d);
 
         grid.appendChild(cell);
+      }
+
+      const btnQuick = document.getElementById("btnQuickInput");
+      if (btnQuick) {
+        btnQuick.innerText = `⚡ 빠른 근무 입력 (${todayDate}일)`;
       }
 
       calculateMonthlyPayroll();
@@ -1688,6 +1748,10 @@
     function openShiftSheet(dateKey, d) {
       selectedDateStr = dateKey;
       document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
+      const btnQuick = document.getElementById("btnQuickInput");
+      if (btnQuick) {
+        btnQuick.innerText = `⚡ 빠른 근무 입력 (${d}일)`;
+      }
       document.getElementById("shiftSheetOverlay").style.display = "flex";
       vibrate();
     }
