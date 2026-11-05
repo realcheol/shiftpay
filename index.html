@@ -10,7 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ShiftPay">
   <meta name="theme-color" content="#142035">
-  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
@@ -552,6 +554,29 @@
       padding: 8px 6px 4px;
       text-transform: uppercase;
     }
+    
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      flex-shrink: 0;
+      stroke: currentColor;
+    }
+    .preset-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      vertical-align: -2px;
+      stroke: currentColor;
+    }
+    .btn-svg-icon {
+      width: 17px;
+      height: 17px;
+      margin-right: 6px;
+      vertical-align: -3px;
+      stroke: currentColor;
+    }
+
     .menu-item {
       display: flex;
       align-items: center;
@@ -748,8 +773,8 @@
 
       <!-- Quick Action Buttons under calendar -->
       <div class="quick-actions">
-        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()">⚡ 빠른 근무 입력 (5일)</button>
-        <button class="btn-quick" onclick="openOcrModal()">📸 OCR 스캔</button>
+        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (5일)</button>
+        <button class="btn-quick" onclick="openOcrModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> OCR 스캔</button>
       </div>
     </div>
 
@@ -845,22 +870,22 @@
 
     <div class="drawer-menu">
       <div class="menu-sec-title">급여 및 데이터 관리</div>
-      <div class="menu-item" onclick="openSettings(); closeDrawer();">⚙️ 기본정보 및 급여 설정</div>
-      <div class="menu-item" onclick="openBonusCalc(); closeDrawer();">💰 2026년 성과·격려금 계산기</div>
-      <div class="menu-item" onclick="exportExcel()">📊 급여명세서 엑셀 내보내기</div>
-      <div class="menu-item" onclick="backupData()">💾 데이터 전체 백업 (저장)</div>
-      <div class="menu-item" onclick="restoreDataPrompt()">🔄 백업 데이터 복원</div>
-      <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);">🗑️ 이번 달 전체 근무 초기화</div>
+      <div class="menu-item" onclick="openSettings(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> 기본정보 및 급여 설정</div>
+      <div class="menu-item" onclick="openBonusCalc(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg> 2026년 성과·격려금 계산기</div>
+      <div class="menu-item" onclick="exportExcel()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> 급여명세서 엑셀 내보내기</div>
+      <div class="menu-item" onclick="backupData()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> 데이터 전체 백업 (저장)</div>
+      <div class="menu-item" onclick="restoreDataPrompt()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> 백업 데이터 복원</div>
+      <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 이번 달 전체 근무 초기화</div>
 
       <div class="menu-sec-title">사내 복지 & 협약</div>
-      <div class="menu-item" onclick="showDoc('cba'); closeDrawer();">📜 2026년 노사단체협약 요약</div>
-      <div class="menu-item" onclick="showDoc('support'); closeDrawer();">🏢 현대스틸파이프 지원제도 (12종)</div>
-      <div class="menu-item" onclick="showDoc('partners'); closeDrawer();">🤝 회사 제휴업체 현황 (28개사)</div>
+      <div class="menu-item" onclick="showDoc('cba'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15l2 2 4-4"></path></svg> 2026년 노사단체협약 요약</div>
+      <div class="menu-item" onclick="showDoc('support'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15" y2="22.01"></line><line x1="9" y1="18" x2="9" y2="18.01"></line><line x1="15" y1="18" x2="15" y2="18.01"></line><line x1="9" y1="14" x2="9" y2="14.01"></line><line x1="15" y1="14" x2="15" y2="14.01"></line><line x1="9" y1="10" x2="9" y2="10.01"></line><line x1="15" y1="10" x2="15" y2="10.01"></line><line x1="9" y1="6" x2="9" y2="6.01"></line><line x1="15" y1="6" x2="15" y2="6.01"></line></svg> 현대스틸파이프 지원제도 (12종)</div>
+      <div class="menu-item" onclick="showDoc('partners'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> 회사 제휴업체 현황 (28개사)</div>
 
       <div class="menu-sec-title">앱 정보</div>
-      <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();">🚀 처음 사용자 이용 가이드</div>
-      <div class="menu-item" onclick="showDoc('company'); closeDrawer();">🏭 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();">📋 버전 업데이트 내역 (v1.3.1)</div>
+      <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
+      <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.1)</div>
     </div>
   </div>
 
@@ -869,17 +894,17 @@
     <div class="bottom-sheet">
       <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
       <div class="sheet-grid">
-        <button class="sheet-btn indigo" onclick="selectPreset('norm')">☀️ 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
-        <button class="sheet-btn blue" onclick="selectPreset('ot')">⚡ 주간 10h<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
-        <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')">🌙 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
-        <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')">🌌 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('holiday')">🔴 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')">🔥 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
-        <button class="sheet-btn emerald" onclick="selectPreset('annual')">🌴 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
-        <button class="sheet-btn" onclick="selectPreset('half_am')">🌓 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
+        <button class="sheet-btn indigo" onclick="selectPreset('norm')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
+        <button class="sheet-btn blue" onclick="selectPreset('ot')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 주간 10h<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
+        <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
+        <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('holiday')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
+        <button class="sheet-btn emerald" onclick="selectPreset('annual')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
+        <button class="sheet-btn" onclick="selectPreset('half_am')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg> 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
       </div>
-      <button class="sheet-btn" style="width:100%; margin-bottom:8px;" onclick="openCustomTimeModal()">⚙️ 직접 시간 입력 및 메모</button>
-      <button class="sheet-btn red" style="width:100%; margin-bottom:8px;" onclick="deleteSelectedDay()">🗑️ 해당 날짜 근무 삭제</button>
+      <button class="sheet-btn" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openCustomTimeModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> 직접 시간 입력 및 메모</button>
+      <button class="sheet-btn red" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="deleteSelectedDay()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 해당 날짜 근무 삭제</button>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
     </div>
   </div>
@@ -1612,7 +1637,7 @@
 
       const btnQuick = document.getElementById("btnQuickInput");
       if (btnQuick) {
-        btnQuick.innerText = `⚡ 빠른 근무 입력 (${todayDate}일)`;
+        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${todayDate}일)`;
       }
 
       calculateMonthlyPayroll();
@@ -1838,7 +1863,7 @@
       document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
       const btnQuick = document.getElementById("btnQuickInput");
       if (btnQuick) {
-        btnQuick.innerText = `⚡ 빠른 근무 입력 (${d}일)`;
+        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${d}일)`;
       }
       document.getElementById("shiftSheetOverlay").style.display = "flex";
       vibrate();
