@@ -884,6 +884,65 @@
     </div>
   </div>
 
+  <!-- Custom Time Input Modal -->
+  <div class="sheet-overlay" id="customTimeOverlay" onclick="closeCustomTimeModal(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title" id="customTimeTitle">⚙️ 직접 시간 입력 및 메모</div>
+      
+      <div class="form-group">
+        <label>근무 형태 구분</label>
+        <select class="form-input" id="customModeSelect" onchange="onCustomModeChange()">
+          <option value="custom" selected>직접 시간 지정</option>
+          <option value="norm">주간 정상 (8h)</option>
+          <option value="ot">주간 연장 (8+2h)</option>
+          <option value="night_10">야간 10h (8+2h+심야7.5h)</option>
+          <option value="night_8">야간 정상 (8h+심야6.0h)</option>
+          <option value="holiday">휴일 특근 (8h)</option>
+          <option value="night_holiday_10">야간 특근 (8특+2연+심야7.5h)</option>
+          <option value="annual">연차 유급 (8h)</option>
+          <option value="half_am">오전 반차 (4h)</option>
+        </select>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div class="form-group">
+          <label>정상근무 (시간)</label>
+          <input class="form-input" type="number" step="0.5" id="customNormHours" placeholder="8">
+        </div>
+        <div class="form-group">
+          <label>평일연장 (시간)</label>
+          <input class="form-input" type="number" step="0.5" id="customOtHours" placeholder="0">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div class="form-group">
+          <label>야간/심야할증 (시간)</label>
+          <input class="form-input" type="number" step="0.5" id="customNightHours" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>휴일특근 (시간)</label>
+          <input class="form-input" type="number" step="0.5" id="customHolHours" placeholder="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>특근연장 / 가급 (시간)</label>
+        <input class="form-input" type="number" step="0.5" id="customExtraHours" placeholder="0">
+      </div>
+
+      <div class="form-group">
+        <label>메모 (예: 조합설명회 2시간 등)</label>
+        <input class="form-input" type="text" id="customMemo" placeholder="특이사항 메모 (선택사항)">
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeCustomTimeModal()">취소</button>
+        <button class="sheet-btn blue" style="flex:2;" onclick="saveCustomTime()">💾 저장하기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Year / Month Picker Modal -->
   <div class="sheet-overlay" id="monthPickerOverlay" onclick="closeMonthPicker(event)">
     <div class="bottom-sheet">
@@ -978,6 +1037,9 @@
       <div style="display:flex; gap:8px; margin-top:14px;">
         <button class="sheet-btn red" style="flex:1;" onclick="resetSettings()">초기화</button>
         <button class="sheet-btn blue" style="flex:2;" onclick="saveSettings()">설정 저장</button>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeSettings()">닫기</button>
       </div>
     </div>
   </div>
@@ -1512,6 +1574,14 @@
           } else if (mode === "half_am" || mode === "half_pm") {
             pill.classList.add("shift-annual");
             pill.innerText = mode === "half_am" ? "오전반차" : "오후반차";
+          } else if (mode === "custom") {
+            pill.classList.add("shift-ot");
+            const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+            const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+            const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+            const total = cn + co + ch;
+            const memo = localStorage.getItem(`${dateKey}-memo`);
+            pill.innerText = memo ? memo : (total > 0 ? `${total}h 직접` : "직접입력");
           } else {
             pill.classList.add("shift-norm");
             pill.innerText = "근무";
@@ -1585,6 +1655,17 @@
           nightHours += 2;
         } else if (mode === "half_am" || mode === "half_pm") {
           normHours += 4;
+        } else if (mode === "custom") {
+          const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          const cnt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+          const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          const ce = parseFloat(localStorage.getItem(`${dateKey}-extra`) || "0");
+          normHours += cn;
+          otHours += co;
+          nightHours += cnt;
+          holHours += ch;
+          extraHours += ce;
         }
       }
 
@@ -1715,7 +1796,7 @@
 
     function confirmResetCurrentMonth() {
       if (confirm(`${curYear}년 ${curMonth}월의 모든 근무 기록을 초기화하시겠습니까?`)) {
-        const prefix = `shift_${curYear}_${pad(curMonth)}_`;
+        const prefix = `${curYear}-${pad(curMonth)}-`;
         const toRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
@@ -1724,6 +1805,9 @@
         toRemove.forEach(k => localStorage.removeItem(k));
         renderCalendar();
         calculateMonthlyPayroll();
+        updateDdayAndUserSummary();
+        alert("이번 달 근무 기록이 초기화되었습니다.");
+        vibrate();
       }
     }
 
@@ -1760,7 +1844,7 @@
       vibrate();
     }
     function closeShiftSheet(e) {
-      if (!e || e.target.id === "shiftSheetOverlay" || e.target.classList.contains("sheet-btn")) {
+      if (!e || e.target.id === "shiftSheetOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("shiftSheetOverlay").style.display = "none";
       }
     }
@@ -1775,15 +1859,128 @@
     function deleteSelectedDay() {
       if (!selectedDateStr) return;
       localStorage.removeItem(`${selectedDateStr}-mode`);
+      localStorage.removeItem(`${selectedDateStr}-norm`);
+      localStorage.removeItem(`${selectedDateStr}-ot`);
+      localStorage.removeItem(`${selectedDateStr}-night`);
+      localStorage.removeItem(`${selectedDateStr}-hol`);
+      localStorage.removeItem(`${selectedDateStr}-extra`);
+      localStorage.removeItem(`${selectedDateStr}-memo`);
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
       vibrate();
     }
     function quickTodayShift() {
       const today = new Date();
       const dateKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
       openShiftSheet(dateKey, today.getDate());
+    }
+
+    // Custom Time Modal Handlers
+    function openCustomTimeModal() {
+      document.getElementById("shiftSheetOverlay").style.display = "none";
+      document.getElementById("customTimeOverlay").style.display = "flex";
+      
+      if (selectedDateStr) {
+        document.getElementById("customTimeTitle").innerText = `⚙️ ${selectedDateStr} 세부 시간 입력`;
+        const mode = localStorage.getItem(`${selectedDateStr}-mode`) || "custom";
+        document.getElementById("customModeSelect").value = mode;
+
+        const norm = localStorage.getItem(`${selectedDateStr}-norm`);
+        const ot = localStorage.getItem(`${selectedDateStr}-ot`);
+        const night = localStorage.getItem(`${selectedDateStr}-night`);
+        const hol = localStorage.getItem(`${selectedDateStr}-hol`);
+        const extra = localStorage.getItem(`${selectedDateStr}-extra`);
+        const memo = localStorage.getItem(`${selectedDateStr}-memo`);
+
+        document.getElementById("customNormHours").value = norm !== null ? norm : (mode === "norm" || mode === "ot" || mode === "night_10" || mode === "night_8" ? "8" : (mode === "half_am" ? "4" : "0"));
+        document.getElementById("customOtHours").value = ot !== null ? ot : (mode === "ot" || mode === "night_10" || mode === "night_holiday_10" ? "2" : "0");
+        document.getElementById("customNightHours").value = night !== null ? night : (mode === "night_10" || mode === "night_holiday_10" ? "7.5" : (mode === "night_8" ? "6.0" : "0"));
+        document.getElementById("customHolHours").value = hol !== null ? hol : (mode === "holiday" || mode === "night_holiday_10" ? "8" : "0");
+        document.getElementById("customExtraHours").value = extra !== null ? extra : "0";
+        document.getElementById("customMemo").value = memo || "";
+      }
+      vibrate();
+    }
+
+    function onCustomModeChange() {
+      const m = document.getElementById("customModeSelect").value;
+      if (m === "norm") {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "ot") {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "night_10") {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customNightHours").value = "7.5";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "night_8") {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customNightHours").value = "6.0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "holiday") {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customHolHours").value = "8";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "night_holiday_10") {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customNightHours").value = "7.5";
+        document.getElementById("customHolHours").value = "8";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (m === "half_am") {
+        document.getElementById("customNormHours").value = "4";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      }
+    }
+
+    function saveCustomTime() {
+      if (!selectedDateStr) return;
+      const m = document.getElementById("customModeSelect").value;
+      localStorage.setItem(`${selectedDateStr}-mode`, m);
+
+      const norm = document.getElementById("customNormHours").value.trim();
+      const ot = document.getElementById("customOtHours").value.trim();
+      const night = document.getElementById("customNightHours").value.trim();
+      const hol = document.getElementById("customHolHours").value.trim();
+      const extra = document.getElementById("customExtraHours").value.trim();
+      const memo = document.getElementById("customMemo").value.trim();
+
+      if (norm) localStorage.setItem(`${selectedDateStr}-norm`, norm); else localStorage.removeItem(`${selectedDateStr}-norm`);
+      if (ot) localStorage.setItem(`${selectedDateStr}-ot`, ot); else localStorage.removeItem(`${selectedDateStr}-ot`);
+      if (night) localStorage.setItem(`${selectedDateStr}-night`, night); else localStorage.removeItem(`${selectedDateStr}-night`);
+      if (hol) localStorage.setItem(`${selectedDateStr}-hol`, hol); else localStorage.removeItem(`${selectedDateStr}-hol`);
+      if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
+      if (memo) localStorage.setItem(`${selectedDateStr}-memo`, memo); else localStorage.removeItem(`${selectedDateStr}-memo`);
+
+      closeCustomTimeModal();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      vibrate();
+    }
+
+    function closeCustomTimeModal(e) {
+      if (!e || e.target.id === "customTimeOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "취소")) {
+        document.getElementById("customTimeOverlay").style.display = "none";
+      }
     }
 
     // Year / Month Picker
@@ -1794,7 +1991,7 @@
       vibrate();
     }
     function closeMonthPicker(e) {
-      if (!e || e.target.id === "monthPickerOverlay" || e.target.classList.contains("sheet-btn")) {
+      if (!e || e.target.id === "monthPickerOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("monthPickerOverlay").style.display = "none";
       }
     }
@@ -1880,7 +2077,7 @@
       vibrate();
     }
     function closeSettings(e) {
-      if (!e || e.target.id === "settingsOverlay" || e.target.classList.contains("sheet-btn")) {
+      if (!e || e.target.id === "settingsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("settingsOverlay").style.display = "none";
       }
     }
@@ -2110,7 +2307,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       vibrate();
     }
     function closeDoc(e) {
-      if (!e || e.target.id === "docOverlay" || e.target.classList.contains("sheet-btn")) {
+      if (!e || e.target.id === "docOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("docOverlay").style.display = "none";
       }
     }
@@ -2211,7 +2408,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       vibrate();
     }
     function closeBonusCalc(e) {
-      if (!e || e.target.id === "bonusOverlay" || e.target.classList.contains("sheet-btn")) {
+      if (!e || e.target.id === "bonusOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("bonusOverlay").style.display = "none";
       }
     }
@@ -2221,10 +2418,21 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
       const totalDays = new Date(curYear, curMonth, 0).getDate();
       for (let d = 1; d <= totalDays; d++) {
-        localStorage.removeItem(`${curYear}-${pad(curMonth)}-${pad(d)}-mode`);
+        const k = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        localStorage.removeItem(`${k}-mode`);
+        localStorage.removeItem(`${k}-norm`);
+        localStorage.removeItem(`${k}-ot`);
+        localStorage.removeItem(`${k}-night`);
+        localStorage.removeItem(`${k}-hol`);
+        localStorage.removeItem(`${k}-extra`);
+        localStorage.removeItem(`${k}-memo`);
       }
       renderCalendar();
       updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      alert("이번 달 근무 기록이 초기화되었습니다.");
+      vibrate();
+    }
       alert("이번 달 근무 기록이 초기화되었습니다.");
       vibrate();
     }
