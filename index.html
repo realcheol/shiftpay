@@ -1460,15 +1460,16 @@
 
       // Header summary pill & guide banner
       const guideBanner = document.getElementById("guideBanner");
+      const userSvg = '<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
       if (!name) {
-        document.getElementById("userSummaryPill").innerText = "<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)";
-        document.getElementById("drawerUserInfo").innerText = "<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)";
+        document.getElementById("userSummaryPill").innerHTML = userSvg + '기본정보 미입력 (터치하여 설정)';
+        document.getElementById("drawerUserInfo").innerHTML = userSvg + '기본정보 미입력 (터치하여 설정)';
         if (guideBanner) guideBanner.style.display = "flex";
       } else {
         const shift = localStorage.getItem("user_shift_type") === "shift" ? "교대" : "상주";
-        const summary = `👤 ${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
-        document.getElementById("userSummaryPill").innerText = summary;
-        document.getElementById("drawerUserInfo").innerText = `${duty} ${name}님\n입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
+        const summary = `${userSvg}${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
+        document.getElementById("userSummaryPill").innerHTML = summary;
+        document.getElementById("drawerUserInfo").innerHTML = `${duty} ${name}님<br>입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
         if (guideBanner) guideBanner.style.display = "none";
       }
     }
