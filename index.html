@@ -17,14 +17,16 @@
 
   <style>
     :root {
-      --bg: #f3f5f9;
+      --bg: #f1f5f9;
       --surface: #ffffff;
       --card-bg: #ffffff;
       --border: #e2e8f0;
       --text: #0f172a;
       --sub: #64748b;
-      --blue: #1d4ed8;
-      --blue-sub: #3b82f6;
+      --blue: #005bac; /* 현대스틸파이프 공식 브랜드 블루 */
+      --blue-sub: #0284c7; /* 스카이 메탈릭 블루 */
+      --steel-grad: linear-gradient(135deg, #005bac 0%, #0284c7 60%, #38bdf8 100%);
+      --steel-dark: #0a2540;
       --blue-bg: #eff6ff;
       --red: #ef4444;
       --red-bg: #fee2e2;
@@ -40,14 +42,16 @@
     }
 
     body.dark {
-      --bg: #0b1120;
-      --surface: #131d31;
-      --card-bg: #17233d;
-      --border: #1e293b;
+      --bg: #0a1120;
+      --surface: #111c30;
+      --card-bg: #15223c;
+      --border: #1e2e4a;
       --text: #f1f5f9;
       --sub: #94a3b8;
-      --blue: #3b82f6;
-      --blue-sub: #60a5fa;
+      --blue: #38bdf8;
+      --blue-sub: #0284c7;
+      --steel-grad: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #005bac 100%);
+      --steel-dark: #07172c;
       --blue-bg: #1e293b;
       --red: #f87171;
       --red-bg: #3f1d24;
@@ -554,6 +558,18 @@
       text-transform: uppercase;
     }
     
+    
+    .inline-icon {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: -2px;
+      margin-right: 5px;
+      flex-shrink: 0;
+      display: inline-block;
+    }
     .menu-icon {
       width: 18px;
       height: 18px;
@@ -714,19 +730,19 @@
   <!-- App Header with Factory Background -->
   <header class="app-header" id="appHeader" style="background-image: url('factories/factory_1.jpg');">
     <div class="header-top">
-      <button class="icon-btn" onclick="openDrawer()" title="메뉴 열기">☰</button>
+      <button class="icon-btn" onclick="openDrawer()" title="메뉴 열기" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
       <div class="header-center">
         <h1>나의 근무·급여 관리</h1>
-        <p id="factoryNameLabel" onclick="switchFactory()">🏭 본사 / 울산 1공장 (ERW) ▾</p>
+        <p id="factoryNameLabel" onclick="switchFactory()"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>본사 / 울산 1공장 (ERW) ▾</p>
       </div>
       <div class="header-right">
-        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn" title="다크모드 전환">🌙</button>
+        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn" title="다크모드 전환" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
       </div>
     </div>
     
     <div class="header-bottom">
       <div class="user-pill" onclick="openSettings()" id="userSummaryPill">
-        👤 기본정보 미입력 (터치하여 설정)
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)
       </div>
     </div>
   </header>
@@ -735,15 +751,15 @@
 
     <!-- Onboarding Guide Banner (Native App Style) -->
     <div class="guide-banner" id="guideBanner" onclick="showDoc('onboarding')" style="display:none;">
-      <span>💡 처음이신가요? 3단계 이용안내 확인 및 기본정보 입력하기 ❯</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>처음이신가요? 3단계 이용안내 확인 및 기본정보 입력하기 ❯</span>
     </div>
 
     <!-- Calendar Card -->
     <div class="card">
       <div class="cal-header">
         <div class="cal-nav-left" style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
-          <button type="button" class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:13px; padding:4px 7px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px; white-space:nowrap; flex-shrink:0;">↺</button>
-          <button type="button" class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 6px; font-weight:700; border-radius:8px; white-space:nowrap; flex-shrink:0; letter-spacing:-0.3px;">💰소급ON</button>
+          <button type="button" class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:12px; padding:4px 7px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px; white-space:nowrap; flex-shrink:0; display:inline-flex; align-items:center;"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
+          <button type="button" class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 6px; font-weight:700; border-radius:8px; white-space:nowrap; flex-shrink:0; letter-spacing:-0.3px; display:inline-flex; align-items:center; gap:2px;"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급ON</button>
         </div>
         <div class="cal-nav-center" style="display:flex; align-items:center; gap:5px;">
           <button class="nav-btn" onclick="prevMonth()" style="padding:4px 10px; font-size:13px;">◀</button>
@@ -818,7 +834,7 @@
           <span class="receipt-val" id="valSummerPay">200,000원</span>
         </div>
         <div class="receipt-row" id="rowRetroPay" style="display:none; color:#b46400; font-weight:600;">
-          <span>💰 소급분 (임단협 타결)</span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급분 (임단협 타결)</span>
           <span class="receipt-val" id="valRetroPay" style="color:#b46400;">+1,452,800원</span>
         </div>
         <div class="receipt-row">
@@ -857,11 +873,14 @@
   <div class="drawer" id="drawer">
     <div class="drawer-header" id="drawerHeader" style="background-image: url('factories/factory_1.jpg');">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: 18px;">ShiftPay</h2>
-        <button onclick="closeDrawer()" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">✕</button>
+        <h2 style="font-size: 18px; display:flex; align-items:center; gap:8px;"><img src="icon.png" style="width:24px; height:24px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.3);">ShiftPay</h2>
+        <button onclick="closeDrawer()" style="background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
-      <div style="font-size: 11.5px; opacity: 0.9;" id="drawerUserInfo">
-        기본정보 미입력 (터치하여 설정)
+      <div style="font-size: 11px; margin-top:5px; display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; background:rgba(10,37,64,0.6); border:1px solid rgba(255,255,255,0.2);" id="drawerFactoryBadge">
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>본사 / 울산 1공장 (ERW) ▾
+      </div>
+      <div style="font-size: 11.5px; opacity: 0.95; margin-top:5px; display:flex; align-items:center; gap:4px;" id="drawerUserInfo">
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)
       </div>
     </div>
 
@@ -910,7 +929,7 @@
   <!-- Custom Time Input Modal -->
   <div class="sheet-overlay" id="customTimeOverlay" onclick="closeCustomTimeModal(event)">
     <div class="bottom-sheet" style="max-height:88vh;">
-      <div class="sheet-title" id="customTimeTitle">⚙️ 직접 시간 입력 및 메모</div>
+      <div class="sheet-title" id="customTimeTitle" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>직접 시간 입력 및 메모</div>
       
       <div class="form-group">
         <label>근무 형태 구분</label>
@@ -961,7 +980,7 @@
 
       <div style="display:flex; gap:8px; margin-top:14px;">
         <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeCustomTimeModal()">취소</button>
-        <button class="sheet-btn blue" style="flex:2;" onclick="saveCustomTime()">💾 저장하기</button>
+        <button class="sheet-btn blue" style="flex:2; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="saveCustomTime()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>저장하기</button>
       </div>
     </div>
   </div>
@@ -977,9 +996,9 @@
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;" id="monthGrid"></div>
       <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
-        <button class="sheet-btn" style="flex:1;" onclick="jumpToPreset('join')">🌱 입사 첫 달</button>
-        <button class="sheet-btn blue" style="flex:1;" onclick="jumpToPreset('today')">🎯 이번 달</button>
-        <button class="sheet-btn" style="flex:1;" onclick="jumpToPreset('retire')">⏳ 정년퇴직</button>
+        <button class="sheet-btn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('join')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>입사 첫 달</button>
+        <button class="sheet-btn blue" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('today')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>이번 달</button>
+        <button class="sheet-btn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('retire')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>정년퇴직</button>
       </div>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeMonthPicker()">닫기</button>
     </div>
@@ -988,7 +1007,7 @@
   <!-- Settings Modal -->
   <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings(event)">
     <div class="bottom-sheet">
-      <div class="sheet-title">⚙️ 나의 기본정보 및 급여 설정</div>
+      <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>나의 기본정보 및 급여 설정</div>
       
       <div class="form-group">
         <label>성명</label>
@@ -1044,7 +1063,7 @@
       <div class="form-group">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <label>근속수당 (원)</label>
-          <span style="font-size:11px; color:var(--blue); font-weight:700; cursor:pointer;" onclick="autoFillTenurePay()">⚡ 2026 단협 자동계산</span>
+          <span style="font-size:11px; color:var(--blue); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;" onclick="autoFillTenurePay()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>2026 단협 자동계산</span>
         </div>
         <input class="form-input" type="number" id="cfgTenurePay" placeholder="58500">
       </div>
@@ -1079,10 +1098,10 @@
   <!-- 2026년 성과·격려금 계산기 Modal -->
   <div class="sheet-overlay" id="bonusOverlay" onclick="closeBonusCalc(event)">
     <div class="bottom-sheet" style="max-height:88vh;">
-      <div class="sheet-title">💰 2026년 성과·격려금 계산기</div>
+      <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>2026년 성과·격려금 계산기</div>
       <div id="bonusContent" style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:16px;"></div>
       <div style="display:flex; gap:8px;">
-        <button class="sheet-btn blue" style="flex:1;" onclick="closeBonusCalc(); openSettings();">⚙️ 나의 시급·수당 변경</button>
+        <button class="sheet-btn blue" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="closeBonusCalc(); openSettings();"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>나의 시급·수당 변경</button>
         <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeBonusCalc()">닫기</button>
       </div>
     </div>
@@ -1232,7 +1251,10 @@
     function updateFactoryUI() {
       const f = factories[currentFactoryIdx - 1] || factories[0];
       const lbl = document.getElementById("factoryNameLabel");
-      if (lbl) lbl.innerText = "🏭 본사 / 울산 " + f.name + " ▾";
+      const factorySvg = '<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>';
+      if (lbl) lbl.innerHTML = factorySvg + " 본사 / 울산 " + f.name + " ▾";
+      const drawerBadge = document.getElementById("drawerFactoryBadge");
+      if (drawerBadge) drawerBadge.innerHTML = factorySvg + " 본사 / 울산 " + f.name + " ▾";
       document.getElementById("appHeader").style.backgroundImage = `url('${f.img}')`;
       document.getElementById("drawerHeader").style.backgroundImage = `url('${f.img}')`;
       localStorage.setItem("user_factory_idx", currentFactoryIdx);
@@ -1247,7 +1269,9 @@
     function toggleDarkMode() {
       document.body.classList.toggle("dark");
       const isDark = document.body.classList.contains("dark");
-      document.getElementById("darkToggleBtn").innerText = isDark ? "☀️" : "🌙";
+      const sunSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+      const moonSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+      document.getElementById("darkToggleBtn").innerHTML = isDark ? sunSvg : moonSvg;
       localStorage.setItem("setting_dark_mode", isDark ? "true" : "false");
       vibrate();
     }
@@ -1437,8 +1461,8 @@
       // Header summary pill & guide banner
       const guideBanner = document.getElementById("guideBanner");
       if (!name) {
-        document.getElementById("userSummaryPill").innerText = "👤 기본정보 미입력 (터치하여 설정)";
-        document.getElementById("drawerUserInfo").innerText = "👤 기본정보 미입력 (터치하여 설정)";
+        document.getElementById("userSummaryPill").innerText = "<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)";
+        document.getElementById("drawerUserInfo").innerText = "<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)";
         if (guideBanner) guideBanner.style.display = "flex";
       } else {
         const shift = localStorage.getItem("user_shift_type") === "shift" ? "교대" : "상주";
@@ -1532,7 +1556,7 @@
           } else if (mode === "night_holiday_10") {
             pill.style.background = "#701a75";
             pill.style.color = "#fdf4ff";
-            pill.innerText = "🌙특근 10h";
+            pill.innerText = "야간특근 10h";
           } else if (mode === "holiday") {
             pill.classList.add("shift-holiday");
             pill.innerText = "특근 8h";
@@ -1692,8 +1716,9 @@
       // 상단 바 소급 버튼 UI 상태 갱신
       const btnRetro = document.getElementById("btnRetroToggle");
       if (btnRetro) {
+        const retroSvg = '<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align:-1px; margin-right:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>';
         if (retroActive) {
-          btnRetro.innerText = "💰소급ON";
+          btnRetro.innerHTML = retroSvg + "소급ON";
           btnRetro.style.color = "#b46400";
           btnRetro.style.borderColor = "#e6a028";
           btnRetro.style.background = "rgba(230, 160, 40, 0.12)";
@@ -1854,7 +1879,7 @@
       document.getElementById("customTimeOverlay").style.display = "flex";
       
       if (selectedDateStr) {
-        document.getElementById("customTimeTitle").innerText = `⚙️ ${selectedDateStr} 세부 시간 입력`;
+        document.getElementById("customTimeTitle").innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>${selectedDateStr} 세부 시간 입력`;
         const mode = localStorage.getItem(`${selectedDateStr}-mode`) || "custom";
         document.getElementById("customModeSelect").value = mode;
 
