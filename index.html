@@ -1032,7 +1032,7 @@
         <div class="accordion-content" id="accordionContent">
           • 통상시급: <span id="accOrdinaryRate">13,500</span>원 (기본시급: <span id="accBaseRate">12,000</span>원)<br>
           • 연장수당: 연장시간 × 통상시급 × 1.5배<br>
-          • 특근수당: 특근시간 × 통상시급 × 1.5배 + 가급시간 × 통상시급<br>
+          • 특근수당: 특근(8h 이내) × 통상시급 × 1.5배 + 특근연장(8h 초과) × 통상시급 × 2.0배<br>
           • 야간수당: 야간시간 × 통상시급 × 0.5배<br>
           • 정년 만 60세 D-Day 및 근속연차 자동 연동
         </div>
@@ -1774,16 +1774,18 @@
       vibrate();
       const cnt = selectedDays.size;
       if (confirm(`선택한 ${cnt}개 날짜의 근무 및 메모 기록을 모두 삭제하시겠습니까?`)) {
+        const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
         selectedDays.forEach(d => {
           const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
-          const keys = ["mode", "norm", "ot", "hol", "night", "memo"];
-          keys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
-          localStorage.removeItem(`${dateKey}`);
+          subKeys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
+          localStorage.removeItem(dateKey);
         });
         isMultiSelectMode = false;
         selectedDays.clear();
         alert(`${cnt}개 날짜의 근무 기록이 삭제되었습니다.`);
         renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
       }
     }
 
@@ -1988,9 +1990,10 @@
     function calculateMonthlyPayroll() {
       const totalDays = new Date(curYear, curMonth, 0).getDate();
       let normHours = 0;
+      let paidHours = 0;
       let otHours = 0;
       let holHours = 0;
-      let extraHours = 0;
+      let holOtHours = 0;
       let nightHours = 0;
 
       for (let d = 1; d <= totalDays; d++) {
@@ -2012,33 +2015,36 @@
           holHours += 8;
         } else if (mode === "night_holiday_10") {
           holHours += 8;
-          otHours += 2;
+          holOtHours += 2;
           nightHours += 7.5;
         } else if (mode === "holiday_12") {
           holHours += 8;
-          otHours += 4;
-          extraHours += 4;
-          nightHours += 2;
+          holOtHours += 4;
+        } else if (mode === "annual" || mode === "summer") {
+          paidHours += 8;
         } else if (mode === "half_am" || mode === "half_pm") {
           normHours += 4;
+          paidHours += 4;
         } else if (mode === "custom") {
           const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          const cp = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
           const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
-          const cnt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
           const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
-          const ce = parseFloat(localStorage.getItem(`${dateKey}-extra`) || "0");
+          const cho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          const cnt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
           normHours += cn;
+          paidHours += cp;
           otHours += co;
-          nightHours += cnt;
           holHours += ch;
-          extraHours += ce;
+          holOtHours += cho;
+          nightHours += cnt;
         }
       }
 
       document.getElementById("sumNorm").innerText = normHours + "h";
       document.getElementById("sumOt").innerText = otHours + "h";
       document.getElementById("sumHol").innerText = holHours + "h";
-      document.getElementById("sumExtra").innerText = extraHours + "h";
+      document.getElementById("sumExtra").innerText = holOtHours + "h";
       document.getElementById("sumNight").innerText = nightHours + "h";
 
       // Rates
@@ -2053,12 +2059,12 @@
       // Basic Pay (209h standard)
       const basePay = Math.round(baseRate * 209);
 
-      // Overtime & Holiday pay
+      // Overtime & Holiday pay (단협 제51조: 평일연장 1.5배, 휴일 1.5배, 8h초과 특근연장 2.0배, 야간 0.5배 가산)
       const otPay = Math.round(ordinaryRate * otHours * 1.5);
       const holPay = Math.round(ordinaryRate * holHours * 1.5);
-      const extraPay = Math.round(ordinaryRate * extraHours * 1.0);
+      const holOtPay = Math.round(ordinaryRate * holOtHours * 2.0);
       const nightPay = Math.round(ordinaryRate * nightHours * 0.5);
-      const totalOvertimePay = otPay + holPay + extraPay + nightPay;
+      const totalOvertimePay = otPay + holPay + holOtPay + nightPay;
 
       // Summer Health Allowance (only July, August, Sept)
       let summerPay = 0;
@@ -2221,17 +2227,14 @@
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
       vibrate();
     }
     function deleteSelectedDay() {
       if (!selectedDateStr) return;
-      localStorage.removeItem(`${selectedDateStr}-mode`);
-      localStorage.removeItem(`${selectedDateStr}-norm`);
-      localStorage.removeItem(`${selectedDateStr}-ot`);
-      localStorage.removeItem(`${selectedDateStr}-night`);
-      localStorage.removeItem(`${selectedDateStr}-hol`);
-      localStorage.removeItem(`${selectedDateStr}-extra`);
-      localStorage.removeItem(`${selectedDateStr}-memo`);
+      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+      subKeys.forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
+      localStorage.removeItem(selectedDateStr);
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
@@ -2681,7 +2684,13 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.1)",
-        body: `v1.3.1 (2026-11-04) — 교대근무 및 기장 직책수당 개편
+        body: `v1.3.1 (2026-11-07) — 단협 200% 급여 계산식 및 일괄 삭제 정밀 패치
+• ⚖️ 휴일 12h 특근 급여 200% 정상화: 단체협약 제51조 5항(8시간 초과분 200%)에 맞춰 1.5배+2.0배 분리 산출 완비
+• ⏱️ 세부시간 직접입력 '특근연장(8h 초과분)' 월 급여 계산식 100% 정상 연동
+• 🗑️ 달력 다중 선택 일괄 삭제 및 당일 삭제 시 유급/특근연장/가급 전수 소거 패치
+• 📊 근무대장 내보내기 CSV 상세 열(정상, 연장, 특근, 특근연장, 심야, 유급, 메모) 분리 고도화
+
+v1.3.1 (2026-11-04) — 교대근무 및 기장 직책수당 개편
 • 🔄 상주근무 / 교대근무(주야 격주) 선택 스위치 및 교대수당 200,000원 자동 연동
 • 🌙 교대근무조 맞춤 1초 퀵 프리셋: [야간 10h (8+2h, 심야7.5h)], [야간 정상 8h], [야간 특근 10h]
 • 💼 기장 직책수당 200,000원 교정 (G4 책임매니저 동시 적용)
@@ -2830,15 +2839,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function clearCurrentMonth() {
       if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
       const totalDays = new Date(curYear, curMonth, 0).getDate();
+      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
       for (let d = 1; d <= totalDays; d++) {
         const k = `${curYear}-${pad(curMonth)}-${pad(d)}`;
-        localStorage.removeItem(`${k}-mode`);
-        localStorage.removeItem(`${k}-norm`);
-        localStorage.removeItem(`${k}-ot`);
-        localStorage.removeItem(`${k}-night`);
-        localStorage.removeItem(`${k}-hol`);
-        localStorage.removeItem(`${k}-extra`);
-        localStorage.removeItem(`${k}-memo`);
+        subKeys.forEach(s => localStorage.removeItem(`${k}-${s}`));
+        localStorage.removeItem(k);
       }
       renderCalendar();
       updateDdayAndUserSummary();
@@ -2883,7 +2888,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
     function exportExcel() {
       const name = localStorage.getItem("user_name") || "임직원";
-      let csv = "\uFEFF일자,요일,근무구분,인정시간\n";
+      let csv = "\uFEFF일자,요일,근무구분,정상(h),연장(h),특근(h),특근연장(h),심야(h),유급(h),메모\n";
       const totalDays = new Date(curYear, curMonth, 0).getDate();
       const weekNames = ["일","월","화","수","목","금","토"];
       for (let d = 1; d <= totalDays; d++) {
@@ -2891,26 +2896,30 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         const dayOfWeek = new Date(curYear, curMonth - 1, d).getDay();
         const mode = localStorage.getItem(`${dateKey}-mode`) || "휴무/미입력";
         let modeName = mode;
-        let hoursStr = "0h";
-        if (mode === "norm") { modeName = "주간 정상"; hoursStr = "8h"; }
-        else if (mode === "ot") { modeName = "주간 연장"; hoursStr = "10h (8+2h)"; }
-        else if (mode === "night_10") { modeName = "야간 10h (교대)"; hoursStr = "10h (심야7.5h)"; }
-        else if (mode === "night_8") { modeName = "야간 정상"; hoursStr = "8h (심야6.0h)"; }
-        else if (mode === "holiday") { modeName = "휴일 특근"; hoursStr = "8h"; }
-        else if (mode === "night_holiday_10") { modeName = "야간 특근"; hoursStr = "10h"; }
-        else if (mode === "holiday_12") { modeName = "특근 12h"; hoursStr = "12h"; }
-        else if (mode === "annual") { modeName = "연차 유급"; hoursStr = "8h"; }
-        else if (mode === "half_am") { modeName = "오전 반차"; hoursStr = "4h"; }
-        else if (mode === "half_pm") { modeName = "오후 반차"; hoursStr = "4h"; }
+        let n = 0, o = 0, h = 0, ho = 0, nt = 0, p = 0;
+        let memo = localStorage.getItem(`${dateKey}-memo`) || "";
+        
+        if (mode === "norm") { modeName = "주간 정상"; n = 8; }
+        else if (mode === "ot") { modeName = "주간 연장"; n = 8; o = 2; }
+        else if (mode === "night_10") { modeName = "야간 10h (교대)"; n = 8; o = 2; nt = 7.5; }
+        else if (mode === "night_8") { modeName = "야간 정상"; n = 8; nt = 6.0; }
+        else if (mode === "holiday") { modeName = "휴일 특근"; h = 8; }
+        else if (mode === "night_holiday_10") { modeName = "야간 특근"; h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_12") { modeName = "특근 12h"; h = 8; ho = 4; }
+        else if (mode === "annual") { modeName = "연차 유급"; p = 8; }
+        else if (mode === "summer") { modeName = "하계휴가"; p = 8; }
+        else if (mode === "half_am") { modeName = "오전 반차"; n = 4; p = 4; }
+        else if (mode === "half_pm") { modeName = "오후 반차"; n = 4; p = 4; }
         else if (mode === "custom") {
-          const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
-          const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
-          const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
-          const memo = localStorage.getItem(`${dateKey}-memo`) || "직접입력";
-          modeName = `직접(${memo})`;
-          hoursStr = `${cn + co + ch}h`;
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+          modeName = memo ? `직접(${memo})` : "직접입력";
         }
-        csv += `${dateKey},${weekNames[dayOfWeek]},${modeName},${hoursStr}\n`;
+        csv += `${dateKey},${weekNames[dayOfWeek]},${modeName},${n},${o},${h},${ho},${nt},${p},"${memo.replace(/"/g, '""')}"\n`;
       }
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
