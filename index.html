@@ -950,7 +950,8 @@
           </button>
           <button class="nav-btn" onclick="nextMonth()" style="padding:4px 10px; font-size:13px;">▶</button>
         </div>
-        <div class="cal-nav-right" style="display:flex; align-items:center;">
+        <div class="cal-nav-right" style="display:flex; align-items:center; gap:4px;">
+          <button class="today-btn" onclick="openStatsModal()" title="근무 통계 및 차트" style="background:var(--surface); border:1px solid var(--border); color:var(--text); padding:5px 8px; font-size:11.5px; display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 9 9"></path></svg>통계</button>
           <button class="today-btn" onclick="goToday()" style="padding:4px 10px; font-size:12px;">오늘</button>
         </div>
       </div>
@@ -968,8 +969,9 @@
       <div class="calendar-grid" id="calendarGrid"></div>
 
       <!-- Quick Action Buttons under calendar -->
-      <div class="quick-actions">
-        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="width:100%;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
+      <div class="quick-actions" style="display:flex; gap:8px;">
+        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.4; display:flex; align-items:center; justify-content:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
+        <button class="btn-quick" id="btnStatsChart" onclick="openStatsModal()" style="flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 근무 통계</button>
       </div>
     </div>
 
@@ -1067,12 +1069,11 @@
     </div>
 
     <div class="drawer-menu">
-      <div class="menu-sec-title">급여 및 데이터 관리</div>
+      <div class="menu-sec-title">급여 및 통계 분석</div>
+      <div class="menu-item" onclick="openStatsModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> <strong>근무 통계 및 분석 차트</strong></div>
       <div class="menu-item" onclick="openSettings(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> 기본정보 및 급여 설정</div>
       <div class="menu-item" onclick="openBonusCalc(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg> 2026년 성과·격려금 계산기</div>
-      <div class="menu-item" onclick="exportExcel()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> 급여명세서 엑셀 내보내기</div>
-      <div class="menu-item" onclick="backupData()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> 데이터 전체 백업 (저장)</div>
-      <div class="menu-item" onclick="restoreDataPrompt()"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> 백업 데이터 복원</div>
+      <div class="menu-item" onclick="openDataModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <strong>데이터 통합 관리 (백업·복원·엑셀)</strong></div>
       <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 이번 달 전체 근무 초기화</div>
 
       <div class="menu-sec-title">사내 복지 & 협약</div>
@@ -1371,6 +1372,114 @@
     </div>
   </div>
 
+  <!-- 근무 통계 & 분석 차트 Modal -->
+  <div class="sheet-overlay" id="statsOverlay" onclick="closeStatsModal(event)">
+    <div class="bottom-sheet" style="max-height:90vh; padding:18px 16px;">
+      <!-- Title & Close -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(0,91,172,0.1); color:var(--blue); display:flex; align-items:center; justify-content:center;">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:800; color:var(--text);" id="statsModalTitle">2026년 11월 근무 통계</div>
+            <div style="font-size:11.5px; color:var(--subtext);">근무 유형별 비율 및 요일별 근무 패턴 분석</div>
+          </div>
+        </div>
+        <button onclick="closeStatsModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+
+      <!-- Month Navigation Bar inside modal -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:14px; background:var(--bg); padding:6px 12px; border-radius:10px;">
+        <button class="nav-btn" onclick="prevStatsMonth()" style="width:28px; height:28px; font-size:12px;">◀</button>
+        <span style="font-size:14px; font-weight:700; color:var(--text);" id="statsMonthLabel">2026년 11월</span>
+        <button class="nav-btn" onclick="nextStatsMonth()" style="width:28px; height:28px; font-size:12px;">▶</button>
+      </div>
+
+      <div id="statsModalBody" style="overflow-y:auto; max-height:calc(90vh - 140px); padding-right:2px;">
+        <!-- Dynamic content filled by renderStatsModal() -->
+      </div>
+
+      <div style="margin-top:12px;">
+        <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeStatsModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 데이터 통합 관리 (백업·복원·엑셀) Modal -->
+  <div class="sheet-overlay" id="dataOverlay" onclick="closeDataModal(event)">
+    <div class="bottom-sheet" style="max-height:88vh; padding:18px 16px;">
+      <!-- Title -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(16,185,129,0.1); color:#10b981; display:flex; align-items:center; justify-content:center;">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:800; color:var(--text);">데이터 관리 (백업 & 복원)</div>
+            <div style="font-size:11.5px; color:var(--subtext);">소중한 근무 기록과 설정을 안전하게 보관하세요</div>
+          </div>
+        </div>
+        <button onclick="closeDataModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+        <!-- Card 1: Excel Export -->
+        <div onclick="closeDataModal(); exportExcel();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(16,185,129,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(16,185,129,0.12); color:#10b981; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>급여명세서 엑셀 내보내기</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(16,185,129,0.15); color:#10b981; font-weight:700;">.CSV</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">이번 달 일자별 근무구분·수당 상세 집계표 다운로드</div>
+          </div>
+        </div>
+
+        <!-- Card 2: Full Data Backup -->
+        <div onclick="closeDataModal(); backupData();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(0,91,172,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(0,91,172,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(0,91,172,0.12); color:var(--blue); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>데이터 전체 백업 (저장)</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(0,91,172,0.15); color:var(--blue); font-weight:700;">.JSON</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">기본 급여 설정 및 모든 월의 근무기록 파일로 저장</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Data Restore -->
+        <div onclick="closeDataModal(); restoreDataPrompt();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(99,102,241,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(99,102,241,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(99,102,241,0.12); color:#6366f1; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>백업 데이터 복원하기</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(99,102,241,0.15); color:#6366f1; font-weight:700;">가져오기</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">보관 중인 백업 파일을 불러와 앱 기록 100% 복원</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Callout Notice -->
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11.5px; line-height:1.6; color:var(--subtext);">
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 백업 안내 사항
+        </div>
+        <div>✓ 기기 변경이나 브라우저 캐시 삭제 전에 꼭 백업해 두세요.</div>
+        <div>✓ 백업 파일에는 기본정보, 시급/수당 및 모든 월의 근무기록이 안전하게 포함됩니다.</div>
+      </div>
+
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDataModal()">닫기</button>
+    </div>
+  </div>
+
   <!-- Document Viewer Modal -->
   <div class="sheet-overlay" id="docOverlay" onclick="closeDoc(event)">
     <div class="bottom-sheet" style="max-height:88vh;">
@@ -1429,7 +1538,7 @@
       "2025-10-08": "추석 대체공휴일",
       "2025-10-09": "한글날",
       "2025-10-18": "회사창립일",
-      "2025-12-25": "기독탄신일",
+      "2025-12-25": "성탄절",
 
       // 2026
       "2026-01-01": "신정",
@@ -1458,7 +1567,7 @@
       "2026-10-09": "한글날",
       "2026-10-18": "회사창립일",
       "2026-10-19": "회사창립일 대체휴무",
-      "2026-12-25": "기독탄신일",
+      "2026-12-25": "성탄절",
 
       // 2027
       "2027-01-01": "신정",
@@ -1484,8 +1593,8 @@
       "2027-10-09": "한글날",
       "2027-10-11": "한글날 대체공휴일",
       "2027-10-18": "회사창립일",
-      "2027-12-25": "기독탄신일",
-      "2027-12-27": "기독탄신일 대체공휴일",
+      "2027-12-25": "성탄절",
+      "2027-12-27": "성탄절 대체공휴일",
 
       // 2028
       "2028-01-01": "신정",
@@ -1507,7 +1616,7 @@
       "2028-10-05": "추석·개천절 대체공휴일",
       "2028-10-09": "한글날",
       "2028-10-18": "회사창립일",
-      "2028-12-25": "기독탄신일"
+      "2028-12-25": "성탄절"
     };
 
     // Auto Hyphen Formatter
@@ -2684,7 +2793,12 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.1)",
-        body: `v1.3.1 (2026-11-07) — 단협 200% 급여 계산식 및 일괄 삭제 정밀 패치
+        body: `v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
+• 📊 근무 통계 & 분석 차트 신설: 월간 총 근로시간 중심의 근무 유형별(정상/연장/특근) 도넛 차트 및 요일별(월~일) 누적 근로시간 막대 그래프 탑재
+• 💾 데이터 관리 전용 카드 모달: 엑셀 내보내기, 전체 백업, 데이터 복원을 한눈에 직관적으로 다루는 3종 카드 UI 개편
+• 🎄 공휴일 정식 명칭 친숙화: 12월 25일 공휴일 표기를 '기독탄신일'에서 '성탄절'로 친근하게 전면 교정
+
+v1.3.1 (2026-11-07) — 단협 200% 급여 계산식 및 일괄 삭제 정밀 패치
 • ⚖️ 휴일 12h 특근 급여 200% 정상화: 단체협약 제51조 5항(8시간 초과분 200%)에 맞춰 1.5배+2.0배 분리 산출 완비
 • ⏱️ 세부시간 직접입력 '특근연장(8h 초과분)' 월 급여 계산식 100% 정상 연동
 • 🗑️ 달력 다중 선택 일괄 삭제 및 당일 삭제 시 유급/특근연장/가급 전수 소거 패치
@@ -2929,6 +3043,244 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       a.click();
       URL.revokeObjectURL(url);
       vibrate();
+    }
+
+    // 근무 통계 & 분석 차트 모달
+    let statsYear = 2026;
+    let statsMonth = 11;
+
+    function openStatsModal(year, month) {
+      statsYear = year || curYear;
+      statsMonth = month || curMonth;
+      renderStatsModal();
+      document.getElementById("statsOverlay").style.display = "flex";
+      vibrate();
+    }
+
+    function closeStatsModal(e) {
+      if (!e || e.target.id === "statsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeStatsModal()")) {
+        document.getElementById("statsOverlay").style.display = "none";
+      }
+    }
+
+    function prevStatsMonth() {
+      statsMonth--;
+      if (statsMonth < 1) {
+        statsMonth = 12;
+        statsYear--;
+      }
+      renderStatsModal();
+    }
+
+    function nextStatsMonth() {
+      statsMonth++;
+      if (statsMonth > 12) {
+        statsMonth = 1;
+        statsYear++;
+      }
+      renderStatsModal();
+    }
+
+    function renderStatsModal() {
+      document.getElementById("statsModalTitle").innerText = `${statsYear}년 ${statsMonth}월 근무 통계`;
+      document.getElementById("statsMonthLabel").innerText = `${statsYear}년 ${statsMonth}월`;
+
+      const daysInMonth = new Date(statsYear, statsMonth, 0).getDate();
+      let totalNorm = 0;
+      let totalOt = 0;
+      let totalHol = 0;
+      let totalNight = 0;
+      let daysWorkedCount = 0;
+      let weekdayHours = [0, 0, 0, 0, 0, 0, 0]; // 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateKey = `${statsYear}-${pad(statsMonth)}-${pad(d)}`;
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        let n = 0, o = 0, h = 0, ho = 0, nt = 0, p = 0;
+
+        if (mode === "norm") { n = 8; }
+        else if (mode === "ot") { n = 8; o = 2; }
+        else if (mode === "night_10") { n = 8; o = 2; nt = 7.5; }
+        else if (mode === "night_8") { n = 8; nt = 6.0; }
+        else if (mode === "holiday") { h = 8; }
+        else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_12") { h = 8; ho = 4; }
+        else if (mode === "annual") { p = 8; }
+        else if (mode === "summer") { p = 8; }
+        else if (mode === "half_am") { n = 4; p = 4; }
+        else if (mode === "half_pm") { n = 4; p = 4; }
+        else if (mode === "custom") {
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+        } else {
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+        }
+
+        const dayTotal = n + o + h + ho;
+        if (dayTotal > 0 || p > 0 || mode) {
+          daysWorkedCount++;
+          totalNorm += (n + p);
+          totalOt += o;
+          totalHol += (h + ho);
+          totalNight += nt;
+
+          const dayOfWeek = new Date(statsYear, statsMonth - 1, d).getDay();
+          weekdayHours[dayOfWeek] += dayTotal;
+        }
+      }
+
+      const totalWorked = totalNorm + totalOt + totalHol;
+
+      // Donut Chart SVG
+      const R = 52;
+      const C = 2 * Math.PI * R; // ~326.726
+
+      let donutSvgHtml = "";
+      if (totalWorked <= 0) {
+        donutSvgHtml = `
+          <div style="text-align:center; padding:24px 0; color:var(--subtext);">
+            <div style="font-size:32px; margin-bottom:6px;">📊</div>
+            <div style="font-size:13px; font-weight:700;">이번 달 등록된 근무 기록이 없습니다.</div>
+            <div style="font-size:11.5px; margin-top:2px;">달력에서 근무를 입력하면 차트가 자동으로 생성됩니다.</div>
+          </div>
+        `;
+      } else {
+        const normRatio = totalNorm / totalWorked;
+        const otRatio = totalOt / totalWorked;
+        const holRatio = totalHol / totalWorked;
+
+        const normLen = (normRatio * C).toFixed(2);
+        const otLen = (otRatio * C).toFixed(2);
+        const holLen = (holRatio * C).toFixed(2);
+
+        const normOffset = 0;
+        const otOffset = (-normLen).toFixed(2);
+        const holOffset = (-(parseFloat(normLen) + parseFloat(otLen))).toFixed(2);
+
+        donutSvgHtml = `
+          <div style="display:flex; align-items:center; justify-content:space-around; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 12px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+            <!-- Donut SVG -->
+            <div style="position:relative; width:130px; height:130px; flex-shrink:0;">
+              <svg viewBox="0 0 140 140" width="130" height="130" style="transform: rotate(-90deg);">
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--bg)" stroke-width="20"></circle>
+                <!-- Normal (Blue) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#005BAC" stroke-width="20" stroke-dasharray="${normLen} ${C}" stroke-dashoffset="${normOffset}"></circle>
+                <!-- OT (Amber) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="${otLen} ${C}" stroke-dashoffset="${otOffset}"></circle>
+                <!-- Hol (Red) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="${holLen} ${C}" stroke-dashoffset="${holOffset}"></circle>
+              </svg>
+              <!-- Center Text -->
+              <div style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
+                <span style="font-size:20px; font-weight:800; color:var(--text); line-height:1.1;">${totalWorked.toFixed(1)}<span style="font-size:12px;">h</span></span>
+                <span style="font-size:11px; color:var(--subtext); font-weight:600; margin-top:2px;">총 근무시간</span>
+              </div>
+            </div>
+
+            <!-- Legend breakdown -->
+            <div style="display:flex; flex-direction:column; gap:8px; min-width:130px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#005BAC;"></span>정상근무</span>
+                <span style="font-weight:800; color:var(--text);">${totalNorm.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(normRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#f59e0b;"></span>연장근무</span>
+                <span style="font-weight:800; color:#d97706;">${totalOt.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(otRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#ef4444;"></span>휴일특근</span>
+                <span style="font-weight:800; color:#dc2626;">${totalHol.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(holRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              ${totalNight > 0 ? `
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; border-top:1px dashed var(--border); padding-top:6px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#8b5cf6;"></span>심야할증</span>
+                <span style="font-weight:800; color:#7c3aed;">${totalNight.toFixed(1)}h</span>
+              </div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      // Weekday bar chart calculation (Mon~Sun order)
+      const orderedWeekdays = [
+        { name: "월", hours: weekdayHours[1], isWeekend: false },
+        { name: "화", hours: weekdayHours[2], isWeekend: false },
+        { name: "수", hours: weekdayHours[3], isWeekend: false },
+        { name: "목", hours: weekdayHours[4], isWeekend: false },
+        { name: "금", hours: weekdayHours[5], isWeekend: false },
+        { name: "토", hours: weekdayHours[6], isWeekend: true },
+        { name: "일", hours: weekdayHours[0], isWeekend: true }
+      ];
+
+      const maxH = Math.max(...orderedWeekdays.map(w => w.hours), 10);
+
+      let weekdayBarsHtml = orderedWeekdays.map(w => {
+        const barPct = Math.max((w.hours / maxH) * 100, 6);
+        const barBg = w.isWeekend ? (w.hours > 0 ? '#ef4444' : '#cbd5e1') : (w.hours > 0 ? '#005BAC' : '#cbd5e1');
+        return `
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <span style="font-size:10.5px; font-weight:700; color:${w.hours > 0 ? 'var(--text)' : 'var(--subtext)'};">${w.hours.toFixed(0)}h</span>
+            <div style="width:100%; height:80px; display:flex; align-items:flex-end; justify-content:center; background:var(--bg); border-radius:6px; padding:2px;">
+              <div style="width:80%; height:${barPct}%; background:${barBg}; border-radius:4px; transition:height 0.3s ease;"></div>
+            </div>
+            <span style="font-size:11.5px; font-weight:700; color:${w.isWeekend ? '#ef4444' : 'var(--text)'};">${w.name}</span>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("statsModalBody").innerHTML = `
+        <!-- Top Metric Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+            <div style="font-size:11px; color:var(--subtext); font-weight:600;">총 근로시간</div>
+            <div style="font-size:17px; font-weight:800; color:#005BAC; margin-top:2px;">${totalWorked.toFixed(1)} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">시간</span></div>
+          </div>
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+            <div style="font-size:11px; color:var(--subtext); font-weight:600;">근무 일수</div>
+            <div style="font-size:17px; font-weight:800; color:var(--text); margin-top:2px;">${daysWorkedCount} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">일 출근</span></div>
+          </div>
+        </div>
+
+        <!-- Donut Chart Card -->
+        <div style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#005BAC" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 근무 유형별 구성 비율
+        </div>
+        ${donutSvgHtml}
+
+        <!-- Weekday Distribution Bar Chart -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 12px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <div style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#005BAC" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> 요일별(월~일) 누적 근로시간
+            </span>
+            <span style="font-size:11px; color:var(--subtext); font-weight:normal;">월간 누적합</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:flex-end;">
+            ${weekdayBarsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // 데이터 통합 관리 모달
+    function openDataModal() {
+      document.getElementById("dataOverlay").style.display = "flex";
+      vibrate();
+    }
+
+    function closeDataModal(e) {
+      if (!e || e.target.id === "dataOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeDataModal()")) {
+        document.getElementById("dataOverlay").style.display = "none";
+      }
     }
 
     // Initialize on page load
