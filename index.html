@@ -857,6 +857,54 @@
       font-weight: 800;
       color: var(--blue);
     }
+
+    /* Multi-Select Delete Floating Bar */
+    .multi-select-bar {
+      display: none;
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 460px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .multi-select-bar.show {
+      display: flex !important;
+    }
+    .multi-select-bar .count-text {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .multi-select-bar .btn-cancel {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .multi-select-bar .btn-del-batch {
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #b91c1c;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 8px;
+    }
 </style>
 </head>
 <body>
@@ -1711,11 +1759,50 @@
       }
     }
 
+    let isMultiSelectMode = false;
+    let selectedDays = new Set();
+
+    function cancelMultiSelect() {
+      vibrate();
+      isMultiSelectMode = false;
+      selectedDays.clear();
+      renderCalendar();
+    }
+
+    function confirmMultiDeleteWeb() {
+      if (selectedDays.size === 0) return;
+      vibrate();
+      const cnt = selectedDays.size;
+      if (confirm(`선택한 ${cnt}개 날짜의 근무 및 메모 기록을 모두 삭제하시겠습니까?`)) {
+        selectedDays.forEach(d => {
+          const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+          const keys = ["mode", "norm", "ot", "hol", "night", "memo"];
+          keys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
+          localStorage.removeItem(`${dateKey}`);
+        });
+        isMultiSelectMode = false;
+        selectedDays.clear();
+        alert(`${cnt}개 날짜의 근무 기록이 삭제되었습니다.`);
+        renderCalendar();
+      }
+    }
+
     // Render Calendar
     function renderCalendar() {
       const grid = document.getElementById("calendarGrid");
       grid.innerHTML = "";
       document.getElementById("calTitle").innerText = `${curYear}-${pad(curMonth)}`;
+
+      const multiBar = document.getElementById("multiSelectBar");
+      if (multiBar) {
+        if (isMultiSelectMode) {
+          multiBar.classList.add("show");
+          document.getElementById("multiSelectCount").innerText = `선택 ${selectedDays.size}일`;
+          document.getElementById("btnMultiDel").innerText = `🗑️ 일괄 삭제 (${selectedDays.size})`;
+        } else {
+          multiBar.classList.remove("show");
+        }
+      }
 
       const firstDay = new Date(curYear, curMonth - 1, 1).getDay(); // 0: Sun, 6: Sat
       const totalDays = new Date(curYear, curMonth, 0).getDate();
@@ -1742,8 +1829,14 @@
         const holName = officialHolidays[dateKey] || localStorage.getItem(`holiday_${dateKey.replace(/-/g,"")}`);
         if (holName) cell.classList.add("holiday");
 
+        const isSelected = isMultiSelectMode && selectedDays.has(d);
         const isToday = isThisMonth && (d === todayDate);
-        if (isToday) {
+
+        if (isSelected) {
+          cell.style.borderColor = "#ef4444";
+          cell.style.borderWidth = "2px";
+          cell.style.background = "rgba(239, 68, 68, 0.12)";
+        } else if (isToday) {
           cell.style.background = "var(--blue-bg)";
           cell.style.borderColor = "var(--blue)";
           cell.style.borderWidth = "2px";
@@ -1753,7 +1846,9 @@
         const cellTop = document.createElement("div");
         cellTop.className = "cell-top";
         let dateHtml = `<span>${d}</span>`;
-        if (isToday) {
+        if (isSelected) {
+          dateHtml += `<span class="badge-check" style="background:#ef4444; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">✓</span>`;
+        } else if (isToday) {
           dateHtml += `<span class="badge-today" style="background:#2563eb; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">● 오늘</span>`;
         }
         const extra = getLunarOrSolarTermWeb(curYear, curMonth, d);
@@ -1837,8 +1932,46 @@
           }
         }
 
-        // Click event -> open bottom sheet
-        cell.onclick = () => openShiftSheet(dateKey, d);
+        // Cell Click & Long Press Handling
+        if (isMultiSelectMode) {
+          cell.onclick = (e) => {
+            e.stopPropagation();
+            vibrate();
+            if (selectedDays.has(d)) {
+              selectedDays.delete(d);
+              if (selectedDays.size === 0) isMultiSelectMode = false;
+            } else {
+              selectedDays.add(d);
+            }
+            renderCalendar();
+          };
+        } else {
+          let longTimer = null;
+          cell.addEventListener("touchstart", (e) => {
+            longTimer = setTimeout(() => {
+              vibrate();
+              isMultiSelectMode = true;
+              selectedDays.clear();
+              selectedDays.add(d);
+              renderCalendar();
+            }, 550);
+          }, { passive: true });
+          cell.addEventListener("touchmove", () => clearTimeout(longTimer), { passive: true });
+          cell.addEventListener("touchend", () => clearTimeout(longTimer), { passive: true });
+          cell.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            vibrate();
+            isMultiSelectMode = true;
+            selectedDays.clear();
+            selectedDays.add(d);
+            renderCalendar();
+          });
+
+          cell.onclick = () => {
+            if (isMultiSelectMode) return;
+            openShiftSheet(dateKey, d);
+          };
+        }
 
         grid.appendChild(cell);
       }
@@ -2813,5 +2946,13 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
     window.addEventListener("load", initApp);
   </script>
+  <!-- Floating Action Bar for Multi-Select Delete -->
+  <div id="multiSelectBar" class="multi-select-bar">
+    <span id="multiSelectCount" class="count-text">선택 1일</span>
+    <div style="display:flex; align-items:center;">
+      <button class="btn-cancel" onclick="cancelMultiSelect()">취소</button>
+      <button id="btnMultiDel" class="btn-del-batch" onclick="confirmMultiDeleteWeb()">🗑️ 일괄 삭제 (1)</button>
+    </div>
+  </div>
 </body>
 </html>
