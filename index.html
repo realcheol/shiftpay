@@ -1899,6 +1899,62 @@
     }
 
     // Render Calendar
+    
+    function openMultiApplyModal() {
+      if (selectedDays.size === 0) return;
+      document.getElementById("multiApplyTitle").innerText = `⚡ 선택 일괄 근무 입력 (${selectedDays.size}일)`;
+      document.getElementById("multiApplyDesc").innerText = `선택하신 ${selectedDays.size}개 날짜에 일괄 적용할 근무 형태를 선택하세요.`;
+      document.getElementById("multiApplyOverlay").classList.add("active");
+    }
+
+    function closeMultiApplyModal(e) {
+      if (e && e.target !== document.getElementById("multiApplyOverlay")) return;
+      document.getElementById("multiApplyOverlay").classList.remove("active");
+    }
+
+    function applyBatchPreset(mode) {
+      const year = currentCalDate.getFullYear();
+      const month = String(currentCalDate.getMonth() + 1).padStart(2, '0');
+      
+      selectedDays.forEach(day => {
+        const dStr = String(day).padStart(2, '0');
+        const k = `${year}-${month}-${dStr}`;
+        
+        // Clear previous values first
+        const keysToClear = ['mode', 'norm', 'ot', 'hol', 'holot', 'night', 'paid', 'extra', 'memo'];
+        keysToClear.forEach(suffix => localStorage.removeItem(`${k}-${suffix}`));
+        
+        localStorage.setItem(`${k}-mode`, mode);
+        if (mode === 'normal') {
+          localStorage.setItem(`${k}-norm`, '8');
+        } else if (mode === 'ot') {
+          localStorage.setItem(`${k}-norm`, '8');
+          localStorage.setItem(`${k}-ot`, '2');
+        } else if (mode === 'night_ot') {
+          localStorage.setItem(`${k}-norm`, '8');
+          localStorage.setItem(`${k}-ot`, '2');
+          localStorage.setItem(`${k}-night`, '7.5');
+        } else if (mode === 'night_normal') {
+          localStorage.setItem(`${k}-norm`, '8');
+          localStorage.setItem(`${k}-night`, '6');
+        } else if (mode === 'holiday') {
+          localStorage.setItem(`${k}-hol`, '8');
+        } else if (mode === 'annual') {
+          localStorage.setItem(`${k}-paid`, '8');
+        } else if (mode === 'half_am') {
+          localStorage.setItem(`${k}-norm`, '4');
+          localStorage.setItem(`${k}-paid`, '4');
+        }
+      });
+      
+      const count = selectedDays.size;
+      closeMultiApplyModal();
+      cancelMultiSelect();
+      renderCalendar();
+      calculateMonthlyPayroll();
+      showToast(`선택하신 ${count}개 날짜에 근무가 일괄 입력되었습니다.`);
+    }
+
     function renderCalendar() {
       const grid = document.getElementById("calendarGrid");
       grid.innerHTML = "";
@@ -1909,6 +1965,8 @@
         if (isMultiSelectMode) {
           multiBar.classList.add("show");
           document.getElementById("multiSelectCount").innerText = `선택 ${selectedDays.size}일`;
+          const applyBtn = document.getElementById("btnMultiApply");
+          if (applyBtn) applyBtn.innerText = `⚡ 일괄 입력 (${selectedDays.size})`;
           document.getElementById("btnMultiDel").innerText = `🗑️ 일괄 삭제 (${selectedDays.size})`;
         } else {
           multiBar.classList.remove("show");
@@ -3307,12 +3365,55 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
     window.addEventListener("load", initApp);
   </script>
-  <!-- Floating Action Bar for Multi-Select Delete -->
+  <!-- Floating Action Bar for Multi-Select Input & Delete -->
   <div id="multiSelectBar" class="multi-select-bar">
     <span id="multiSelectCount" class="count-text">선택 1일</span>
-    <div style="display:flex; align-items:center;">
+    <div style="display:flex; align-items:center; gap:6px;">
       <button class="btn-cancel" onclick="cancelMultiSelect()">취소</button>
+      <button id="btnMultiApply" class="btn-apply-batch" onclick="openMultiApplyModal()" style="background:var(--blue); color:#fff; border:none; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">⚡ 일괄 입력 (1)</button>
       <button id="btnMultiDel" class="btn-del-batch" onclick="confirmMultiDeleteWeb()">🗑️ 일괄 삭제 (1)</button>
+    </div>
+  </div>
+
+  <!-- Multi Apply Modal -->
+  <div class="modal-overlay" id="multiApplyOverlay" onclick="closeMultiApplyModal(event)">
+    <div class="modal-card" style="max-width:380px;">
+      <div class="modal-header">
+        <h3 id="multiApplyTitle" style="font-size:16px; font-weight:700;">⚡ 선택 일괄 근무 입력</h3>
+        <button class="modal-close" onclick="closeMultiApplyModal()">&times;</button>
+      </div>
+      <p id="multiApplyDesc" style="font-size:13px; color:var(--sub); margin-bottom:14px;">선택된 날짜들에 적용할 근무를 선택하세요.</p>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button class="preset-btn" onclick="applyBatchPreset('ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#d97706;">⚡ 주간 10h</span>
+          <span style="font-size:12px; color:var(--sub);">정상 8h + 연장 2h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#0284c7;">● 주간 정상</span>
+          <span style="font-size:12px; color:var(--sub);">8시간 인정</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('night_ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 10h</span>
+          <span style="font-size:12px; color:var(--sub);">8h + 2h + 심야7.5h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('night_normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 정상</span>
+          <span style="font-size:12px; color:var(--sub);">8h + 심야6.0h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('holiday')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#dc2626;">🔥 휴일 특근</span>
+          <span style="font-size:12px; color:var(--sub);">8h 특근 (150%)</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('annual')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌴 연차 휴가</span>
+          <span style="font-size:12px; color:var(--sub);">유급 8h 차감</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('half_am')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌗 오전 반차</span>
+          <span style="font-size:12px; color:var(--sub);">4h 근무 + 4h 연차</span>
+        </button>
+      </div>
+      <button onclick="closeMultiApplyModal()" style="margin-top:14px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); font-weight:600; cursor:pointer;">닫기</button>
     </div>
   </div>
 </body>
