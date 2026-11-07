@@ -723,7 +723,141 @@
     .pwa-banner span {
       font-size: 22px;
     }
-  </style>
+  
+    /* Categorized Time Input Cards */
+    .time-card {
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      border-left-width: 4px;
+    }
+    .time-card.blue { border-left-color: #0284c7; background: rgba(2, 132, 199, 0.05); }
+    .time-card.amber { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.05); }
+    .time-card.rose { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .time-card.purple { border-left-color: #8b5cf6; background: rgba(139, 92, 246, 0.05); }
+    .time-card.emerald { border-left-color: #10b981; background: rgba(16, 185, 129, 0.05); }
+
+    .time-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .time-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-card.blue .time-card-title { color: #0284c7; }
+    .time-card.amber .time-card-title { color: #d97706; }
+    .time-card.rose .time-card-title { color: #dc2626; }
+    .time-card.purple .time-card-title { color: #7c3aed; }
+    .time-card.emerald .time-card-title { color: #059669; }
+
+    .time-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .time-card.blue .time-card-badge { background: #e0f2fe; color: #0369a1; }
+    .time-card.amber .time-card-badge { background: #fef3c7; color: #b45309; }
+    .time-card.rose .time-card-badge { background: #fee2e2; color: #b91c1c; }
+    .time-card.purple .time-card-badge { background: #ede9fe; color: #6d28d9; }
+    .time-card.emerald .time-card-badge { background: #d1fae5; color: #047857; }
+
+    .time-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .time-input-wrap {
+      position: relative;
+    }
+    .time-input-wrap input {
+      width: 100%;
+      padding: 8px 24px 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--card-bg);
+      color: var(--text);
+      box-sizing: border-box;
+    }
+    .time-input-wrap .unit {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--subtext);
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .time-input-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--subtext);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .time-quick-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 0 8px 0;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .time-quick-chip {
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .time-quick-chip:active {
+      transform: scale(0.96);
+    }
+    .time-total-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(0, 91, 172, 0.08) 0%, rgba(2, 132, 199, 0.12) 100%);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+    .time-total-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-total-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+</style>
 </head>
 <body>
 
@@ -928,59 +1062,162 @@
 
   <!-- Custom Time Input Modal -->
   <div class="sheet-overlay" id="customTimeOverlay" onclick="closeCustomTimeModal(event)">
-    <div class="bottom-sheet" style="max-height:88vh;">
-      <div class="sheet-title" id="customTimeTitle" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>직접 시간 입력 및 메모</div>
-      
-      <div class="form-group">
-        <label>근무 형태 구분</label>
-        <select class="form-input" id="customModeSelect" onchange="onCustomModeChange()">
-          <option value="custom" selected>직접 시간 지정</option>
-          <option value="norm">주간 정상 (8h)</option>
-          <option value="ot">주간 연장 (8+2h)</option>
-          <option value="night_10">야간 10h (8+2h+심야7.5h)</option>
-          <option value="night_8">야간 정상 (8h+심야6.0h)</option>
-          <option value="holiday">휴일 특근 (8h)</option>
-          <option value="night_holiday_10">야간 특근 (8특+2연+심야7.5h)</option>
-          <option value="annual">연차 유급 (8h)</option>
-          <option value="half_am">오전 반차 (4h)</option>
-        </select>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <div class="form-group">
-          <label>정상근무 (시간)</label>
-          <input class="form-input" type="number" step="0.5" id="customNormHours" placeholder="8">
+    <div class="bottom-sheet" style="max-height:90vh; padding: 18px 16px;">
+      <!-- Title & Date Badge -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div class="sheet-title" id="customTimeTitle" style="margin-bottom:0; display:flex; align-items:center; gap:8px; font-size:16px;">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="var(--blue)"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          세부 시간 직접 입력
         </div>
-        <div class="form-group">
-          <label>평일연장 (시간)</label>
-          <input class="form-input" type="number" step="0.5" id="customOtHours" placeholder="0">
+        <span id="customDateBadge" style="font-size:11px; font-weight:700; color:var(--blue); background:rgba(2,132,199,0.1); padding:4px 8px; border-radius:12px;">2026-11-07</span>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="time-quick-chips">
+        <div class="time-quick-chip" onclick="applyCustomPreset('norm')"><span style="color:#0284c7;">●</span> 주간 정상 (8h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('ot')"><span style="color:#f59e0b;">⚡</span> 주간 연장 (10h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('night_10')"><span style="color:#8b5cf6;">🌙</span> 야간 10h</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('holiday')"><span style="color:#ef4444;">🔥</span> 휴일 특근 (8h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('annual')"><span style="color:#10b981;">🌴</span> 연차 유급</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('zero')">↺ 0시간 초기화</div>
+      </div>
+
+      <input type="hidden" id="customModeSelect" value="custom">
+
+      <!-- 1. Normal Work Card (Blue) -->
+      <div class="time-card blue">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            1. 기본 정상근무
+          </div>
+          <span class="time-card-badge">기본 1.0배</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">정상근무 (정취)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customNormHours" placeholder="8" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">유급 / 주차 인정</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customPaidHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <div class="form-group">
-          <label>야간/심야할증 (시간)</label>
-          <input class="form-input" type="number" step="0.5" id="customNightHours" placeholder="0">
+      <!-- 2. Overtime Work Card (Amber) -->
+      <div class="time-card amber">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            2. 평일 연장근무
+          </div>
+          <span class="time-card-badge">할증 1.5배</span>
         </div>
-        <div class="form-group">
-          <label>휴일특근 (시간)</label>
-          <input class="form-input" type="number" step="0.5" id="customHolHours" placeholder="0">
+        <div class="time-card-grid">
+          <div style="grid-column: span 2;">
+            <label class="time-input-label">평일 연장 (조합설명회 인정 포함)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customOtHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>특근연장 / 가급 (시간)</label>
-        <input class="form-input" type="number" step="0.5" id="customExtraHours" placeholder="0">
+      <!-- 3. Holiday Work Card (Rose) -->
+      <div class="time-card rose">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+            3. 휴일 특근근무
+          </div>
+          <span class="time-card-badge">특근 1.5배 / 연장 2.0배</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">휴일 특근 (최대 8h)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customHolHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">특근 연장 (8h 초과분)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customHolOtHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>메모 (예: 조합설명회 2시간 등)</label>
-        <input class="form-input" type="text" id="customMemo" placeholder="특이사항 메모 (선택사항)">
+      <!-- 4. Night Work Card (Purple) -->
+      <div class="time-card purple">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            4. 야간 및 심야할증
+          </div>
+          <span class="time-card-badge">0.5배 가산 (22~06시)</span>
+        </div>
+        <div>
+          <label class="time-input-label">심야 근로시간 (야간조 10h 시 7.5h)</label>
+          <div class="time-input-wrap">
+            <input type="number" step="0.5" id="customNightHours" placeholder="0" oninput="updateLiveTotalHours()">
+            <span class="unit">h</span>
+          </div>
+        </div>
       </div>
 
-      <div style="display:flex; gap:8px; margin-top:14px;">
+      <!-- 5. Allowance & Memo Card (Emerald) -->
+      <div class="time-card emerald">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            5. 가급 & 특이사항 메모
+          </div>
+          <span class="time-card-badge">상주휴게 가급</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">상주휴게 가급</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customExtraHours" placeholder="1.0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">특이사항 메모</label>
+            <div class="time-input-wrap">
+              <input type="text" id="customMemo" placeholder="예: 설명회, 조퇴">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Total Summary Bar -->
+      <div class="time-total-bar">
+        <div class="time-total-title">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          당일 총 인정 근로시간
+        </div>
+        <div class="time-total-val" id="customLiveTotal">10.0h</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:8px;">
         <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeCustomTimeModal()">취소</button>
-        <button class="sheet-btn blue" style="flex:2; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="saveCustomTime()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>저장하기</button>
+        <button class="sheet-btn blue" style="flex:2; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="saveCustomTime()">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          설정 저장하기
+        </button>
       </div>
     </div>
   </div>
@@ -1875,95 +2112,126 @@
     }
 
     // Custom Time Modal Handlers
+    function updateLiveTotalHours() {
+      const norm = parseFloat(document.getElementById("customNormHours").value) || 0;
+      const paid = parseFloat(document.getElementById("customPaidHours").value) || 0;
+      const ot = parseFloat(document.getElementById("customOtHours").value) || 0;
+      const hol = parseFloat(document.getElementById("customHolHours").value) || 0;
+      const holOt = parseFloat(document.getElementById("customHolOtHours").value) || 0;
+      const total = norm + paid + ot + hol + holOt;
+      
+      const badge = document.getElementById("customLiveTotal");
+      if (badge) {
+        badge.innerText = `${total.toFixed(1)}h`;
+      }
+    }
+
+    function applyCustomPreset(p) {
+      if (p === 'norm') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "1.0";
+      } else if (p === 'ot') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "1.0";
+      } else if (p === 'night_10') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "7.5";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'holiday') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "8";
+        document.getElementById("customHolOtHours").value = "2";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'annual') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "8";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'zero') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+        document.getElementById("customMemo").value = "";
+      }
+      updateLiveTotalHours();
+      vibrate();
+    }
+
     function openCustomTimeModal() {
       document.getElementById("shiftSheetOverlay").style.display = "none";
       document.getElementById("customTimeOverlay").style.display = "flex";
       
       if (selectedDateStr) {
-        document.getElementById("customTimeTitle").innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>${selectedDateStr} 세부 시간 입력`;
+        const badge = document.getElementById("customDateBadge");
+        if (badge) badge.innerText = selectedDateStr;
+        
         const mode = localStorage.getItem(`${selectedDateStr}-mode`) || "custom";
-        document.getElementById("customModeSelect").value = mode;
-
         const norm = localStorage.getItem(`${selectedDateStr}-norm`);
+        const paid = localStorage.getItem(`${selectedDateStr}-paid`);
         const ot = localStorage.getItem(`${selectedDateStr}-ot`);
         const night = localStorage.getItem(`${selectedDateStr}-night`);
         const hol = localStorage.getItem(`${selectedDateStr}-hol`);
+        const holOt = localStorage.getItem(`${selectedDateStr}-holot`);
         const extra = localStorage.getItem(`${selectedDateStr}-extra`);
         const memo = localStorage.getItem(`${selectedDateStr}-memo`);
 
-        document.getElementById("customNormHours").value = norm !== null ? norm : (mode === "norm" || mode === "ot" || mode === "night_10" || mode === "night_8" ? "8" : (mode === "half_am" ? "4" : "0"));
-        document.getElementById("customOtHours").value = ot !== null ? ot : (mode === "ot" || mode === "night_10" || mode === "night_holiday_10" ? "2" : "0");
-        document.getElementById("customNightHours").value = night !== null ? night : (mode === "night_10" || mode === "night_holiday_10" ? "7.5" : (mode === "night_8" ? "6.0" : "0"));
-        document.getElementById("customHolHours").value = hol !== null ? hol : (mode === "holiday" || mode === "night_holiday_10" ? "8" : "0");
-        document.getElementById("customExtraHours").value = extra !== null ? extra : "0";
+        document.getElementById("customNormHours").value = norm !== null ? norm : (mode === "norm" || mode === "ot" || mode === "night_10" ? "8" : "0");
+        document.getElementById("customPaidHours").value = paid !== null ? paid : (mode === "annual" || mode === "summer" ? "8" : "0");
+        document.getElementById("customOtHours").value = ot !== null ? ot : (mode === "ot" || mode === "night_10" ? "2" : "0");
+        document.getElementById("customNightHours").value = night !== null ? night : (mode === "night_10" ? "7.5" : "0");
+        document.getElementById("customHolHours").value = hol !== null ? hol : (mode === "holiday" ? "8" : "0");
+        document.getElementById("customHolOtHours").value = holOt !== null ? holOt : "0";
+        document.getElementById("customExtraHours").value = extra !== null ? extra : (mode === "norm" || mode === "ot" ? "1.0" : "0");
         document.getElementById("customMemo").value = memo || "";
+        
+        updateLiveTotalHours();
       }
       vibrate();
     }
 
-    function onCustomModeChange() {
-      const m = document.getElementById("customModeSelect").value;
-      if (m === "norm") {
-        document.getElementById("customNormHours").value = "8";
-        document.getElementById("customOtHours").value = "0";
-        document.getElementById("customNightHours").value = "0";
-        document.getElementById("customHolHours").value = "0";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "ot") {
-        document.getElementById("customNormHours").value = "8";
-        document.getElementById("customOtHours").value = "2";
-        document.getElementById("customNightHours").value = "0";
-        document.getElementById("customHolHours").value = "0";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "night_10") {
-        document.getElementById("customNormHours").value = "8";
-        document.getElementById("customOtHours").value = "2";
-        document.getElementById("customNightHours").value = "7.5";
-        document.getElementById("customHolHours").value = "0";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "night_8") {
-        document.getElementById("customNormHours").value = "8";
-        document.getElementById("customOtHours").value = "0";
-        document.getElementById("customNightHours").value = "6.0";
-        document.getElementById("customHolHours").value = "0";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "holiday") {
-        document.getElementById("customNormHours").value = "0";
-        document.getElementById("customOtHours").value = "0";
-        document.getElementById("customNightHours").value = "0";
-        document.getElementById("customHolHours").value = "8";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "night_holiday_10") {
-        document.getElementById("customNormHours").value = "0";
-        document.getElementById("customOtHours").value = "2";
-        document.getElementById("customNightHours").value = "7.5";
-        document.getElementById("customHolHours").value = "8";
-        document.getElementById("customExtraHours").value = "0";
-      } else if (m === "half_am") {
-        document.getElementById("customNormHours").value = "4";
-        document.getElementById("customOtHours").value = "0";
-        document.getElementById("customNightHours").value = "0";
-        document.getElementById("customHolHours").value = "0";
-        document.getElementById("customExtraHours").value = "0";
-      }
-    }
-
     function saveCustomTime() {
       if (!selectedDateStr) return;
-      const m = document.getElementById("customModeSelect").value;
-      localStorage.setItem(`${selectedDateStr}-mode`, m);
+      localStorage.setItem(`${selectedDateStr}-mode`, "custom");
 
       const norm = document.getElementById("customNormHours").value.trim();
+      const paid = document.getElementById("customPaidHours").value.trim();
       const ot = document.getElementById("customOtHours").value.trim();
       const night = document.getElementById("customNightHours").value.trim();
       const hol = document.getElementById("customHolHours").value.trim();
+      const holOt = document.getElementById("customHolOtHours").value.trim();
       const extra = document.getElementById("customExtraHours").value.trim();
       const memo = document.getElementById("customMemo").value.trim();
 
       if (norm) localStorage.setItem(`${selectedDateStr}-norm`, norm); else localStorage.removeItem(`${selectedDateStr}-norm`);
+      if (paid) localStorage.setItem(`${selectedDateStr}-paid`, paid); else localStorage.removeItem(`${selectedDateStr}-paid`);
       if (ot) localStorage.setItem(`${selectedDateStr}-ot`, ot); else localStorage.removeItem(`${selectedDateStr}-ot`);
       if (night) localStorage.setItem(`${selectedDateStr}-night`, night); else localStorage.removeItem(`${selectedDateStr}-night`);
       if (hol) localStorage.setItem(`${selectedDateStr}-hol`, hol); else localStorage.removeItem(`${selectedDateStr}-hol`);
+      if (holOt) localStorage.setItem(`${selectedDateStr}-holot`, holOt); else localStorage.removeItem(`${selectedDateStr}-holot`);
       if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
       if (memo) localStorage.setItem(`${selectedDateStr}-memo`, memo); else localStorage.removeItem(`${selectedDateStr}-memo`);
 
