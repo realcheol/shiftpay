@@ -1901,6 +1901,26 @@
 
     // Render Calendar
     
+    // 간단 토스트 안내 (일괄 입력 완료 등) — 11-09 존재하지 않는 showToast 호출 결함 패치
+    let _toastTimer = null;
+    function showToast(msg) {
+      let el = document.getElementById("spToast");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "spToast";
+        el.style.cssText = "position:fixed; left:50%; bottom:78px; transform:translateX(-50%); background:rgba(17,24,39,0.93); color:#fff; font-size:13px; font-weight:600; padding:10px 16px; border-radius:20px; z-index:100001; max-width:88vw; text-align:center; box-shadow:0 6px 18px rgba(0,0,0,0.25); transition:opacity .2s ease; pointer-events:none;";
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.style.display = "block";
+      el.style.opacity = "1";
+      if (_toastTimer) clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(function () {
+        el.style.opacity = "0";
+        setTimeout(function () { if (el.style.opacity === "0") el.style.display = "none"; }, 220);
+      }, 1900);
+    }
+
     function openMultiApplyModal() {
       if (selectedDays.size === 0) return;
       document.getElementById("multiApplyTitle").innerText = `⚡ 선택 일괄 근무 입력 (${selectedDays.size}일)`;
@@ -3459,7 +3479,6 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       sp.addEventListener("click", hide);
     })();
   </script>
-
   <!-- ===== TEMPORARY VERIFICATION HARNESS (batch input) ===== -->
   <pre id="batchTestOut" style="position:fixed; inset:0; z-index:100000; background:#fff; color:#111; font-size:12px; padding:12px; overflow:auto; white-space:pre-wrap;"></pre>
   <script>
