@@ -2856,7 +2856,7 @@
 • 🏗️ 사내 캐릭터 '피코(PICO)' 스플래시 로딩 화면 신설: 안전모+파란 작업복 파이팅 애니메이션 (터치 시 바로 건너뛰기)
 • 📊 근무 통계 & 분석 차트 (v1.3.2 정식 통합): 정상·연장·특근 도넛 차트 + 요일별(일~토) 누적 막대 그래프 + 월 이동 조회
 • 💾 데이터 통합 관리 카드 (v1.3.2 정식 통합): 엑셀 내보내기 / 전체 백업 / 복원 3종 원터치 카드
-• 🛡️ 연도별 설정(setting_YYYY_*)·기본 설정(setting_*) 불일치 전수 보정: 저장·초기화·OCR 동기화·직급 직책수당·근속수당 선택 시 두 키를 항상 함께 저장/삭제 (설치형 앱 동일 패치)
+• 🛡️ [설치형] 연도별 설정(setting_YYYY_*)·기본 설정(setting_*) 불일치 전수 보정: 저장·초기화·OCR 동기화·직급 직책수당·근속수당 선택 시 두 키를 항상 함께 저장/삭제 (웹은 단일 키 체계라 영향 없음)
 • 🗓️ 정년 퇴직일 단협 제28조 반영: 만 60세 도달 연도의 12월 31일로 정확 산출 (연월 점프 프리셋도 12월 연동)
 • ⚖️ 근속수당 20년 경계 교정: 19년차 84,500원 → 20년차부터 89,500원 정상 적용
 • 📅 휴일 수동 등록 날짜 자동 정규화: 하이픈/점/슬래시 입력도 20261120 형태로 저장
@@ -3444,6 +3444,10 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     (function () {
       var sp = document.getElementById("picoSplash");
       if (!sp) return;
+      var seen = false;
+      try { seen = sessionStorage.getItem("picoSplashShown") === "1"; } catch (e) {}
+      if (seen) { sp.parentNode.removeChild(sp); return; }
+      try { sessionStorage.setItem("picoSplashShown", "1"); } catch (e) {}
       var hidden = false;
       var hide = function () {
         if (hidden) return;
