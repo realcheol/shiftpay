@@ -1,0 +1,3528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ShiftPay - 현대스틸파이프 나의 근무·급여 관리</title>
+  
+  <!-- iOS Standalone Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ShiftPay">
+  <meta name="theme-color" content="#142035">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --sub: #64748b;
+      --blue: #005bac; /* 현대스틸파이프 공식 브랜드 블루 */
+      --blue-sub: #0284c7; /* 스카이 메탈릭 블루 */
+      --steel-grad: linear-gradient(135deg, #005bac 0%, #0284c7 60%, #38bdf8 100%);
+      --steel-dark: #0a2540;
+      --blue-bg: #eff6ff;
+      --red: #ef4444;
+      --red-bg: #fee2e2;
+      --emerald: #10b981;
+      --emerald-bg: #ecfdf5;
+      --indigo: #4f46e5;
+      --indigo-bg: #eef2ff;
+      --yellow-bg: #fffbeb;
+      --yellow-border: #fef3c7;
+      --yellow-text: #92400e;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    body.dark {
+      --bg: #0a1120;
+      --surface: #111c30;
+      --card-bg: #15223c;
+      --border: #1e2e4a;
+      --text: #f1f5f9;
+      --sub: #94a3b8;
+      --blue: #38bdf8;
+      --blue-sub: #0284c7;
+      --steel-grad: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #005bac 100%);
+      --steel-dark: #07172c;
+      --blue-bg: #1e293b;
+      --red: #f87171;
+      --red-bg: #3f1d24;
+      --emerald: #34d399;
+      --emerald-bg: #064e3b;
+      --indigo: #818cf8;
+      --indigo-bg: #1e1b4b;
+      --yellow-bg: #2d2613;
+      --yellow-border: #45371c;
+      --yellow-text: #fef08a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", Roboto, "Noto Sans KR", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 30px);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* App Header */
+    .app-header {
+      position: relative;
+      width: 100%;
+      height: 125px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 14px;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: background-image 0.3s ease;
+    }
+    .app-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.4) 60%, rgba(15,23,42,0.85) 100%);
+      z-index: 1;
+    }
+    .header-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      padding: 0 4px;
+    }
+    .header-center h1 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      margin: 0;
+    }
+    .header-center p {
+      font-size: 11px;
+      color: #d7ebff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      cursor: pointer;
+      margin-top: 2px;
+    }
+    .icon-btn {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Glass User Pill */
+    .header-bottom {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .user-pill {
+      background: rgba(12, 24, 48, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 10px 12px;
+    }
+
+    /* D-Day Yellow Banner */
+    .dday-card {
+      background: var(--yellow-bg);
+      border: 1px solid var(--yellow-border);
+      color: var(--yellow-text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+    .dday-line {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .dday-sub {
+      font-size: 11.5px;
+      opacity: 0.9;
+    }
+
+    /* Calendar Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 12px 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px 10px;
+    }
+    .cal-title-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .today-btn {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Weekday bar */
+    .weekday-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 0;
+      color: var(--sub);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+    .weekday-row .sun { color: var(--red); }
+    .weekday-row .sat { color: var(--blue); }
+
+    /* Calendar Grid */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .cal-cell {
+      min-height: 64px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s;
+    }
+    .cal-cell:active {
+      transform: scale(0.97);
+    }
+    .cal-cell.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+    .cell-top {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 3px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .cell-lunar {
+      font-size: 8.5px;
+      font-weight: 500;
+      color: var(--sub);
+      opacity: 0.85;
+      letter-spacing: -0.3px;
+    }
+    .cell-term {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: -0.3px;
+    }
+    .cal-cell.sun .cell-top { color: var(--red); }
+    .cal-cell.sat .cell-top { color: var(--blue); }
+    .cal-cell.holiday .cell-top { color: var(--red); }
+
+    .today-ring {
+      background: var(--blue);
+      color: #fff !important;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .holiday-name {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    /* Shift Pill Badges */
+    .shift-pill {
+      margin-top: auto;
+      border-radius: 4px;
+      padding: 2px 3px;
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .shift-norm { background: var(--indigo-bg); color: var(--indigo); border: 1px solid rgba(79,70,229,0.3); }
+    .shift-ot { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(37,99,235,0.3); }
+    .shift-holiday { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .shift-annual { background: var(--emerald-bg); color: var(--emerald); border: 1px solid rgba(16,185,129,0.3); }
+
+    /* Quick Action Bar under calendar */
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-quick {
+      flex: 1;
+      padding: 9px 6px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-quick.primary {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border-color: var(--blue);
+    }
+    body.dark .btn-quick.primary {
+      background: rgba(30, 58, 138, 0.4);
+      color: #93c5fd;
+      border-color: #3b82f6;
+    }
+
+    /* Guide Banner (Native App Style) */
+    .guide-banner {
+      background: #eef5ff;
+      border: 1px solid #c7dcfb;
+      color: #1d4ed8;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    body.dark .guide-banner {
+      background: #172554;
+      border-color: #1e3a8a;
+      color: #93c5fd;
+    }
+
+    /* Payroll & Summary Card */
+    .hours-badge-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .hour-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 2px;
+    }
+    .hour-box .lbl {
+      font-size: 10px;
+      color: var(--sub);
+      font-weight: 600;
+    }
+    .hour-box .val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    .pay-receipt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      padding: 5px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .receipt-row:last-child {
+      border-bottom: none;
+    }
+    .receipt-row.total {
+      border-top: 2px solid var(--border);
+      border-bottom: none;
+      margin-top: 6px;
+      padding-top: 8px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .receipt-val {
+      font-weight: 700;
+    }
+
+    .accordion-btn {
+      width: 100%;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--sub);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .accordion-content {
+      display: none;
+      font-size: 11.5px;
+      color: var(--sub);
+      line-height: 1.6;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
+    }
+
+    /* Drawer / Slide Menu */
+    .drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+      display: none;
+      backdrop-filter: blur(2px);
+    }
+    .drawer {
+      position: fixed;
+      top: 0; left: -320px; bottom: 0;
+      width: 300px;
+      background: var(--card-bg);
+      z-index: 100;
+      transition: left 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 16px rgba(0,0,0,0.2);
+      overflow-y: auto;
+    }
+    .drawer.open {
+      left: 0;
+    }
+    .drawer-header {
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .drawer-header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,23,42,0.65);
+    }
+    .drawer-header * { position: relative; z-index: 2; }
+    .drawer-menu {
+      padding: 10px;
+      flex: 1;
+    }
+    .menu-sec-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--sub);
+      padding: 8px 6px 4px;
+      text-transform: uppercase;
+    }
+    
+    
+    .inline-icon {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: -2px;
+      margin-right: 5px;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      flex-shrink: 0;
+      stroke: currentColor;
+    }
+    .preset-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      vertical-align: -2px;
+      stroke: currentColor;
+    }
+    .btn-svg-icon {
+      width: 17px;
+      height: 17px;
+      margin-right: 6px;
+      vertical-align: -3px;
+      stroke: currentColor;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 5px;
+    }
+    .menu-item:active {
+      background: var(--bg);
+    }
+
+    /* Bottom Sheet Modal (iOS Style) */
+    .sheet-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .bottom-sheet {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 500px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 16px 16px calc(var(--safe-bottom) + 16px);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      animation: slideUp 0.25s ease-out;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-title {
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .sheet-btn {
+      padding: 12px 10px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+    }
+    .sheet-btn:active {
+      filter: brightness(0.9);
+    }
+    .sheet-btn.red {
+      background: var(--red-bg);
+      color: var(--red);
+      border-color: rgba(239,68,68,0.3);
+    }
+    .sheet-btn.blue {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border-color: rgba(37,99,235,0.3);
+    }
+    .sheet-btn.emerald {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border-color: rgba(16,185,129,0.3);
+    }
+    .sheet-btn.indigo {
+      background: var(--indigo-bg);
+      color: var(--indigo);
+      border-color: rgba(79,70,229,0.3);
+    }
+
+    /* Settings Form */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+      margin-bottom: 4px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    /* PWA Prompt Banner */
+    .pwa-banner {
+      background: #1e293b;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .pwa-banner span {
+      font-size: 22px;
+    }
+  
+    /* Categorized Time Input Cards */
+    .time-card {
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      border-left-width: 4px;
+    }
+    .time-card.blue { border-left-color: #0284c7; background: rgba(2, 132, 199, 0.05); }
+    .time-card.amber { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.05); }
+    .time-card.rose { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .time-card.purple { border-left-color: #8b5cf6; background: rgba(139, 92, 246, 0.05); }
+    .time-card.emerald { border-left-color: #10b981; background: rgba(16, 185, 129, 0.05); }
+
+    .time-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .time-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-card.blue .time-card-title { color: #0284c7; }
+    .time-card.amber .time-card-title { color: #d97706; }
+    .time-card.rose .time-card-title { color: #dc2626; }
+    .time-card.purple .time-card-title { color: #7c3aed; }
+    .time-card.emerald .time-card-title { color: #059669; }
+
+    .time-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .time-card.blue .time-card-badge { background: #e0f2fe; color: #0369a1; }
+    .time-card.amber .time-card-badge { background: #fef3c7; color: #b45309; }
+    .time-card.rose .time-card-badge { background: #fee2e2; color: #b91c1c; }
+    .time-card.purple .time-card-badge { background: #ede9fe; color: #6d28d9; }
+    .time-card.emerald .time-card-badge { background: #d1fae5; color: #047857; }
+
+    .time-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .time-input-wrap {
+      position: relative;
+    }
+    .time-input-wrap input {
+      width: 100%;
+      padding: 8px 24px 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--card-bg);
+      color: var(--text);
+      box-sizing: border-box;
+    }
+    .time-input-wrap .unit {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--subtext);
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .time-input-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--subtext);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .time-quick-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 0 8px 0;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .time-quick-chip {
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .time-quick-chip:active {
+      transform: scale(0.96);
+    }
+    .time-total-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(0, 91, 172, 0.08) 0%, rgba(2, 132, 199, 0.12) 100%);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+    .time-total-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-total-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    /* Multi-Select Delete Floating Bar */
+    .multi-select-bar {
+      display: none;
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 460px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .multi-select-bar.show {
+      display: flex !important;
+    }
+    .multi-select-bar .count-text {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .multi-select-bar .btn-cancel {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .multi-select-bar .btn-del-batch {
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #b91c1c;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+</style>
+</head>
+<body>
+
+  <!-- App Header with Factory Background -->
+  <header class="app-header" id="appHeader" style="background-image: url('factories/factory_1.jpg');">
+    <div class="header-top">
+      <button class="icon-btn" onclick="openDrawer()" title="메뉴 열기" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      <div class="header-center">
+        <h1>나의 근무·급여 관리</h1>
+        <p id="factoryNameLabel" onclick="switchFactory()"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>본사 / 울산 1공장 (ERW) ▾</p>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" onclick="toggleDarkMode()" id="darkToggleBtn" title="다크모드 전환" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+      </div>
+    </div>
+    
+    <div class="header-bottom">
+      <div class="user-pill" onclick="openSettings()" id="userSummaryPill">
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Onboarding Guide Banner (Native App Style) -->
+    <div class="guide-banner" id="guideBanner" onclick="showDoc('onboarding')" style="display:none;">
+      <span style="display:inline-flex;align-items:center;gap:6px;"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>처음이신가요? 3단계 이용안내 확인 및 기본정보 입력하기 ❯</span>
+    </div>
+
+    <!-- Calendar Card -->
+    <div class="card">
+      <div class="cal-header">
+        <div class="cal-nav-left" style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
+          <button type="button" class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:12px; padding:4px 7px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px; white-space:nowrap; flex-shrink:0; display:inline-flex; align-items:center;"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
+          <button type="button" class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 6px; font-weight:700; border-radius:8px; white-space:nowrap; flex-shrink:0; letter-spacing:-0.3px; display:inline-flex; align-items:center; gap:2px;"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급ON</button>
+        </div>
+        <div class="cal-nav-center" style="display:flex; align-items:center; gap:5px;">
+          <button class="nav-btn" onclick="prevMonth()" style="padding:4px 10px; font-size:13px;">◀</button>
+          <button class="cal-title-btn" onclick="openMonthPicker()" style="padding:4px 10px; font-size:16px;">
+            <span id="calTitle">2026-11</span> ▾
+          </button>
+          <button class="nav-btn" onclick="nextMonth()" style="padding:4px 10px; font-size:13px;">▶</button>
+        </div>
+        <div class="cal-nav-right" style="display:flex; align-items:center; gap:4px;">
+          <button class="today-btn" onclick="openStatsModal()" title="근무 통계 및 차트" style="background:var(--surface); border:1px solid var(--border); color:var(--text); padding:5px 8px; font-size:11.5px; display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 9 9"></path></svg>통계</button>
+          <button class="today-btn" onclick="goToday()" style="padding:4px 10px; font-size:12px;">오늘</button>
+        </div>
+      </div>
+
+      <div class="weekday-row">
+        <div class="sun">일</div>
+        <div>월</div>
+        <div>화</div>
+        <div>수</div>
+        <div>목</div>
+        <div>금</div>
+        <div class="sat">토</div>
+      </div>
+
+      <div class="calendar-grid" id="calendarGrid"></div>
+
+      <!-- Quick Action Buttons under calendar -->
+      <div class="quick-actions" style="display:flex; gap:8px;">
+        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.4; display:flex; align-items:center; justify-content:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
+        <button class="btn-quick" id="btnStatsChart" onclick="openStatsModal()" style="flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 근무 통계</button>
+      </div>
+    </div>
+
+    <!-- Payroll & Work Hours Summary Card -->
+    <div class="card">
+      <div class="hours-badge-row">
+        <div class="hour-box">
+          <div class="lbl">정상</div>
+          <div class="val" id="sumNorm">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">평일연장</div>
+          <div class="val" id="sumOt">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">휴일특근</div>
+          <div class="val" id="sumHol">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">휴일가급</div>
+          <div class="val" id="sumExtra">0h</div>
+        </div>
+        <div class="hour-box">
+          <div class="lbl">야간근로</div>
+          <div class="val" id="sumNight">0h</div>
+        </div>
+      </div>
+
+      <div class="pay-receipt">
+        <div class="receipt-row">
+          <span>기본급 (209h 산출)</span>
+          <span class="receipt-val" id="valBasePay">0원</span>
+        </div>
+        <div class="receipt-row">
+          <span>시간외 수당 총액</span>
+          <span class="receipt-val" id="valOtPay">0원</span>
+        </div>
+        <div class="receipt-row">
+          <span>직책수당</span>
+          <span class="receipt-val" id="valDutyPay">0원</span>
+        </div>
+        <div class="receipt-row" id="rowSummerPay" style="display:none;">
+          <span>하계건강지원비 (7·8·9월)</span>
+          <span class="receipt-val" id="valSummerPay">200,000원</span>
+        </div>
+        <div class="receipt-row" id="rowRetroPay" style="display:none; color:#b46400; font-weight:600;">
+          <span style="display:inline-flex; align-items:center; gap:4px;"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급분 (임단협 타결)</span>
+          <span class="receipt-val" id="valRetroPay" style="color:#b46400;">+1,452,800원</span>
+        </div>
+        <div class="receipt-row">
+          <span>예상 공제총액 (4대보험/세금)</span>
+          <span class="receipt-val" style="color:var(--red);" id="valDeduction">-0원</span>
+        </div>
+        <div class="receipt-row total">
+          <span>예상 실수령액</span>
+          <span class="receipt-val" id="valNetPay">0원</span>
+        </div>
+
+        <button class="accordion-btn" onclick="toggleAccordion()">▾ 단체협약 급여 산출 상세 계산식 펼치기</button>
+        <div class="accordion-content" id="accordionContent">
+          • 통상시급: <span id="accOrdinaryRate">13,500</span>원 (기본시급: <span id="accBaseRate">12,000</span>원)<br>
+          • 연장수당: 연장시간 × 통상시급 × 1.5배<br>
+          • 특근수당: 특근(8h 이내) × 통상시급 × 1.5배 + 특근연장(8h 초과) × 통상시급 × 2.0배<br>
+          • 야간수당: 야간시간 × 통상시급 × 0.5배<br>
+          • 정년 만 60세 D-Day 및 근속연차 자동 연동
+        </div>
+      </div>
+    </div>
+
+    <!-- PWA Install Guide Banner for iPhone/Android -->
+    <div class="pwa-banner">
+      <span>💡</span>
+      <div>
+        <strong>아이폰에서 앱처럼 설치하기:</strong><br>
+        사파리 하단 공유 버튼(⎋) 누르고 <strong>[홈 화면에 추가]</strong>를 누르면 앱스토어 앱과 똑같이 홈 화면에 아이콘이 생겨요!
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Left Drawer Overlay & Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header" id="drawerHeader" style="background-image: url('factories/factory_1.jpg');">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 18px; display:flex; align-items:center; gap:8px;"><img src="icon.png" style="width:24px; height:24px; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.3);">ShiftPay</h2>
+        <button onclick="closeDrawer()" style="background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;"><svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div style="font-size: 11px; margin-top:5px; display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; background:rgba(10,37,64,0.6); border:1px solid rgba(255,255,255,0.2);" id="drawerFactoryBadge">
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>본사 / 울산 1공장 (ERW) ▾
+      </div>
+      <div style="font-size: 11.5px; opacity: 0.95; margin-top:5px; display:flex; align-items:center; gap:4px;" id="drawerUserInfo">
+        <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>기본정보 미입력 (터치하여 설정)
+      </div>
+    </div>
+
+    <div class="drawer-menu">
+      <div class="menu-sec-title">급여 및 통계 분석</div>
+      <div class="menu-item" onclick="openStatsModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> <strong>근무 통계 및 분석 차트</strong></div>
+      <div class="menu-item" onclick="openSettings(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> 기본정보 및 급여 설정</div>
+      <div class="menu-item" onclick="openBonusCalc(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg> 2026년 성과·격려금 계산기</div>
+      <div class="menu-item" onclick="openDataModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <strong>데이터 통합 관리 (백업·복원·엑셀)</strong></div>
+      <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 이번 달 전체 근무 초기화</div>
+
+      <div class="menu-sec-title">사내 복지 & 협약</div>
+      <div class="menu-item" onclick="showDoc('cba'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15l2 2 4-4"></path></svg> 2026년 노사단체협약 요약</div>
+      <div class="menu-item" onclick="showDoc('support'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="22.01"></line><line x1="15" y1="22" x2="15" y2="22.01"></line><line x1="9" y1="18" x2="9" y2="18.01"></line><line x1="15" y1="18" x2="15" y2="18.01"></line><line x1="9" y1="14" x2="9" y2="14.01"></line><line x1="15" y1="14" x2="15" y2="14.01"></line><line x1="9" y1="10" x2="9" y2="10.01"></line><line x1="15" y1="10" x2="15" y2="10.01"></line><line x1="9" y1="6" x2="9" y2="6.01"></line><line x1="15" y1="6" x2="15" y2="6.01"></line></svg> 현대스틸파이프 지원제도 (12종)</div>
+      <div class="menu-item" onclick="showDoc('partners'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> 회사 제휴업체 현황 (28개사)</div>
+
+      <div class="menu-sec-title">앱 정보</div>
+      <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
+      <a class="menu-item" href="ShiftPay_v1.3.2.apk" download style="text-decoration:none; color:inherit;"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 📲 설치형 앱 다운로드 (v1.3.2)</a>
+      <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
+      <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.2)</div>
+    </div>
+  </div>
+
+  <!-- Bottom Sheet: Shift Preset Selector -->
+  <div class="sheet-overlay" id="shiftSheetOverlay" onclick="closeShiftSheet(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
+      <div class="sheet-grid">
+        <button class="sheet-btn indigo" onclick="selectPreset('norm')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
+        <button class="sheet-btn blue" onclick="selectPreset('ot')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 주간 10h<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
+        <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
+        <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('holiday')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
+        <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
+        <button class="sheet-btn emerald" onclick="selectPreset('annual')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
+        <button class="sheet-btn" onclick="selectPreset('half_am')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg> 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
+      </div>
+      <button class="sheet-btn" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openCustomTimeModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> 직접 시간 입력 및 메모</button>
+      <button class="sheet-btn red" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="deleteSelectedDay()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 해당 날짜 근무 삭제</button>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Custom Time Input Modal -->
+  <div class="sheet-overlay" id="customTimeOverlay" onclick="closeCustomTimeModal(event)">
+    <div class="bottom-sheet" style="max-height:90vh; padding: 18px 16px;">
+      <!-- Title & Date Badge -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div class="sheet-title" id="customTimeTitle" style="margin-bottom:0; display:flex; align-items:center; gap:8px; font-size:16px;">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="var(--blue)"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          세부 시간 직접 입력
+        </div>
+        <span id="customDateBadge" style="font-size:11px; font-weight:700; color:var(--blue); background:rgba(2,132,199,0.1); padding:4px 8px; border-radius:12px;">2026-11-07</span>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="time-quick-chips">
+        <div class="time-quick-chip" onclick="applyCustomPreset('norm')"><span style="color:#0284c7;">●</span> 주간 정상 (8h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('ot')"><span style="color:#f59e0b;">⚡</span> 주간 연장 (10h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('night_10')"><span style="color:#8b5cf6;">🌙</span> 야간 10h</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('holiday')"><span style="color:#ef4444;">🔥</span> 휴일 특근 (8h)</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('annual')"><span style="color:#10b981;">🌴</span> 연차 유급</div>
+        <div class="time-quick-chip" onclick="applyCustomPreset('zero')">↺ 0시간 초기화</div>
+      </div>
+
+      <input type="hidden" id="customModeSelect" value="custom">
+
+      <!-- 1. Normal Work Card (Blue) -->
+      <div class="time-card blue">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            1. 기본 정상근무
+          </div>
+          <span class="time-card-badge">기본 1.0배</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">정상근무 (정취)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customNormHours" placeholder="8" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">유급 / 주차 인정</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customPaidHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Overtime Work Card (Amber) -->
+      <div class="time-card amber">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            2. 평일 연장근무
+          </div>
+          <span class="time-card-badge">할증 1.5배</span>
+        </div>
+        <div class="time-card-grid">
+          <div style="grid-column: span 2;">
+            <label class="time-input-label">평일 연장 (조합설명회 인정 포함)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customOtHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Holiday Work Card (Rose) -->
+      <div class="time-card rose">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+            3. 휴일 특근근무
+          </div>
+          <span class="time-card-badge">특근 1.5배 / 연장 2.0배</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">휴일 특근 (최대 8h)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customHolHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">특근 연장 (8h 초과분)</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customHolOtHours" placeholder="0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Night Work Card (Purple) -->
+      <div class="time-card purple">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            4. 야간 및 심야할증
+          </div>
+          <span class="time-card-badge">0.5배 가산 (22~06시)</span>
+        </div>
+        <div>
+          <label class="time-input-label">심야 근로시간 (야간조 10h 시 7.5h)</label>
+          <div class="time-input-wrap">
+            <input type="number" step="0.5" id="customNightHours" placeholder="0" oninput="updateLiveTotalHours()">
+            <span class="unit">h</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Allowance & Memo Card (Emerald) -->
+      <div class="time-card emerald">
+        <div class="time-card-header">
+          <div class="time-card-title">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            5. 가급 & 특이사항 메모
+          </div>
+          <span class="time-card-badge">상주휴게 가급</span>
+        </div>
+        <div class="time-card-grid">
+          <div>
+            <label class="time-input-label">상주휴게 가급</label>
+            <div class="time-input-wrap">
+              <input type="number" step="0.5" id="customExtraHours" placeholder="1.0" oninput="updateLiveTotalHours()">
+              <span class="unit">h</span>
+            </div>
+          </div>
+          <div>
+            <label class="time-input-label">특이사항 메모</label>
+            <div class="time-input-wrap">
+              <input type="text" id="customMemo" placeholder="예: 설명회, 조퇴">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Total Summary Bar -->
+      <div class="time-total-bar">
+        <div class="time-total-title">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          당일 총 인정 근로시간
+        </div>
+        <div class="time-total-val" id="customLiveTotal">10.0h</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:8px;">
+        <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeCustomTimeModal()">취소</button>
+        <button class="sheet-btn blue" style="flex:2; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="saveCustomTime()">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          설정 저장하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Year / Month Picker Modal -->
+  <div class="sheet-overlay" id="monthPickerOverlay" onclick="closeMonthPicker(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title">캘린더 연·월 빠른 이동</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <button class="nav-btn" onclick="changePickerYear(-1)">◀</button>
+        <h3 id="pickerYear" style="font-size:18px;">2026년</h3>
+        <button class="nav-btn" onclick="changePickerYear(1)">▶</button>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;" id="monthGrid"></div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+        <button class="sheet-btn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('join')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>입사 첫 달</button>
+        <button class="sheet-btn blue" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('today')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>이번 달</button>
+        <button class="sheet-btn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('retire')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>정년퇴직</button>
+      </div>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeMonthPicker()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+    <div class="bottom-sheet">
+      <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>나의 기본정보 및 급여 설정</div>
+      
+      <div class="form-group">
+        <label>성명</label>
+        <input class="form-input" type="text" id="cfgName" placeholder="예: 홍길동">
+      </div>
+      <div class="form-group">
+        <label>생년월일 (숫자 8자리 입력 시 자동 하이픈)</label>
+        <input class="form-input" type="tel" id="cfgBirth" placeholder="예: 19750830" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>입사년월일 (숫자 8자리 입력 시 자동 하이픈)</label>
+        <input class="form-input" type="tel" id="cfgJoin" placeholder="예: 20170401" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>직급 선택</label>
+        <select class="form-input" id="cfgDuty" onchange="autoFillDutyPay()">
+          <option value="사원">기술직 - 사원 (직책수당 0원)</option>
+          <option value="주임">기술직 - 주임 (직책수당 50,000원)</option>
+          <option value="계장" selected>기술직 - 계장 (직책수당 100,000원)</option>
+          <option value="기장">기술직 - 기장 (직책수당 200,000원)</option>
+          <option value="G1 매니저">일반직 - G1 매니저 (직책수당 0원)</option>
+          <option value="G2 매니저">일반직 - G2 매니저 (직책수당 50,000원)</option>
+          <option value="G3 책임매니저">일반직 - G3 책임매니저 (직책수당 100,000원)</option>
+          <option value="G4 책임매니저">일반직 - G4 책임매니저 (직책수당 200,000원)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>근무 형태 선택 (수당 및 프리셋 연동)</label>
+        <select class="form-input" id="cfgShiftType" onchange="updateShiftTypeUI()">
+          <option value="normal" selected>🏢 상주근무 (주간 8h • 상주휴게수당)</option>
+          <option value="shift">🔄 교대근무 (주야 10h • 교대수당 20만원)</option>
+        </select>
+      </div>
+
+      <!-- Retirement / Join / Annual Leave Countdown Yellow Card (Settings Internal) -->
+      <div class="dday-card" id="ddayCard" style="margin-top: 6px; margin-bottom: 14px;">
+        <div class="dday-line" id="retireLine">⏳ 정년퇴직일: 생년월일을 입력해 주세요.</div>
+        <div class="dday-line" id="serviceLine">🌱 근속연차: 입사년월일을 입력해 주세요.</div>
+        <div class="dday-line" id="leaveLine">🌴 현재 남은 연차 일수: 총 15일</div>
+      </div>
+      <div class="form-group">
+        <label>기준 통상시급 (원)</label>
+        <input class="form-input" type="number" id="cfgOrdinary" placeholder="13500">
+      </div>
+      <div class="form-group">
+        <label>기준 기본시급 (원)</label>
+        <input class="form-input" type="number" id="cfgBaseRate" placeholder="12000">
+      </div>
+      <div class="form-group">
+        <label>직책수당 (원)</label>
+        <input class="form-input" type="number" id="cfgDutyPay" placeholder="100000">
+      </div>
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label>근속수당 (원)</label>
+          <span style="font-size:11px; color:var(--blue); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;" onclick="autoFillTenurePay()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>2026 단협 자동계산</span>
+        </div>
+        <input class="form-input" type="number" id="cfgTenurePay" placeholder="58500">
+      </div>
+      <div class="form-group">
+        <label>기준 연차 일수 (명세서 잔여 연차 기준)</label>
+        <input class="form-input" type="number" step="0.5" id="cfgLeaveBase" placeholder="15">
+      </div>
+      <div class="form-group">
+        <label>월 고정 공제액 (원 - 0원 입력 시 자동 요율 계산)</label>
+        <input class="form-input" type="number" id="cfgDeduction" placeholder="0">
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="sheet-btn red" style="flex:1;" onclick="resetSettings()">초기화</button>
+        <button class="sheet-btn blue" style="flex:2;" onclick="saveSettings()">설정 저장</button>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeSettings()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 근무 통계 & 분석 차트 Modal -->
+  <div class="sheet-overlay" id="statsOverlay" onclick="closeStatsModal(event)">
+    <div class="bottom-sheet" style="max-height:90vh; padding:18px 16px;">
+      <!-- Title & Close -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(0,91,172,0.1); color:var(--blue); display:flex; align-items:center; justify-content:center;">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:800; color:var(--text);" id="statsModalTitle">2026년 11월 근무 통계</div>
+            <div style="font-size:11.5px; color:var(--subtext);">근무 유형별 비율 및 요일별 근무 패턴 분석</div>
+          </div>
+        </div>
+        <button onclick="closeStatsModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+
+      <!-- Month Navigation Bar inside modal -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:14px; background:var(--bg); padding:6px 12px; border-radius:10px;">
+        <button class="nav-btn" onclick="prevStatsMonth()" style="width:28px; height:28px; font-size:12px;">◀</button>
+        <span style="font-size:14px; font-weight:700; color:var(--text);" id="statsMonthLabel">2026년 11월</span>
+        <button class="nav-btn" onclick="nextStatsMonth()" style="width:28px; height:28px; font-size:12px;">▶</button>
+      </div>
+
+      <div id="statsModalBody" style="overflow-y:auto; max-height:calc(90vh - 140px); padding-right:2px;">
+        <!-- Dynamic content filled by renderStatsModal() -->
+      </div>
+
+      <div style="margin-top:12px;">
+        <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeStatsModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 데이터 통합 관리 (백업·복원·엑셀) Modal -->
+  <div class="sheet-overlay" id="dataOverlay" onclick="closeDataModal(event)">
+    <div class="bottom-sheet" style="max-height:88vh; padding:18px 16px;">
+      <!-- Title -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:34px; height:34px; border-radius:10px; background:rgba(16,185,129,0.1); color:#10b981; display:flex; align-items:center; justify-content:center;">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          </div>
+          <div>
+            <div style="font-size:16px; font-weight:800; color:var(--text);">데이터 관리 (백업 & 복원)</div>
+            <div style="font-size:11.5px; color:var(--subtext);">소중한 근무 기록과 설정을 안전하게 보관하세요</div>
+          </div>
+        </div>
+        <button onclick="closeDataModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+        <!-- Card 1: Excel Export -->
+        <div onclick="closeDataModal(); exportExcel();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(16,185,129,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(16,185,129,0.12); color:#10b981; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>급여명세서 엑셀 내보내기</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(16,185,129,0.15); color:#10b981; font-weight:700;">.CSV</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">이번 달 일자별 근무구분·수당 상세 집계표 다운로드</div>
+          </div>
+        </div>
+
+        <!-- Card 2: Full Data Backup -->
+        <div onclick="closeDataModal(); backupData();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(0,91,172,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(0,91,172,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(0,91,172,0.12); color:var(--blue); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>데이터 전체 백업 (저장)</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(0,91,172,0.15); color:var(--blue); font-weight:700;">.JSON</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">기본 급여 설정 및 모든 월의 근무기록 파일로 저장</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Data Restore -->
+        <div onclick="closeDataModal(); restoreDataPrompt();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(99,102,241,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(99,102,241,0.06);">
+          <div style="width:44px; height:44px; border-radius:10px; background:rgba(99,102,241,0.12); color:#6366f1; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
+              <span>백업 데이터 복원하기</span>
+              <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(99,102,241,0.15); color:#6366f1; font-weight:700;">가져오기</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">보관 중인 백업 파일을 불러와 앱 기록 100% 복원</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Callout Notice -->
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11.5px; line-height:1.6; color:var(--subtext);">
+        <div style="font-weight:700; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 백업 안내 사항
+        </div>
+        <div>✓ 기기 변경이나 브라우저 캐시 삭제 전에 꼭 백업해 두세요.</div>
+        <div>✓ 백업 파일에는 기본정보, 시급/수당 및 모든 월의 근무기록이 안전하게 포함됩니다.</div>
+      </div>
+
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDataModal()">닫기</button>
+    </div>
+  </div>
+
+  <!-- Document Viewer Modal -->
+  <div class="sheet-overlay" id="docOverlay" onclick="closeDoc(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title" id="docTitle">문서 제목</div>
+      <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
+      <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDoc()">닫기</button>
+    </div>
+  </div>
+
+  <!-- 2026년 성과·격려금 계산기 Modal -->
+  <div class="sheet-overlay" id="bonusOverlay" onclick="closeBonusCalc(event)">
+    <div class="bottom-sheet" style="max-height:88vh;">
+      <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>2026년 성과·격려금 계산기</div>
+      <div id="bonusContent" style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:16px;"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="sheet-btn blue" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="closeBonusCalc(); openSettings();"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>나의 시급·수당 변경</button>
+        <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closeBonusCalc()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden File Inputs -->
+
+  <script>
+    // State
+    let curYear = 2026;
+    let curMonth = 11; // 1-indexed (11 = Nov)
+    let selectedDateStr = "";
+    let pickerYear = 2026;
+    let currentFactoryIdx = 1;
+
+    // Load saved factory index
+    currentFactoryIdx = parseInt(localStorage.getItem("user_factory_idx") || "1", 10);
+
+    // Official Holidays Map (Korea Official Holidays 2025-2028 + Modern Law Amendments)
+    const officialHolidays = {
+      // 2025
+      "2025-01-01": "신정",
+      "2025-01-27": "설날 임시공휴일",
+      "2025-01-28": "설날 연휴",
+      "2025-01-29": "설날",
+      "2025-01-30": "설날 연휴",
+      "2025-03-01": "삼일절",
+      "2025-03-03": "삼일절 대체공휴일",
+      "2025-04-19": "노조창립일",
+      "2025-05-01": "근로자의 날",
+      "2025-05-05": "어린이날",
+      "2025-05-06": "부처님오신날 대체공휴일",
+      "2025-06-03": "선거 임시공휴일",
+      "2025-06-06": "현충일",
+      "2025-08-15": "광복절",
+      "2025-10-03": "개천절",
+      "2025-10-05": "추석 연휴",
+      "2025-10-06": "추석",
+      "2025-10-07": "추석 연휴",
+      "2025-10-08": "추석 대체공휴일",
+      "2025-10-09": "한글날",
+      "2025-10-18": "회사창립일",
+      "2025-12-25": "성탄절",
+
+      // 2026
+      "2026-01-01": "신정",
+      "2026-02-16": "설날 연휴",
+      "2026-02-17": "설날",
+      "2026-02-18": "설날 연휴",
+      "2026-03-01": "삼일절",
+      "2026-03-02": "삼일절 대체공휴일",
+      "2026-04-19": "노조창립일",
+      "2026-04-20": "노조창립일 대체휴무",
+      "2026-05-01": "근로자의 날",
+      "2026-05-05": "어린이날",
+      "2026-05-24": "부처님오신날",
+      "2026-05-25": "부처님오신날 대체공휴일",
+      "2026-06-03": "지방선거",
+      "2026-06-06": "현충일",
+      "2026-07-17": "제헌절", // 2026년 법정 공휴일 부활
+      "2026-08-15": "광복절",
+      "2026-08-17": "광복절 대체공휴일",
+      "2026-09-24": "추석 연휴",
+      "2026-09-25": "추석",
+      "2026-09-26": "추석 연휴",
+      "2026-09-28": "추석 대체공휴일", // 단협 제52조: 공휴일 토·일 겹침 시 익일 평일 대체
+      "2026-10-03": "개천절",
+      "2026-10-05": "개천절 대체공휴일",
+      "2026-10-09": "한글날",
+      "2026-10-18": "회사창립일",
+      "2026-10-19": "회사창립일 대체휴무",
+      "2026-12-25": "성탄절",
+
+      // 2027
+      "2027-01-01": "신정",
+      "2027-02-06": "설날 연휴",
+      "2027-02-07": "설날",
+      "2027-02-08": "설날 연휴",
+      "2027-02-09": "설날 대체공휴일",
+      "2027-03-01": "삼일절",
+      "2027-04-19": "노조창립일",
+      "2027-05-01": "근로자의 날",
+      "2027-05-05": "어린이날",
+      "2027-05-13": "부처님오신날",
+      "2027-06-06": "현충일",
+      "2027-07-17": "제헌절",
+      "2027-07-19": "제헌절 대체공휴일",
+      "2027-08-15": "광복절",
+      "2027-08-16": "광복절 대체공휴일",
+      "2027-09-14": "추석 연휴",
+      "2027-09-15": "추석",
+      "2027-09-16": "추석 연휴",
+      "2027-10-03": "개천절",
+      "2027-10-04": "개천절 대체공휴일",
+      "2027-10-09": "한글날",
+      "2027-10-11": "한글날 대체공휴일",
+      "2027-10-18": "회사창립일",
+      "2027-12-25": "성탄절",
+      "2027-12-27": "성탄절 대체공휴일",
+
+      // 2028
+      "2028-01-01": "신정",
+      "2028-01-26": "설날 연휴",
+      "2028-01-27": "설날",
+      "2028-01-28": "설날 연휴",
+      "2028-03-01": "삼일절",
+      "2028-04-12": "제23대 국회의원선거",
+      "2028-04-19": "노조창립일",
+      "2028-05-01": "근로자의 날",
+      "2028-05-02": "부처님오신날",
+      "2028-05-05": "어린이날",
+      "2028-06-06": "현충일",
+      "2028-07-17": "제헌절",
+      "2028-08-15": "광복절",
+      "2028-10-02": "추석 연휴",
+      "2028-10-03": "추석·개천절",
+      "2028-10-04": "추석 연휴",
+      "2028-10-05": "추석·개천절 대체공휴일",
+      "2028-10-09": "한글날",
+      "2028-10-18": "회사창립일",
+      "2028-12-25": "성탄절"
+    };
+
+    // Auto Hyphen Formatter
+    function setupDateAutoHyphen(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      el.addEventListener("input", function(e) {
+        let val = el.value.replace(/[^0-9]/g, "");
+        if (val.length > 8) val = val.substring(0, 8);
+        if (val.length >= 7) {
+          el.value = val.substring(0, 4) + "-" + val.substring(4, 6) + "-" + val.substring(6);
+        } else if (val.length >= 5) {
+          el.value = val.substring(0, 4) + "-" + val.substring(4);
+        } else {
+          el.value = val;
+        }
+      });
+    }
+
+    // Factory Switcher
+    const factories = [
+      { name: "1공장 (ERW)", img: "factories/factory_1.jpg" },
+      { name: "2공장 (LSAW)", img: "factories/factory_2.jpg" },
+      { name: "3공장 (SPIRAL)", img: "factories/factory_3.jpg" }
+    ];
+    function updateFactoryUI() {
+      const f = factories[currentFactoryIdx - 1] || factories[0];
+      const lbl = document.getElementById("factoryNameLabel");
+      const factorySvg = '<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>';
+      if (lbl) lbl.innerHTML = factorySvg + " 본사 / 울산 " + f.name + " ▾";
+      const drawerBadge = document.getElementById("drawerFactoryBadge");
+      if (drawerBadge) drawerBadge.innerHTML = factorySvg + " 본사 / 울산 " + f.name + " ▾";
+      document.getElementById("appHeader").style.backgroundImage = `url('${f.img}')`;
+      document.getElementById("drawerHeader").style.backgroundImage = `url('${f.img}')`;
+      localStorage.setItem("user_factory_idx", currentFactoryIdx);
+    }
+    function switchFactory() {
+      currentFactoryIdx = (currentFactoryIdx % 3) + 1;
+      updateFactoryUI();
+      vibrate();
+    }
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains("dark");
+      const sunSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+      const moonSvg = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+      document.getElementById("darkToggleBtn").innerHTML = isDark ? sunSvg : moonSvg;
+      localStorage.setItem("setting_dark_mode", isDark ? "true" : "false");
+      vibrate();
+    }
+
+    // Vibrate Helper (Haptic)
+    function vibrate() {
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch(e) {}
+    }
+
+    // 24절기 데이터 (2025~2028년 한국천문연구원 공식)
+    const SOLAR_TERMS_WEB = {
+      // 2025
+      "2025-01-05": "소한", "2025-01-20": "대한", "2025-02-04": "입춘", "2025-02-18": "우수",
+      "2025-03-05": "경칩", "2025-03-20": "춘분", "2025-04-04": "청명", "2025-04-20": "곡우",
+      "2025-05-05": "입하", "2025-05-21": "소만", "2025-06-05": "망종", "2025-06-21": "하지",
+      "2025-07-07": "소서", "2025-07-22": "대서", "2025-08-07": "입추", "2025-08-23": "처서",
+      "2025-09-07": "백로", "2025-09-23": "추분", "2025-10-08": "한로", "2025-10-23": "상강",
+      "2025-11-07": "입동", "2025-11-22": "소설", "2025-12-07": "대설", "2025-12-21": "동지",
+      // 2026
+      "2026-01-05": "소한", "2026-01-20": "대한", "2026-02-04": "입춘", "2026-02-18": "우수",
+      "2026-03-05": "경칩", "2026-03-20": "춘분", "2026-04-05": "청명", "2026-04-20": "곡우",
+      "2026-05-05": "입하", "2026-05-21": "소만", "2026-06-05": "망종", "2026-06-21": "하지",
+      "2026-07-07": "소서", "2026-07-23": "대서", "2026-08-07": "입추", "2026-08-23": "처서",
+      "2026-09-07": "백로", "2026-09-23": "추분", "2026-10-08": "한로", "2026-10-23": "상강",
+      "2026-11-07": "입동", "2026-11-22": "소설", "2026-12-07": "대설", "2026-12-22": "동지",
+      // 2027
+      "2027-01-05": "소한", "2027-01-20": "대한", "2027-02-04": "입춘", "2027-02-19": "우수",
+      "2027-03-06": "경칩", "2027-03-21": "춘분", "2027-04-05": "청명", "2027-04-20": "곡우",
+      "2027-05-06": "입하", "2027-05-21": "소만", "2027-06-06": "망종", "2027-06-21": "하지",
+      "2027-07-07": "소서", "2027-07-23": "대서", "2027-08-08": "입추", "2027-08-23": "처서",
+      "2027-09-08": "백로", "2027-09-23": "추분", "2027-10-08": "한로", "2027-10-24": "상강",
+      "2027-11-07": "입동", "2027-11-22": "소설", "2027-12-07": "대설", "2027-12-22": "동지",
+      // 2028
+      "2028-01-06": "소한", "2028-01-21": "대한", "2028-02-04": "입춘", "2028-02-19": "우수",
+      "2028-03-05": "경칩", "2028-03-20": "춘분", "2028-04-04": "청명", "2028-04-19": "곡우",
+      "2028-05-05": "입하", "2028-05-20": "소만", "2028-06-05": "망종", "2028-06-21": "하지",
+      "2028-07-07": "소서", "2028-07-22": "대서", "2028-08-07": "입추", "2028-08-23": "처서",
+      "2028-09-07": "백로", "2028-09-22": "추분", "2028-10-08": "한로", "2028-10-23": "상강",
+      "2028-11-07": "입동", "2028-11-22": "소설", "2028-12-07": "대설", "2028-12-21": "동지"
+    };
+
+    // 표준 lunarInfo 기반 음력 계산기 (1900~2050)
+    const LUNAR_INFO = [
+      0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+      0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+      0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+      0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+      0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+      0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+      0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+      0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+      0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+      0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,
+      0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,
+      0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,
+      0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,
+      0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,
+      0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0
+    ];
+
+    function getLunarDay(y, m, d) {
+      const baseDate = new Date(1900, 0, 31);
+      const targetDate = new Date(y, m - 1, d);
+      let offset = Math.round((targetDate - baseDate) / 86400000);
+      let i = 1900;
+      while (i < 2050 && offset > 0) {
+        const info = LUNAR_INFO[i - 1900];
+        let days = 0;
+        for (let j = 1; j <= 12; j++) {
+          days += (info & (1 << (16 - j))) ? 30 : 29;
+        }
+        const leap = info & 0xf;
+        if (leap) {
+          days += (info & 0x10000) ? 30 : 29;
+        }
+        if (offset < days) break;
+        offset -= days;
+        i++;
+      }
+      const lYear = i;
+      const info = LUNAR_INFO[lYear - 1900];
+      const leap = info & 0xf;
+      let isLeap = false;
+      for (let j = 1; j <= 12; j++) {
+        const mDays = (info & (1 << (16 - j))) ? 30 : 29;
+        if (leap === j && !isLeap) {
+          if (offset < mDays) return { year: lYear, month: j, day: offset + 1, isLeap: false };
+          offset -= mDays;
+          const leapDays = (info & 0x10000) ? 30 : 29;
+          if (offset < leapDays) return { year: lYear, month: j, day: offset + 1, isLeap: true };
+          offset -= leapDays;
+          isLeap = true;
+        } else {
+          if (offset < mDays) return { year: lYear, month: j, day: offset + 1, isLeap: false };
+          offset -= mDays;
+        }
+      }
+      return { year: lYear, month: 12, day: offset + 1, isLeap: false };
+    }
+
+    // 음력 1일, 15일 및 24절기 헬퍼 (창대님 요청 반영)
+    function getLunarOrSolarTermWeb(y, m, d) {
+      const dateKey = `${y}-${pad(m)}-${pad(d)}`;
+      if (SOLAR_TERMS_WEB[dateKey]) {
+        return { text: SOLAR_TERMS_WEB[dateKey], isTerm: true };
+      }
+      try {
+        const lun = getLunarDay(y, m, d);
+        if (lun && (lun.day === 1 || lun.day === 15)) {
+          return { text: `${lun.month}.${lun.day}`, isTerm: false };
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    // Date Utilities
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+    function parseDate(s) {
+      if (!s) return null;
+      const clean = s.replace(/[^0-9]/g, "");
+      if (clean.length !== 8) return null;
+      return new Date(parseInt(clean.substring(0,4)), parseInt(clean.substring(4,6))-1, parseInt(clean.substring(6,8)));
+    }
+
+    // Realtime Calculations: Retirement D-Day, Service Years, Remaining Leave
+    function updateDdayAndUserSummary() {
+      const name = localStorage.getItem("user_name") || "";
+      const birthStr = localStorage.getItem("user_birth") || "";
+      const joinStr = localStorage.getItem("user_join") || "";
+      const duty = localStorage.getItem("user_duty") || "계장";
+      const leaveBase = parseFloat(localStorage.getItem("user_annual_leave_base") || "15");
+
+      // Count used leave in 2026
+      let usedLeave = 0;
+      for (let k in localStorage) {
+        if (k.startsWith("2026-") && k.endsWith("-mode")) {
+          if (localStorage.getItem(k) === "annual") usedLeave += 1;
+          else if (localStorage.getItem(k) === "half_am" || localStorage.getItem(k) === "half_pm") usedLeave += 0.5;
+        }
+      }
+      const remainLeave = Math.max(0, leaveBase - usedLeave);
+
+      const today = new Date();
+
+      // Retirement (age 60 last day of birth month)
+      const bDate = parseDate(birthStr);
+      let retireText = "⏳ 정년퇴직일: 생년월일을 입력해 주세요.";
+      if (bDate) {
+        const retireYear = bDate.getFullYear() + 60;
+        const retireMonth = bDate.getMonth();
+        const retireDate = new Date(retireYear, retireMonth + 1, 0); // last day of month
+        const diffMs = retireDate - today;
+        const dDay = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        if (dDay > 0) {
+          const years = Math.floor(dDay / 365.25);
+          const remDays = dDay % 365;
+          const months = Math.floor(remDays / 30);
+          const days = remDays % 30;
+          retireText = `⏳ 만 60세 정년: ${years}년 ${months}개월 ${days}일 (D-${dDay}일)`;
+        } else {
+          retireText = "⏳ 만 60세 정년퇴직을 축하드립니다!";
+        }
+      }
+      document.getElementById("retireLine").innerText = retireText;
+
+      // Join date service count
+      const jDate = parseDate(joinStr);
+      let serviceText = "🌱 근속연차: 입사년월일을 입력해 주세요.";
+      let serviceYear = 0;
+      if (jDate) {
+        const diffMs = today - jDate;
+        const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        if (totalDays >= 0) {
+          const years = Math.floor(totalDays / 365.25);
+          serviceYear = years + 1;
+          const remDays = totalDays % 365;
+          const months = Math.floor(remDays / 30);
+          const days = remDays % 30;
+          serviceText = `🌱 입사 ${serviceYear}년차 (${years}년 ${months}개월 ${days}일 - ${totalDays}일)`;
+        }
+      }
+      document.getElementById("serviceLine").innerText = serviceText;
+
+      // Leave Text
+      document.getElementById("leaveLine").innerText = `🌴 현재 남은 연차 일수: 총 ${remainLeave}일`;
+
+      // Header summary pill & guide banner
+      const guideBanner = document.getElementById("guideBanner");
+      const userSvg = '<svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+      if (!name) {
+        document.getElementById("userSummaryPill").innerHTML = userSvg + '기본정보 미입력 (터치하여 설정)';
+        document.getElementById("drawerUserInfo").innerHTML = userSvg + '기본정보 미입력 (터치하여 설정)';
+        if (guideBanner) guideBanner.style.display = "flex";
+      } else {
+        const shift = localStorage.getItem("user_shift_type") === "shift" ? "교대" : "상주";
+        const summary = `${userSvg}${duty} ${name}님  •  ${shift}  •  입사 ${serviceYear}년차  •  남은 연차 ${remainLeave}일`;
+        document.getElementById("userSummaryPill").innerHTML = summary;
+        document.getElementById("drawerUserInfo").innerHTML = `${duty} ${name}님<br>입사 ${serviceYear}년차 | 남은 연차 ${remainLeave}일`;
+        if (guideBanner) guideBanner.style.display = "none";
+      }
+    }
+
+    let isMultiSelectMode = false;
+    let selectedDays = new Set();
+
+    function cancelMultiSelect() {
+      vibrate();
+      isMultiSelectMode = false;
+      selectedDays.clear();
+      renderCalendar();
+    }
+
+    function confirmMultiDeleteWeb() {
+      if (selectedDays.size === 0) return;
+      vibrate();
+      const cnt = selectedDays.size;
+      if (confirm(`선택한 ${cnt}개 날짜의 근무 및 메모 기록을 모두 삭제하시겠습니까?`)) {
+        const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+        selectedDays.forEach(d => {
+          const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+          subKeys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
+          localStorage.removeItem(dateKey);
+        });
+        isMultiSelectMode = false;
+        selectedDays.clear();
+        alert(`${cnt}개 날짜의 근무 기록이 삭제되었습니다.`);
+        renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
+      }
+    }
+
+    // Render Calendar
+    
+    function openMultiApplyModal() {
+      if (selectedDays.size === 0) return;
+      document.getElementById("multiApplyTitle").innerText = `⚡ 선택 일괄 근무 입력 (${selectedDays.size}일)`;
+      document.getElementById("multiApplyDesc").innerText = `선택하신 ${selectedDays.size}개 날짜에 일괄 적용할 근무 형태를 선택하세요.`;
+      document.getElementById("multiApplyOverlay").classList.add("active");
+    }
+
+    function closeMultiApplyModal(e) {
+      if (e && e.target !== document.getElementById("multiApplyOverlay")) return;
+      document.getElementById("multiApplyOverlay").classList.remove("active");
+    }
+
+    // 일괄 입력 프리셋 정의: 단일 날짜 프리셋(selectPreset) 및 급여 엔진이 읽는 모드명과 100% 일치시킨다.
+    // (11-09 currentCalDate ReferenceError 로 버튼 먹통 + norm/ot/hol 키 오기록으로 근무시간 0h 결함 패치)
+    const BATCH_PRESET_MAP = {
+      'ot':           { mode: 'ot',       times: { norm: '8', ot: '2' } },
+      'normal':       { mode: 'norm',     times: { norm: '8' } },
+      'night_ot':     { mode: 'night_10', times: { norm: '8', ot: '2', night: '7.5' } },
+      'night_normal': { mode: 'night_8',  times: { norm: '8', night: '6' } },
+      'holiday':      { mode: 'holiday',  times: { hol: '8' } },
+      'annual':       { mode: 'annual',   times: {} },
+      'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } }
+    };
+
+    function applyBatchPreset(preset) {
+      if (!selectedDays || selectedDays.size === 0) return;
+      const def = BATCH_PRESET_MAP[preset];
+      if (!def) return;
+
+      const year = curYear;
+      const month = pad(curMonth);
+      const days = Array.from(selectedDays);
+
+      days.forEach(day => {
+        const k = `${year}-${month}-${pad(day)}`;
+
+        // 이전 입력 흔적을 모두 지운 뒤 선택한 프리셋만 남긴다 (메모 포함)
+        const keysToClear = ['mode', 'norm', 'ot', 'hol', 'holot', 'night', 'paid', 'extra', 'memo'];
+        keysToClear.forEach(suffix => localStorage.removeItem(`${k}-${suffix}`));
+
+        localStorage.setItem(`${k}-mode`, def.mode);
+        Object.keys(def.times).forEach(suffix => localStorage.setItem(`${k}-${suffix}`, def.times[suffix]));
+      });
+
+      const count = days.length;
+      document.getElementById("multiApplyOverlay").classList.remove("active");
+      isMultiSelectMode = false;
+      selectedDays.clear();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      vibrate();
+      showToast(`선택하신 ${count}개 날짜에 근무가 일괄 입력되었습니다.`);
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = "";
+      document.getElementById("calTitle").innerText = `${curYear}-${pad(curMonth)}`;
+
+      const multiBar = document.getElementById("multiSelectBar");
+      if (multiBar) {
+        if (isMultiSelectMode) {
+          multiBar.classList.add("show");
+          document.getElementById("multiSelectCount").innerText = `선택 ${selectedDays.size}일`;
+          const applyBtn = document.getElementById("btnMultiApply");
+          if (applyBtn) applyBtn.innerText = `⚡ 일괄 입력 (${selectedDays.size})`;
+          document.getElementById("btnMultiDel").innerText = `🗑️ 일괄 삭제 (${selectedDays.size})`;
+        } else {
+          multiBar.classList.remove("show");
+        }
+      }
+
+      const firstDay = new Date(curYear, curMonth - 1, 1).getDay(); // 0: Sun, 6: Sat
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+
+      // Empty lead cells
+      for (let i = 0; i < firstDay; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cal-cell empty";
+        grid.appendChild(cell);
+      }
+
+      const today = new Date();
+      const isThisMonth = (today.getFullYear() === curYear && today.getMonth() + 1 === curMonth);
+      const todayDate = today.getDate();
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const dayOfWeek = (firstDay + d - 1) % 7;
+        const cell = document.createElement("div");
+        cell.className = "cal-cell";
+        if (dayOfWeek === 0) cell.classList.add("sun");
+        else if (dayOfWeek === 6) cell.classList.add("sat");
+
+        const holName = officialHolidays[dateKey] || localStorage.getItem(`holiday_${dateKey.replace(/-/g,"")}`);
+        if (holName) cell.classList.add("holiday");
+
+        const isSelected = isMultiSelectMode && selectedDays.has(d);
+        const isToday = isThisMonth && (d === todayDate);
+
+        if (isSelected) {
+          cell.style.borderColor = "#ef4444";
+          cell.style.borderWidth = "2px";
+          cell.style.background = "rgba(239, 68, 68, 0.12)";
+        } else if (isToday) {
+          cell.style.background = "var(--blue-bg)";
+          cell.style.borderColor = "var(--blue)";
+          cell.style.borderWidth = "2px";
+        }
+
+        // Cell top (Date number + today indicator + lunar 1/15 / solar term)
+        const cellTop = document.createElement("div");
+        cellTop.className = "cell-top";
+        let dateHtml = `<span>${d}</span>`;
+        if (isSelected) {
+          dateHtml += `<span class="badge-check" style="background:#ef4444; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">✓</span>`;
+        } else if (isToday) {
+          dateHtml += `<span class="badge-today" style="background:#2563eb; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">● 오늘</span>`;
+        }
+        const extra = getLunarOrSolarTermWeb(curYear, curMonth, d);
+        if (extra) {
+          const cls = extra.isTerm ? "cell-term" : "cell-lunar";
+          dateHtml += `<span class="${cls}">${extra.text}</span>`;
+        }
+        cellTop.innerHTML = dateHtml;
+        cell.appendChild(cellTop);
+
+        // Holiday Name
+        if (holName) {
+          const holDiv = document.createElement("div");
+          holDiv.className = "holiday-name";
+          holDiv.innerText = holName;
+          cell.appendChild(holDiv);
+        }
+
+        // Shift Mode Pill
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        if (mode) {
+          const pill = document.createElement("div");
+          pill.className = "shift-pill";
+          if (mode === "norm") {
+            pill.classList.add("shift-norm");
+            pill.innerText = "8h";
+          } else if (mode === "ot") {
+            pill.classList.add("shift-ot");
+            pill.innerText = "8+2h";
+          } else if (mode === "night_10") {
+            pill.style.background = "#581c87";
+            pill.style.color = "#f3e8ff";
+            pill.innerText = "야간 10h";
+          } else if (mode === "night_8") {
+            pill.style.background = "#3b0764";
+            pill.style.color = "#e9d5ff";
+            pill.innerText = "야간 8h";
+          } else if (mode === "night_holiday_10") {
+            pill.style.background = "#701a75";
+            pill.style.color = "#fdf4ff";
+            pill.innerText = "야간특근 10h";
+          } else if (mode === "holiday") {
+            pill.classList.add("shift-holiday");
+            pill.innerText = "특근 8h";
+          } else if (mode === "holiday_12") {
+            pill.classList.add("shift-holiday");
+            pill.innerText = "특근 12h";
+          } else if (mode === "annual") {
+            pill.classList.add("shift-annual");
+            pill.innerText = "연차";
+          } else if (mode === "half_am" || mode === "half_pm") {
+            pill.classList.add("shift-annual");
+            pill.innerText = mode === "half_am" ? "오전반차" : "오후반차";
+          } else if (mode === "custom") {
+            pill.classList.add("shift-ot");
+            const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+            const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+            const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+            const total = cn + co + ch;
+            const memo = localStorage.getItem(`${dateKey}-memo`);
+            pill.innerText = memo ? memo : (total > 0 ? `${total}h 직접` : "직접입력");
+          } else {
+            pill.classList.add("shift-norm");
+            pill.innerText = "근무";
+          }
+          cell.appendChild(pill);
+        } else {
+          // Auto weekend badges if no work mode set (matches native Android app exactly)
+          if (dayOfWeek === 0) {
+            const pill = document.createElement("div");
+            pill.className = "shift-pill shift-sun-auto";
+            pill.style.cssText = "font-size:10px; color:#b91c1c; background:#fee2e2; font-weight:700; padding:1px 4px; border-radius:4px; margin-top:2px; text-align:center;";
+            pill.innerText = "주차 8h";
+            cell.appendChild(pill);
+          } else if (dayOfWeek === 6) {
+            const pill = document.createElement("div");
+            pill.className = "shift-pill shift-sat-auto";
+            pill.style.cssText = "font-size:10px; color:#1e40af; background:#eff6ff; font-weight:700; padding:1px 4px; border-radius:4px; margin-top:2px; text-align:center;";
+            pill.innerText = "유급 8h";
+            cell.appendChild(pill);
+          }
+        }
+
+        // Cell Click & Long Press Handling
+        if (isMultiSelectMode) {
+          cell.onclick = (e) => {
+            e.stopPropagation();
+            vibrate();
+            if (selectedDays.has(d)) {
+              selectedDays.delete(d);
+              if (selectedDays.size === 0) isMultiSelectMode = false;
+            } else {
+              selectedDays.add(d);
+            }
+            renderCalendar();
+          };
+        } else {
+          let longTimer = null;
+          cell.addEventListener("touchstart", (e) => {
+            longTimer = setTimeout(() => {
+              vibrate();
+              isMultiSelectMode = true;
+              selectedDays.clear();
+              selectedDays.add(d);
+              renderCalendar();
+            }, 550);
+          }, { passive: true });
+          cell.addEventListener("touchmove", () => clearTimeout(longTimer), { passive: true });
+          cell.addEventListener("touchend", () => clearTimeout(longTimer), { passive: true });
+          cell.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            vibrate();
+            isMultiSelectMode = true;
+            selectedDays.clear();
+            selectedDays.add(d);
+            renderCalendar();
+          });
+
+          cell.onclick = () => {
+            if (isMultiSelectMode) return;
+            openShiftSheet(dateKey, d);
+          };
+        }
+
+        grid.appendChild(cell);
+      }
+
+      const btnQuick = document.getElementById("btnQuickInput");
+      if (btnQuick) {
+        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${todayDate}일)`;
+      }
+
+      calculateMonthlyPayroll();
+    }
+
+    // Monthly Payroll Calculation Engine (Hyundai Steel Pipe 2026 CBA)
+    function calculateMonthlyPayroll() {
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      let normHours = 0;
+      let paidHours = 0;
+      let otHours = 0;
+      let holHours = 0;
+      let holOtHours = 0;
+      let nightHours = 0;
+
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        if (mode === "norm") {
+          normHours += 8;
+        } else if (mode === "ot") {
+          normHours += 8;
+          otHours += 2;
+        } else if (mode === "night_10") {
+          normHours += 8;
+          otHours += 2;
+          nightHours += 7.5;
+        } else if (mode === "night_8") {
+          normHours += 8;
+          nightHours += 6.0;
+        } else if (mode === "holiday") {
+          holHours += 8;
+        } else if (mode === "night_holiday_10") {
+          holHours += 8;
+          holOtHours += 2;
+          nightHours += 7.5;
+        } else if (mode === "holiday_12") {
+          holHours += 8;
+          holOtHours += 4;
+        } else if (mode === "annual" || mode === "summer") {
+          paidHours += 8;
+        } else if (mode === "half_am" || mode === "half_pm") {
+          normHours += 4;
+          paidHours += 4;
+        } else if (mode === "custom") {
+          const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          const cp = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          const cho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          const cnt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+          normHours += cn;
+          paidHours += cp;
+          otHours += co;
+          holHours += ch;
+          holOtHours += cho;
+          nightHours += cnt;
+        }
+      }
+
+      document.getElementById("sumNorm").innerText = normHours + "h";
+      document.getElementById("sumOt").innerText = otHours + "h";
+      document.getElementById("sumHol").innerText = holHours + "h";
+      document.getElementById("sumExtra").innerText = holOtHours + "h";
+      document.getElementById("sumNight").innerText = nightHours + "h";
+
+      // Rates
+      const baseRate = parseFloat(localStorage.getItem("setting_base") || "12000");
+      const ordinaryRate = parseFloat(localStorage.getItem("setting_ordinary") || "13500");
+      const dutyPay = parseFloat(localStorage.getItem("setting_duty") || "100000");
+      const userDeduction = parseFloat(localStorage.getItem("setting_deduction") || "0");
+
+      document.getElementById("accBaseRate").innerText = baseRate.toLocaleString();
+      document.getElementById("accOrdinaryRate").innerText = ordinaryRate.toLocaleString();
+
+      // Basic Pay (209h standard)
+      const basePay = Math.round(baseRate * 209);
+
+      // Overtime & Holiday pay (단협 제51조: 평일연장 1.5배, 휴일 1.5배, 8h초과 특근연장 2.0배, 야간 0.5배 가산)
+      const otPay = Math.round(ordinaryRate * otHours * 1.5);
+      const holPay = Math.round(ordinaryRate * holHours * 1.5);
+      const holOtPay = Math.round(ordinaryRate * holOtHours * 2.0);
+      const nightPay = Math.round(ordinaryRate * nightHours * 0.5);
+      const totalOvertimePay = otPay + holPay + holOtPay + nightPay;
+
+      // Summer Health Allowance (only July, August, Sept)
+      let summerPay = 0;
+      if (curMonth === 7 || curMonth === 8 || curMonth === 9) {
+        summerPay = 200000;
+        document.getElementById("rowSummerPay").style.display = "flex";
+      } else {
+        document.getElementById("rowSummerPay").style.display = "none";
+      }
+
+      // Shift allowance (200,000 won if shift worker)
+      const isShift = localStorage.getItem("user_shift_type") === "shift";
+      const shiftPay = isShift ? 200000 : 0;
+
+      // Retroactive Pay (2026 단협 타결 소급분)
+      const retroKey = `retro_active_${curYear}_${curMonth}`;
+      let isRetro = safeStorage.getItem(retroKey);
+      if (isRetro === null || isRetro === undefined) {
+        // 기본값: 2026년 9월(타결월)이면 기본 ON, 그 외 달은 OFF
+        isRetro = (curYear === 2026 && curMonth === 9) ? "true" : "false";
+      }
+      const retroActive = (isRetro === "true");
+      const retroPayAmount = parseInt(safeStorage.getItem("retro_fixed_amount") || "1452800", 10);
+      const retroPay = retroActive ? retroPayAmount : 0;
+
+      // 상단 바 소급 버튼 UI 상태 갱신
+      const btnRetro = document.getElementById("btnRetroToggle");
+      if (btnRetro) {
+        const retroSvg = '<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align:-1px; margin-right:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>';
+        if (retroActive) {
+          btnRetro.innerHTML = retroSvg + "소급ON";
+          btnRetro.style.color = "#b46400";
+          btnRetro.style.borderColor = "#e6a028";
+          btnRetro.style.background = "rgba(230, 160, 40, 0.12)";
+        } else {
+          btnRetro.innerText = "소급OFF";
+          btnRetro.style.color = "var(--sub)";
+          btnRetro.style.borderColor = "var(--border)";
+          btnRetro.style.background = "var(--surface)";
+        }
+      }
+
+      if (retroActive) {
+        document.getElementById("rowRetroPay").style.display = "flex";
+        document.getElementById("valRetroPay").innerText = "+" + retroPay.toLocaleString() + "원";
+      } else {
+        document.getElementById("rowRetroPay").style.display = "none";
+      }
+
+      // Total Gross Pay
+      const grossPay = basePay + totalOvertimePay + dutyPay + shiftPay + summerPay + retroPay;
+
+      // Deductions: 4 Major Insurances + Tax (approx 10.5% or user fixed deduction)
+      let deductions = userDeduction;
+      if (deductions <= 0) {
+        // Pension 4.5%, Health 3.545%, Long-term 0.46%, Employment 0.9%, Tax ~1.5%
+        deductions = Math.round(grossPay * 0.109);
+      }
+
+      const netPay = Math.max(0, grossPay - deductions);
+
+      document.getElementById("valBasePay").innerText = basePay.toLocaleString() + "원";
+      document.getElementById("valOtPay").innerText = totalOvertimePay.toLocaleString() + "원";
+      document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
+      document.getElementById("valDeduction").innerText = "-" + deductions.toLocaleString() + "원";
+      document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
+    }
+
+
+    // Safe storage helper with memory fallback
+    const memStore = {};
+    const safeStorage = {
+      getItem: (k) => {
+        try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; }
+      },
+      setItem: (k, v) => {
+        try { localStorage.setItem(k, v); } catch (e) { memStore[k] = String(v); }
+      },
+      removeItem: (k) => {
+        try { localStorage.removeItem(k); } catch (e) { delete memStore[k]; }
+      }
+    };
+
+    // 소급분 토글 함수
+    function toggleRetroPay(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      try {
+        const retroKey = `retro_active_${curYear}_${curMonth}`;
+        let isRetro = safeStorage.getItem(retroKey);
+        if (isRetro === null || isRetro === undefined) {
+          isRetro = (curYear === 2026 && curMonth === 9) ? "true" : "false";
+        }
+        const nextVal = (isRetro === "true") ? "false" : "true";
+        safeStorage.setItem(retroKey, nextVal);
+        vibrate();
+        calculateMonthlyPayroll();
+      } catch (err) {
+        console.error("toggleRetroPay error:", err);
+      }
+    }
+
+
+    function confirmResetCurrentMonth() {
+      if (confirm(`${curYear}년 ${curMonth}월의 모든 근무 기록을 초기화하시겠습니까?`)) {
+        const prefix = `${curYear}-${pad(curMonth)}-`;
+        const toRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(prefix)) toRemove.push(k);
+        }
+        toRemove.forEach(k => localStorage.removeItem(k));
+        renderCalendar();
+        calculateMonthlyPayroll();
+        updateDdayAndUserSummary();
+        alert("이번 달 근무 기록이 초기화되었습니다.");
+        vibrate();
+      }
+    }
+
+    // Month Navigation
+    function prevMonth() {
+      curMonth--;
+      if (curMonth < 1) { curMonth = 12; curYear--; }
+      renderCalendar();
+      vibrate();
+    }
+    function nextMonth() {
+      curMonth++;
+      if (curMonth > 12) { curMonth = 1; curYear++; }
+      renderCalendar();
+      vibrate();
+    }
+    function goToday() {
+      const today = new Date();
+      curYear = today.getFullYear();
+      curMonth = today.getMonth() + 1;
+      renderCalendar();
+      vibrate();
+    }
+
+    // Shift Sheet Handlers
+    function openShiftSheet(dateKey, d) {
+      selectedDateStr = dateKey;
+      document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
+      const btnQuick = document.getElementById("btnQuickInput");
+      if (btnQuick) {
+        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${d}일)`;
+      }
+      document.getElementById("shiftSheetOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeShiftSheet(e) {
+      if (!e || e.target.id === "shiftSheetOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        document.getElementById("shiftSheetOverlay").style.display = "none";
+      }
+    }
+    function selectPreset(mode) {
+      if (!selectedDateStr) return;
+      localStorage.setItem(`${selectedDateStr}-mode`, mode);
+      closeShiftSheet();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      vibrate();
+    }
+    function deleteSelectedDay() {
+      if (!selectedDateStr) return;
+      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+      subKeys.forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
+      localStorage.removeItem(selectedDateStr);
+      closeShiftSheet();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      vibrate();
+    }
+    function quickTodayShift() {
+      const today = new Date();
+      const dateKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+      openShiftSheet(dateKey, today.getDate());
+    }
+
+    // Custom Time Modal Handlers
+    function updateLiveTotalHours() {
+      const norm = parseFloat(document.getElementById("customNormHours").value) || 0;
+      const paid = parseFloat(document.getElementById("customPaidHours").value) || 0;
+      const ot = parseFloat(document.getElementById("customOtHours").value) || 0;
+      const hol = parseFloat(document.getElementById("customHolHours").value) || 0;
+      const holOt = parseFloat(document.getElementById("customHolOtHours").value) || 0;
+      const total = norm + paid + ot + hol + holOt;
+      
+      const badge = document.getElementById("customLiveTotal");
+      if (badge) {
+        badge.innerText = `${total.toFixed(1)}h`;
+      }
+    }
+
+    function applyCustomPreset(p) {
+      if (p === 'norm') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "1.0";
+      } else if (p === 'ot') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "1.0";
+      } else if (p === 'night_10') {
+        document.getElementById("customNormHours").value = "8";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "2";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "7.5";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'holiday') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "8";
+        document.getElementById("customHolOtHours").value = "2";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'annual') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "8";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+      } else if (p === 'zero') {
+        document.getElementById("customNormHours").value = "0";
+        document.getElementById("customPaidHours").value = "0";
+        document.getElementById("customOtHours").value = "0";
+        document.getElementById("customHolHours").value = "0";
+        document.getElementById("customHolOtHours").value = "0";
+        document.getElementById("customNightHours").value = "0";
+        document.getElementById("customExtraHours").value = "0";
+        document.getElementById("customMemo").value = "";
+      }
+      updateLiveTotalHours();
+      vibrate();
+    }
+
+    function openCustomTimeModal() {
+      document.getElementById("shiftSheetOverlay").style.display = "none";
+      document.getElementById("customTimeOverlay").style.display = "flex";
+      
+      if (selectedDateStr) {
+        const badge = document.getElementById("customDateBadge");
+        if (badge) badge.innerText = selectedDateStr;
+        
+        const mode = localStorage.getItem(`${selectedDateStr}-mode`) || "custom";
+        const norm = localStorage.getItem(`${selectedDateStr}-norm`);
+        const paid = localStorage.getItem(`${selectedDateStr}-paid`);
+        const ot = localStorage.getItem(`${selectedDateStr}-ot`);
+        const night = localStorage.getItem(`${selectedDateStr}-night`);
+        const hol = localStorage.getItem(`${selectedDateStr}-hol`);
+        const holOt = localStorage.getItem(`${selectedDateStr}-holot`);
+        const extra = localStorage.getItem(`${selectedDateStr}-extra`);
+        const memo = localStorage.getItem(`${selectedDateStr}-memo`);
+
+        document.getElementById("customNormHours").value = norm !== null ? norm : (mode === "norm" || mode === "ot" || mode === "night_10" ? "8" : "0");
+        document.getElementById("customPaidHours").value = paid !== null ? paid : (mode === "annual" || mode === "summer" ? "8" : "0");
+        document.getElementById("customOtHours").value = ot !== null ? ot : (mode === "ot" || mode === "night_10" ? "2" : "0");
+        document.getElementById("customNightHours").value = night !== null ? night : (mode === "night_10" ? "7.5" : "0");
+        document.getElementById("customHolHours").value = hol !== null ? hol : (mode === "holiday" ? "8" : "0");
+        document.getElementById("customHolOtHours").value = holOt !== null ? holOt : "0";
+        document.getElementById("customExtraHours").value = extra !== null ? extra : (mode === "norm" || mode === "ot" ? "1.0" : "0");
+        document.getElementById("customMemo").value = memo || "";
+        
+        updateLiveTotalHours();
+      }
+      vibrate();
+    }
+
+    function saveCustomTime() {
+      if (!selectedDateStr) return;
+      localStorage.setItem(`${selectedDateStr}-mode`, "custom");
+
+      const norm = document.getElementById("customNormHours").value.trim();
+      const paid = document.getElementById("customPaidHours").value.trim();
+      const ot = document.getElementById("customOtHours").value.trim();
+      const night = document.getElementById("customNightHours").value.trim();
+      const hol = document.getElementById("customHolHours").value.trim();
+      const holOt = document.getElementById("customHolOtHours").value.trim();
+      const extra = document.getElementById("customExtraHours").value.trim();
+      const memo = document.getElementById("customMemo").value.trim();
+
+      if (norm) localStorage.setItem(`${selectedDateStr}-norm`, norm); else localStorage.removeItem(`${selectedDateStr}-norm`);
+      if (paid) localStorage.setItem(`${selectedDateStr}-paid`, paid); else localStorage.removeItem(`${selectedDateStr}-paid`);
+      if (ot) localStorage.setItem(`${selectedDateStr}-ot`, ot); else localStorage.removeItem(`${selectedDateStr}-ot`);
+      if (night) localStorage.setItem(`${selectedDateStr}-night`, night); else localStorage.removeItem(`${selectedDateStr}-night`);
+      if (hol) localStorage.setItem(`${selectedDateStr}-hol`, hol); else localStorage.removeItem(`${selectedDateStr}-hol`);
+      if (holOt) localStorage.setItem(`${selectedDateStr}-holot`, holOt); else localStorage.removeItem(`${selectedDateStr}-holot`);
+      if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
+      if (memo) localStorage.setItem(`${selectedDateStr}-memo`, memo); else localStorage.removeItem(`${selectedDateStr}-memo`);
+
+      closeCustomTimeModal();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      vibrate();
+    }
+
+    function closeCustomTimeModal(e) {
+      if (!e || e.target.id === "customTimeOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "취소")) {
+        document.getElementById("customTimeOverlay").style.display = "none";
+      }
+    }
+
+    // Year / Month Picker
+    function openMonthPicker() {
+      pickerYear = curYear;
+      renderMonthGrid();
+      document.getElementById("monthPickerOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeMonthPicker(e) {
+      if (!e || e.target.id === "monthPickerOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        document.getElementById("monthPickerOverlay").style.display = "none";
+      }
+    }
+    function changePickerYear(delta) {
+      pickerYear += delta;
+      renderMonthGrid();
+      vibrate();
+    }
+    function renderMonthGrid() {
+      document.getElementById("pickerYear").innerText = `${pickerYear}년`;
+      const grid = document.getElementById("monthGrid");
+      grid.innerHTML = "";
+      for (let m = 1; m <= 12; m++) {
+        const btn = document.createElement("button");
+        btn.className = "sheet-btn" + (m === curMonth && pickerYear === curYear ? " blue" : "");
+        btn.innerText = `${m}월`;
+        btn.onclick = () => {
+          curYear = pickerYear;
+          curMonth = m;
+          closeMonthPicker();
+          renderCalendar();
+          vibrate();
+        };
+        grid.appendChild(btn);
+      }
+    }
+    function jumpToPreset(type) {
+      if (type === 'today') {
+        goToday();
+      } else if (type === 'join') {
+        const joinStr = localStorage.getItem("user_join") || "2017-04-01";
+        const d = parseDate(joinStr);
+        if (d) {
+          curYear = d.getFullYear();
+          curMonth = d.getMonth() + 1;
+          renderCalendar();
+        }
+      } else if (type === 'retire') {
+        const birthStr = localStorage.getItem("user_birth") || "1975-08-30";
+        const d = parseDate(birthStr);
+        if (d) {
+          curYear = d.getFullYear() + 60;
+          curMonth = d.getMonth() + 1;
+          renderCalendar();
+        }
+      }
+      closeMonthPicker();
+      vibrate();
+    }
+
+    // Accordion Toggle
+    function toggleAccordion() {
+      const c = document.getElementById("accordionContent");
+      c.style.display = c.style.display === "block" ? "none" : "block";
+    }
+
+    // Drawer Handlers
+    function openDrawer() {
+      document.getElementById("drawerOverlay").style.display = "block";
+      document.getElementById("drawer").classList.add("open");
+      vibrate();
+    }
+    function closeDrawer() {
+      document.getElementById("drawerOverlay").style.display = "none";
+      document.getElementById("drawer").classList.remove("open");
+    }
+
+    // Settings Modal
+    function openSettings() {
+      document.getElementById("cfgName").value = localStorage.getItem("user_name") || "";
+      document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
+      document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
+      document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "계장";
+      document.getElementById("cfgShiftType").value = localStorage.getItem("user_shift_type") || "normal";
+      document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
+      document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
+      document.getElementById("cfgDutyPay").value = localStorage.getItem("setting_duty") || "100000";
+      document.getElementById("cfgTenurePay").value = localStorage.getItem("setting_tenure") || calcTenureAllowance(localStorage.getItem("user_join") || "");
+      document.getElementById("cfgLeaveBase").value = localStorage.getItem("user_annual_leave_base") || "15";
+      document.getElementById("cfgDeduction").value = localStorage.getItem("setting_deduction") || "0";
+
+      document.getElementById("settingsOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeSettings(e) {
+      if (!e || e.target.id === "settingsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        document.getElementById("settingsOverlay").style.display = "none";
+      }
+    }
+    function autoFillDutyPay() {
+      const duty = document.getElementById("cfgDuty").value;
+      const dutyMap = {
+        "사원": 0, "주임": 50000, "계장": 100000, "기장": 200000,
+        "G1 매니저": 0, "G2 매니저": 50000, "G3 책임매니저": 100000, "G4 책임매니저": 200000
+      };
+      document.getElementById("cfgDutyPay").value = dutyMap[duty] !== undefined ? dutyMap[duty] : 0;
+    }
+    function calcTenureAllowance(joinStr) {
+      if (!joinStr || joinStr.length < 8) return 22500;
+      const clean = joinStr.replace(/[^0-9]/g, "");
+      if (clean.length < 8) return 22500;
+      const y = parseInt(clean.substring(0, 4));
+      const m = parseInt(clean.substring(4, 6)) - 1;
+      const d = parseInt(clean.substring(6, 8));
+      const joinDate = new Date(y, m, d);
+      const now = new Date();
+      let fullYears = now.getFullYear() - joinDate.getFullYear();
+      if (now.getMonth() < joinDate.getMonth() || (now.getMonth() === joinDate.getMonth() && now.getDate() < joinDate.getDate())) {
+        fullYears--;
+      }
+      if (fullYears < 1) return 2000;
+      else if (fullYears < 2) return 12500;
+      else if (fullYears < 3) return 22500;
+      else if (fullYears < 5) return 32500;
+      else if (fullYears < 7) return 42500;
+      else if (fullYears < 9) return 50500;
+      else if (fullYears < 11) return 58500;
+      else if (fullYears < 13) return 65500;
+      else if (fullYears < 15) return 72500;
+      else if (fullYears < 17) return 78500;
+      else if (fullYears < 19) return 84500;
+      else return 89500;
+    }
+    function autoFillTenurePay() {
+      const joinStr = document.getElementById("cfgJoin").value;
+      const amt = calcTenureAllowance(joinStr);
+      document.getElementById("cfgTenurePay").value = amt;
+      alert(`입사일 기준 2026년 단협 공식 근속수당: ${amt.toLocaleString()}원이 자동 입력되었습니다!`);
+    }
+    function updateShiftTypeUI() {
+      renderCalendar();
+    }
+    function saveSettings() {
+      localStorage.setItem("user_name", document.getElementById("cfgName").value.trim());
+      localStorage.setItem("user_birth", document.getElementById("cfgBirth").value.trim());
+      localStorage.setItem("user_join", document.getElementById("cfgJoin").value.trim());
+      localStorage.setItem("user_duty", document.getElementById("cfgDuty").value);
+      localStorage.setItem("user_shift_type", document.getElementById("cfgShiftType").value);
+      localStorage.setItem("setting_ordinary", document.getElementById("cfgOrdinary").value.trim());
+      localStorage.setItem("setting_base", document.getElementById("cfgBaseRate").value.trim());
+      localStorage.setItem("setting_duty", document.getElementById("cfgDutyPay").value.trim());
+      localStorage.setItem("setting_tenure", document.getElementById("cfgTenurePay").value.trim());
+      localStorage.setItem("user_annual_leave_base", document.getElementById("cfgLeaveBase").value.trim());
+      localStorage.setItem("setting_deduction", document.getElementById("cfgDeduction").value.trim());
+
+      closeSettings();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      alert("설정이 안전하게 저장되었습니다!");
+      vibrate();
+    }
+    function resetSettings() {
+      if (!confirm("모든 설정값을 빈칸으로 초기화할까요?")) return;
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("user_birth");
+      localStorage.removeItem("user_join");
+      localStorage.removeItem("setting_deduction");
+      openSettings();
+      updateDdayAndUserSummary();
+      vibrate();
+    }
+
+    // Document Viewer
+    const docData = {
+      cba: {
+        title: "📜 2026년 노사단체협약 요약",
+        body: `현대스틸파이프㈜ & 전국금속노동조합 현대스틸파이프지회
+체결일: 2026년 9월 10일 (유효기간: 2028년 3월 31일까지)
+
+■ 제116조【유효기간 연장】
+• 2026년 3월 31일 → ★ 2028년 3월 31일까지 연장
+
+■ 2026년 기본급 및 임금 인상 타결
+• 기본급 76,000원 + 제도개선분 49,400원 = 총 125,400원 인상
+• 시급 환산 516원 인상 (월 243시간 기준, 2026.01.01 소급)
+• 소급분: 516원 × 월평균 340h × 8개월 = 약 1,450,000원
+
+■ 제90조【진료비 지원 대폭 확대】(2027년부 시행)
+• 본인 입원 진료 시: 본인부담금 정산 후 ★ 본인부담금 전액 지원 (10만 원 초과 제한 폐지)
+• 가족(배우자·자녀·양가부모): 연간 누계 100만 원 이하 반액, ★ 100만 원 초과분 전액 지원
+
+■ 제49조 & 제51조【노동시간 및 휴게·수당】
+• 상주근무자: 08:30 ~ 17:30 (휴게 1시간 유급 상주휴게수당 가급 인정)
+• 교대근무자: 실근무 10시간 (기본 8h + 연장 2h, 심야 7.5h 인정, 고정 교대수당 20만 원)
+• 연장근로: 150% / 야간근로(22~06시): 50% 가산
+• 휴일근로(8시간 이내): 150% / ★ 휴일연장근로(8시간 초과): 200%
+
+■ 상주조 돌발여비 및 현장 수당 신설 (2026년부)
+• ★ 상주조 돌발여비: 소정근로 외 돌발 대응 시 심야(22~06시) 7만 원/건, 그 외 5만 원/건
+• 보수쿠폰: 1일 6시간 이상 보수작업 투입 시 2,000원/장
+
+■ 제91조【복리후생비 및 통상임금 전원합의체 판결 반영】
+• 귀향여비 설·추석 각 80만 원(연 160만), 하계휴가비 80만 원, 하계건강지원비
+• 대법원 전원합의체 판결(2020다247190) 취지에 따라 통상임금에 전액 산입
+  (통상시급 고열 933원, 비고열 878원 상승 반영)
+
+■ 제52조【유급휴일 및 대체휴무】
+• 주휴일(일), 노동절(5/1), 설·추석 연휴, 국경일·공휴일
+• 회사창립일(10/18), 노조창립일(4/19)
+• 유급휴일 중복 시 익일 순차 대체휴일 100% 보장`
+      },
+      support: {
+        title: "🏢 현대스틸파이프 지원제도 (2026 별도합의 신설 복지)",
+        body: `★ [2026년 별도합의 신설 복지]
+
+1. 선택형 복지포인트제 신설 (연 60만 P)
+• 사내근로복지기금 주체, 연간 총 60만 포인트 지급
+• 지급 시기: 5월(가정의 달) 30만 P, 8월(혹서기) 30만 P (해당 월 첫째 주 금요일 지급)
+
+2. 자녀 출산 및 첫 등교 바우처 신설
+• 초등학교 첫 등교: 첫째 50만, 둘째 100만, 셋째 이상 150만 포인트 (2026년 입학 자녀부터)
+• 자녀 출산: 첫째 50만, 둘째 100만, 셋째 이상 150만 포인트 (타결일 이후 출산 자녀)
+
+3. 차량구입 지원제도 개선
+• 첫 차 구입 지원: 할인율 17% → ★ 18% (그룹사 할인 5% 포함)
+• 재구입연한 및 의무보유기간: 5년 → ★ 4년으로 단축
+• 전기차 구입지원 확대: 현대 IONIQ9, 기아 EV9 추가
+
+4. 국내출장 운영 기준 개선
+• 국내출장 여비: 40,000원/일 (출장일 무관, 사업장 간 출장 동일)
+• 숙박비: 80,000원/박 한도 내 실비 정산
+
+-----------------------------------------
+★ [사내 핵심 지원제도 종합]
+
+5. 의료비 및 종합건강검진
+• 2027년부터 본인 입원비 전액 지원, 가족 100만 원 초과분 전액 지원 (제90조)
+• 난임 시술비 월 100만 원 한도 실비 지원 신설
+• 만 35세 이상 본인/배우자 종합검진 전액 지원
+
+6. 자녀 학자금 지원
+• 유치원/초중고/대학교 실비 지원 (장애인 자녀 교육비 연령 제한 폐지)
+
+7. 주택자금 사내대출 지원
+• 주택구입 및 전세보증금: 한도 3,000만 원, 금리 연 2.0%
+
+8. 장기근속 포상
+• 10년, 15년, 20년, 25년, 30년 근속 시
+• 순금메달 또는 현금(지급 시점 한국금거래소 살 때 시세) 선택권 보장
+
+9. 상주조 돌발여비 & 보수쿠폰 (현장 지원)
+• 소정근로 외 돌발 출동: 심야 7만 원/건, 주간 5만 원/건
+• 6시간 이상 보수작업 투입: 보수쿠폰 2,000원/장`
+      },
+      partners: {
+        title: "🤝 회사 제휴업체 통합현황 (28개사)",
+        body: `■ 울산 숙박 & 레저
+• 라한호텔 울산: 객실 정상가 대비 특별 기업할인 (052-250-6000)
+• 신라스테이 울산: 임직원 전용 우대가 적용 (052-990-1000)
+• 롯데호텔 울산: 주중/주말 객실 우대 및 F&B 할인 (052-960-1000)
+• 타니베이 호텔: 동구 일산지 오션뷰 객실 특가 (052-234-8888)
+
+■ 전국 리조트
+• 켄싱턴 리조트 (경주, 지리산, 설악 등 전국 지점 기업회원가)
+• 한화리조트 / 소노호텔앤리조트 무기명 회원대우 예약
+• 아난티 (남해, 부산 기장 코브) 임직원 패키지
+
+■ 라이프스타일 & 의료 (울산)
+• 공항 라운지 (인천·김포·김해 마티나 라운지 30% 할인: KITA308)
+• 아이코젠(ICOGEN): 피트니스·수영 멤버십 할인
+• CK치과병원: 비급여 15~20% 할인
+• 엘리야병원: 종합검진 및 비급여 10% 감면`
+      },
+      company: {
+        title: "🏭 회사 소개 및 연혁",
+        body: `현대스틸파이프 주식회사
+• 1975년: 경일공업 설립 (강관 사업 태동)
+• 1980년~2010년: 울산 1공장(ERW), 2공장(LSAW), 3공장(SPIRAL) 준공 및 고품질 에너지 강관 생산 체제 완비
+• 2018년: 대구경 LSAW 설비 증설
+• 2023년 10월 18일: 현대스틸파이프 주식회사 법인 설립
+• 2024년 1월 1일: 현대스틸파이프 공식 출범
+
+세계 최고 수준의 해상풍력 하부구조물 및 친환경 에너지 배관용 강관을 공급하는 글로벌 종합 파이프 전문 기업입니다.`
+      },
+      onboarding: {
+        title: "🚀 처음 사용자 이용 가이드",
+        body: `【 ShiftPay 3단계 핵심 이용법 】
+
+1단계: 나의 기본정보 & 시급 설정
+• 좌측 메뉴(☰) → [기본정보 및 급여 설정]에서 성명, 생년월일, 입사일을 등록하세요.
+• 정년퇴직 D-Day 카운트다운과 근속연차가 실시간 계산됩니다.
+
+2단계: 매일 1초 근무 등록
+• 캘린더 날짜를 누르고 [주간 정상], [평일 연장], [휴일 특근], [연차]를 원터치로 저장하세요.
+• 하단 급여 카드가 단체협약 수당과 예상 실수령액을 즉시 계산해 줍니다.
+
+3단계: 엑셀 내보내기 & 100% 안심 백업
+• 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
+      },
+      history: {
+        title: "📋 버전 업데이트 내역 (v1.3.2)",
+        body: `v1.3.2 (2026-11-09) — 피코 스플래시 탑재 & 클로드 검증 6대 정밀 패치
+• 🏗️ 사내 캐릭터 '피코(PICO)' 스플래시 로딩 화면 신설: 안전모+파란 작업복 파이팅 애니메이션 (터치 시 바로 건너뛰기)
+• 📊 근무 통계 & 분석 차트 (v1.3.2 정식 통합): 정상·연장·특근 도넛 차트 + 요일별(일~토) 누적 막대 그래프 + 월 이동 조회
+• 💾 데이터 통합 관리 카드 (v1.3.2 정식 통합): 엑셀 내보내기 / 전체 백업 / 복원 3종 원터치 카드
+• 🛡️ [설치형] 연도별 설정(setting_YYYY_*)·기본 설정(setting_*) 불일치 전수 보정: 저장·초기화·OCR 동기화·직급 직책수당·근속수당 선택 시 두 키를 항상 함께 저장/삭제 (웹은 단일 키 체계라 영향 없음)
+• 🗓️ 정년 퇴직일 단협 제28조 반영: 만 60세 도달 연도의 12월 31일로 정확 산출 (연월 점프 프리셋도 12월 연동)
+• ⚖️ 근속수당 20년 경계 교정: 19년차 84,500원 → 20년차부터 89,500원 정상 적용
+• 📅 휴일 수동 등록 날짜 자동 정규화: 하이픈/점/슬래시 입력도 20261120 형태로 저장
+• 🔒 설치형 앱 자동백업 동시 쓰기 스레드 동기화로 xlsx 손상 원천 차단
+
+v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
+• 📊 근무 통계 & 분석 차트 신설: 월간 총 근로시간 중심의 근무 유형별(정상/연장/특근) 도넛 차트 및 요일별(월~일) 누적 근로시간 막대 그래프 탑재
+• 💾 데이터 관리 전용 카드 모달: 엑셀 내보내기, 전체 백업, 데이터 복원을 한눈에 직관적으로 다루는 3종 카드 UI 개편
+• 🎄 공휴일 정식 명칭 친숙화: 12월 25일 공휴일 표기를 '기독탄신일'에서 '성탄절'로 친근하게 전면 교정
+
+v1.3.1 (2026-11-07) — 단협 200% 급여 계산식 및 일괄 삭제 정밀 패치
+• ⚖️ 휴일 12h 특근 급여 200% 정상화: 단체협약 제51조 5항(8시간 초과분 200%)에 맞춰 1.5배+2.0배 분리 산출 완비
+• ⏱️ 세부시간 직접입력 '특근연장(8h 초과분)' 월 급여 계산식 100% 정상 연동
+• 🗑️ 달력 다중 선택 일괄 삭제 및 당일 삭제 시 유급/특근연장/가급 전수 소거 패치
+• 📊 근무대장 내보내기 CSV 상세 열(정상, 연장, 특근, 특근연장, 심야, 유급, 메모) 분리 고도화
+
+v1.3.1 (2026-11-04) — 교대근무 및 기장 직책수당 개편
+• 🔄 상주근무 / 교대근무(주야 격주) 선택 스위치 및 교대수당 200,000원 자동 연동
+• 🌙 교대근무조 맞춤 1초 퀵 프리셋: [야간 10h (8+2h, 심야7.5h)], [야간 정상 8h], [야간 특근 10h]
+• 💼 기장 직책수당 200,000원 교정 (G4 책임매니저 동시 적용)
+• 💊 달력 야간근무 퍼플(Purple) 캡슐 칩 신설: 주야간 교대근무 패턴 시각화
+
+v1.3.1 (2026-11-03) — 완성판 릴리즈
+• 🔄 전체 교체 엑셀 복원 시 공휴일 소거 버그 완벽 차단
+• 📝 수동 등록 휴일(holiday_*) 엑셀 백업/복원 100% 완전 보존
+• 🛡️ XML 파서 파싱 호환성 및 안드로이드 전 기기 백업 안정성 극대화
+• 🌴 연차 계산 및 역산 현재 연도 고정 (달력 이동 시에도 안정적 계산)
+• 📅 2026년 공휴일법 개정 반영 (7/17 제헌절 국경일 공휴일 재지정) 및 2028년 국회의원선거 공식 탑재
+• 📱 아이폰 및 갤럭시 완벽 호환 모바일 웹앱(PWA) 지원`
+      },
+      apk: {
+        title: "📥 안드로이드 전용 앱 (APK) 안내",
+        body: `📱 ShiftPay 안드로이드 설치형 앱 (APK) 안내
+
+안드로이드(삼성 갤럭시 등) 스마트폰을 사용하시는 임직원분들은 100% 오프라인 전용 앱을 설치하여 출근카드 자동 스캔을 가장 편리하게 이용하실 수 있습니다.
+
+※ 최신 정식 버전: v1.3.2 (피코 스플래시·근무 통계 차트·데이터 통합 관리 탑재)
+
+[전용 앱 주요 장점]
+1. 📸 초고속 출근카드 자동 스캔 (구글 ML Kit 온디바이스 탑재)
+   • 인터넷 연결 없이 스마트폰 칩셋에서 0.3초 만에 1원 오차 없이 자동 판독
+2. 🔒 사내 보안 100% 안전
+   • 인터넷 권한 0% 차단으로 출근카드 및 급여 데이터의 외부 유출 원천 차단
+3. ⚡ 홈 화면 원터치 즉각 실행 및 초경량 구동
+
+※ 안드로이드 설치 파일(APK)은 창대님 또는 동료를 통해 전달받아 업데이트(설치)하실 수 있습니다.`
+      }
+    };
+    function showDoc(key) {
+      const d = docData[key];
+      if (!d) return;
+      document.getElementById("docTitle").innerText = d.title;
+      document.getElementById("docBody").innerText = d.body;
+      document.getElementById("docOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeDoc(e) {
+      if (!e || e.target.id === "docOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        document.getElementById("docOverlay").style.display = "none";
+      }
+    }
+
+    // 2026년 성과·격려금 계산기
+    function openBonusCalc() {
+      const baseRate = parseFloat(localStorage.getItem("setting_base") || "13653");
+      const monthlyBase = Math.round(baseRate * 243);
+      const dutyPay = parseFloat(localStorage.getItem("setting_duty") || "100000");
+      const joinStr = localStorage.getItem("user_join") || "";
+      const tenurePay = parseFloat(localStorage.getItem("setting_tenure") || calcTenureAllowance(joinStr));
+      const famSelf = 20000;
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      const shiftAllowance = isShift ? 200000 : 0;
+      const gageubAllowance = !isShift ? Math.min(200000, baseRate * 22.5) : 0;
+
+      const fixedTongsan = famSelf + dutyPay + tenurePay + shiftAllowance;
+      const ordinaryHourly = Math.round((monthlyBase + fixedTongsan) / 243);
+
+      // 정율 100% 산정 기준: 기본급 ÷ 1.65 + 약정통상수당 + 상주휴게수당(최대 20만) + (약정 통상시급 × 40H)
+      const bonus100 = Math.round((monthlyBase / 1.65) + fixedTongsan + gageubAllowance + (ordinaryHourly * 40));
+
+      const bonusBiz = Math.round(bonus100 * 1.0) + 1000000;
+      const bonusSafety = Math.round(bonus100 * 1.5) + 2000000;
+      const bonusCrisis = 2500000;
+      const giftVoucher = 300000;
+      const totalCash = Math.round(bonus100 * 2.5) + 5500000;
+      const totalSum = totalCash + giftVoucher;
+
+      const html = `
+        <div style="background:var(--indigo-bg); border:1px solid rgba(79,70,229,0.25); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; color:var(--indigo); font-size:14px; margin-bottom:2px;">🎯 정율 100% 기준 산정액: ${bonus100.toLocaleString()}원</div>
+          <div style="font-size:11px; color:var(--sub); line-height:1.4;">공식: 기본급÷1.65 + 약정통상수당 + 상주휴게(한도 20만) + (통상시급×40h)</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; margin-bottom:8px;">📋 산정 기초 정보 (나의 설정 연동)</div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">기본급 (243h 기준)</span>
+            <b>${monthlyBase.toLocaleString()}원 (${baseRate.toLocaleString()}원/h)</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">근무 형태</span>
+            <b>${isShift ? "교대근무 (교대수당 20만)" : "상주근무 (상주휴게 22.5일)"}</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">약정통상수당</span>
+            <b>${fixedTongsan.toLocaleString()}원 (직책/근속/가족/교대)</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">상주휴게수당 산입</span>
+            <b>${isShift ? "0원 (교대수당 대체)" : gageubAllowance.toLocaleString() + "원 (한도 20만)"}</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">약정 통상시급</span>
+            <b>${ordinaryHourly.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:var(--sub);">통상시급 × 40h</span>
+            <b>${Math.round(ordinaryHourly * 40).toLocaleString()}원</b>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-weight:700; margin-bottom:8px;">🎁 2026 타결 성과·격려금 지급 명세</div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">1. 경영 성과금 (100% + 100만)</span>
+            <b>${bonusBiz.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">2. 안전문화 정착 장려금 (150% + 200만)</span>
+            <b>${bonusSafety.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+            <span style="color:var(--sub);">3. 위기극복 동참 격려금 (정액)</span>
+            <b>${bonusCrisis.toLocaleString()}원</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+            <span style="color:var(--sub);">4. 전통시장 온누리 상품권</span>
+            <b>${giftVoucher.toLocaleString()}원</b>
+          </div>
+
+          <div style="border-top:1px dashed var(--border); padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:700; font-size:14px; color:var(--red);">🏆 총 수령 예상액</div>
+            <div style="font-weight:800; font-size:18px; color:var(--red);">${totalSum.toLocaleString()}원</div>
+          </div>
+          <div style="font-size:11px; color:var(--sub); text-align:right; margin-top:3px;">(현금 ${totalCash.toLocaleString()}원 + 상품권 30만 원)</div>
+        </div>
+
+        <div style="background:var(--bg); border-radius:8px; padding:10px; font-size:11px; color:var(--sub); line-height:1.5;">
+          • 💡 <b>2026 기본급 인상 소급분</b>: 약 1,450,000원 (시급 516원 × 340h × 8개월)<br>
+          • 📊 <b>전년 대비</b>: 2025년 평균 1,300만 원 대비 올해 1,330만 원으로 상향
+        </div>
+      `;
+
+      document.getElementById("bonusContent").innerHTML = html;
+      document.getElementById("bonusOverlay").style.display = "flex";
+      vibrate();
+    }
+    function closeBonusCalc(e) {
+      if (!e || e.target.id === "bonusOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        document.getElementById("bonusOverlay").style.display = "none";
+      }
+    }
+
+    // Data Backup / Restore / Clear
+    function clearCurrentMonth() {
+      if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+      for (let d = 1; d <= totalDays; d++) {
+        const k = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        subKeys.forEach(s => localStorage.removeItem(`${k}-${s}`));
+        localStorage.removeItem(k);
+      }
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      alert("이번 달 근무 기록이 초기화되었습니다.");
+      vibrate();
+    }
+    function backupData() {
+      const dump = JSON.stringify(localStorage, null, 2);
+      const blob = new Blob([dump], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ShiftPay_백업_${curYear}-${pad(curMonth)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      vibrate();
+    }
+    function restoreDataPrompt() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json";
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            for (let k in data) {
+              localStorage.setItem(k, data[k]);
+            }
+            alert("성공적으로 복원되었습니다!");
+            location.reload();
+          } catch (err) {
+            alert("복원 실패: 올바른 JSON 백업 파일이 아닙니다.");
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+    function exportExcel() {
+      const name = localStorage.getItem("user_name") || "임직원";
+      let csv = "\uFEFF일자,요일,근무구분,정상(h),연장(h),특근(h),특근연장(h),심야(h),유급(h),메모\n";
+      const totalDays = new Date(curYear, curMonth, 0).getDate();
+      const weekNames = ["일","월","화","수","목","금","토"];
+      for (let d = 1; d <= totalDays; d++) {
+        const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+        const dayOfWeek = new Date(curYear, curMonth - 1, d).getDay();
+        const mode = localStorage.getItem(`${dateKey}-mode`) || "휴무/미입력";
+        let modeName = mode;
+        let n = 0, o = 0, h = 0, ho = 0, nt = 0, p = 0;
+        let memo = localStorage.getItem(`${dateKey}-memo`) || "";
+        
+        if (mode === "norm") { modeName = "주간 정상"; n = 8; }
+        else if (mode === "ot") { modeName = "주간 연장"; n = 8; o = 2; }
+        else if (mode === "night_10") { modeName = "야간 10h (교대)"; n = 8; o = 2; nt = 7.5; }
+        else if (mode === "night_8") { modeName = "야간 정상"; n = 8; nt = 6.0; }
+        else if (mode === "holiday") { modeName = "휴일 특근"; h = 8; }
+        else if (mode === "night_holiday_10") { modeName = "야간 특근"; h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_12") { modeName = "특근 12h"; h = 8; ho = 4; }
+        else if (mode === "annual") { modeName = "연차 유급"; p = 8; }
+        else if (mode === "summer") { modeName = "하계휴가"; p = 8; }
+        else if (mode === "half_am") { modeName = "오전 반차"; n = 4; p = 4; }
+        else if (mode === "half_pm") { modeName = "오후 반차"; n = 4; p = 4; }
+        else if (mode === "custom") {
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+          modeName = memo ? `직접(${memo})` : "직접입력";
+        }
+        csv += `${dateKey},${weekNames[dayOfWeek]},${modeName},${n},${o},${h},${ho},${nt},${p},"${memo.replace(/"/g, '""')}"\n`;
+      }
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ShiftPay_근무대장_${curYear}-${pad(curMonth)}_${name}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      vibrate();
+    }
+
+    // 근무 통계 & 분석 차트 모달
+    let statsYear = 2026;
+    let statsMonth = 11;
+
+    function openStatsModal(year, month) {
+      statsYear = year || curYear;
+      statsMonth = month || curMonth;
+      renderStatsModal();
+      document.getElementById("statsOverlay").style.display = "flex";
+      vibrate();
+    }
+
+    function closeStatsModal(e) {
+      if (!e || e.target.id === "statsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeStatsModal()")) {
+        document.getElementById("statsOverlay").style.display = "none";
+      }
+    }
+
+    function prevStatsMonth() {
+      statsMonth--;
+      if (statsMonth < 1) {
+        statsMonth = 12;
+        statsYear--;
+      }
+      renderStatsModal();
+    }
+
+    function nextStatsMonth() {
+      statsMonth++;
+      if (statsMonth > 12) {
+        statsMonth = 1;
+        statsYear++;
+      }
+      renderStatsModal();
+    }
+
+    function renderStatsModal() {
+      document.getElementById("statsModalTitle").innerText = `${statsYear}년 ${statsMonth}월 근무 통계`;
+      document.getElementById("statsMonthLabel").innerText = `${statsYear}년 ${statsMonth}월`;
+
+      const daysInMonth = new Date(statsYear, statsMonth, 0).getDate();
+      let totalNorm = 0;
+      let totalOt = 0;
+      let totalHol = 0;
+      let totalNight = 0;
+      let daysWorkedCount = 0;
+      let weekdayHours = [0, 0, 0, 0, 0, 0, 0]; // 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateKey = `${statsYear}-${pad(statsMonth)}-${pad(d)}`;
+        const mode = localStorage.getItem(`${dateKey}-mode`);
+        let n = 0, o = 0, h = 0, ho = 0, nt = 0, p = 0;
+
+        if (mode === "norm") { n = 8; }
+        else if (mode === "ot") { n = 8; o = 2; }
+        else if (mode === "night_10") { n = 8; o = 2; nt = 7.5; }
+        else if (mode === "night_8") { n = 8; nt = 6.0; }
+        else if (mode === "holiday") { h = 8; }
+        else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_12") { h = 8; ho = 4; }
+        else if (mode === "annual") { p = 8; }
+        else if (mode === "summer") { p = 8; }
+        else if (mode === "half_am") { n = 4; p = 4; }
+        else if (mode === "half_pm") { n = 4; p = 4; }
+        else if (mode === "custom") {
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+        } else {
+          n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
+          p = parseFloat(localStorage.getItem(`${dateKey}-paid`) || "0");
+          o = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
+          h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
+          ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0");
+          nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
+        }
+
+        const dayTotal = n + o + h + ho;
+        if (dayTotal > 0 || p > 0 || mode) {
+          daysWorkedCount++;
+          totalNorm += (n + p);
+          totalOt += o;
+          totalHol += (h + ho);
+          totalNight += nt;
+
+          const dayOfWeek = new Date(statsYear, statsMonth - 1, d).getDay();
+          weekdayHours[dayOfWeek] += dayTotal;
+        }
+      }
+
+      const totalWorked = totalNorm + totalOt + totalHol;
+
+      // Donut Chart SVG
+      const R = 52;
+      const C = 2 * Math.PI * R; // ~326.726
+
+      let donutSvgHtml = "";
+      if (totalWorked <= 0) {
+        donutSvgHtml = `
+          <div style="text-align:center; padding:24px 0; color:var(--subtext);">
+            <div style="font-size:32px; margin-bottom:6px;">📊</div>
+            <div style="font-size:13px; font-weight:700;">이번 달 등록된 근무 기록이 없습니다.</div>
+            <div style="font-size:11.5px; margin-top:2px;">달력에서 근무를 입력하면 차트가 자동으로 생성됩니다.</div>
+          </div>
+        `;
+      } else {
+        const normRatio = totalNorm / totalWorked;
+        const otRatio = totalOt / totalWorked;
+        const holRatio = totalHol / totalWorked;
+
+        const normLen = (normRatio * C).toFixed(2);
+        const otLen = (otRatio * C).toFixed(2);
+        const holLen = (holRatio * C).toFixed(2);
+
+        const normOffset = 0;
+        const otOffset = (-normLen).toFixed(2);
+        const holOffset = (-(parseFloat(normLen) + parseFloat(otLen))).toFixed(2);
+
+        donutSvgHtml = `
+          <div style="display:flex; align-items:center; justify-content:space-around; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 12px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+            <!-- Donut SVG -->
+            <div style="position:relative; width:130px; height:130px; flex-shrink:0;">
+              <svg viewBox="0 0 140 140" width="130" height="130" style="transform: rotate(-90deg);">
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--bg)" stroke-width="20"></circle>
+                <!-- Normal (Blue) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#005BAC" stroke-width="20" stroke-dasharray="${normLen} ${C}" stroke-dashoffset="${normOffset}"></circle>
+                <!-- OT (Amber) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="${otLen} ${C}" stroke-dashoffset="${otOffset}"></circle>
+                <!-- Hol (Red) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="${holLen} ${C}" stroke-dashoffset="${holOffset}"></circle>
+              </svg>
+              <!-- Center Text -->
+              <div style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
+                <span style="font-size:20px; font-weight:800; color:var(--text); line-height:1.1;">${totalWorked.toFixed(1)}<span style="font-size:12px;">h</span></span>
+                <span style="font-size:11px; color:var(--subtext); font-weight:600; margin-top:2px;">총 근무시간</span>
+              </div>
+            </div>
+
+            <!-- Legend breakdown -->
+            <div style="display:flex; flex-direction:column; gap:8px; min-width:130px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#005BAC;"></span>정상근무</span>
+                <span style="font-weight:800; color:var(--text);">${totalNorm.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(normRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#f59e0b;"></span>연장근무</span>
+                <span style="font-weight:800; color:#d97706;">${totalOt.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(otRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#ef4444;"></span>휴일특근</span>
+                <span style="font-weight:800; color:#dc2626;">${totalHol.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(holRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              ${totalNight > 0 ? `
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; border-top:1px dashed var(--border); padding-top:6px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#8b5cf6;"></span>심야할증</span>
+                <span style="font-weight:800; color:#7c3aed;">${totalNight.toFixed(1)}h</span>
+              </div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      // Weekday bar chart calculation (Mon~Sun order)
+      const orderedWeekdays = [
+        { name: "월", hours: weekdayHours[1], isWeekend: false },
+        { name: "화", hours: weekdayHours[2], isWeekend: false },
+        { name: "수", hours: weekdayHours[3], isWeekend: false },
+        { name: "목", hours: weekdayHours[4], isWeekend: false },
+        { name: "금", hours: weekdayHours[5], isWeekend: false },
+        { name: "토", hours: weekdayHours[6], isWeekend: true },
+        { name: "일", hours: weekdayHours[0], isWeekend: true }
+      ];
+
+      const maxH = Math.max(...orderedWeekdays.map(w => w.hours), 10);
+
+      let weekdayBarsHtml = orderedWeekdays.map(w => {
+        const barPct = Math.max((w.hours / maxH) * 100, 6);
+        const barBg = w.isWeekend ? (w.hours > 0 ? '#ef4444' : '#cbd5e1') : (w.hours > 0 ? '#005BAC' : '#cbd5e1');
+        return `
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <span style="font-size:10.5px; font-weight:700; color:${w.hours > 0 ? 'var(--text)' : 'var(--subtext)'};">${w.hours.toFixed(0)}h</span>
+            <div style="width:100%; height:80px; display:flex; align-items:flex-end; justify-content:center; background:var(--bg); border-radius:6px; padding:2px;">
+              <div style="width:80%; height:${barPct}%; background:${barBg}; border-radius:4px; transition:height 0.3s ease;"></div>
+            </div>
+            <span style="font-size:11.5px; font-weight:700; color:${w.isWeekend ? '#ef4444' : 'var(--text)'};">${w.name}</span>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("statsModalBody").innerHTML = `
+        <!-- Top Metric Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+            <div style="font-size:11px; color:var(--subtext); font-weight:600;">총 근로시간</div>
+            <div style="font-size:17px; font-weight:800; color:#005BAC; margin-top:2px;">${totalWorked.toFixed(1)} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">시간</span></div>
+          </div>
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+            <div style="font-size:11px; color:var(--subtext); font-weight:600;">근무 일수</div>
+            <div style="font-size:17px; font-weight:800; color:var(--text); margin-top:2px;">${daysWorkedCount} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">일 출근</span></div>
+          </div>
+        </div>
+
+        <!-- Donut Chart Card -->
+        <div style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#005BAC" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 근무 유형별 구성 비율
+        </div>
+        ${donutSvgHtml}
+
+        <!-- Weekday Distribution Bar Chart -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 12px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <div style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#005BAC" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> 요일별(월~일) 누적 근로시간
+            </span>
+            <span style="font-size:11px; color:var(--subtext); font-weight:normal;">월간 누적합</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:flex-end;">
+            ${weekdayBarsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // 데이터 통합 관리 모달
+    function openDataModal() {
+      document.getElementById("dataOverlay").style.display = "flex";
+      vibrate();
+    }
+
+    function closeDataModal(e) {
+      if (!e || e.target.id === "dataOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeDataModal()")) {
+        document.getElementById("dataOverlay").style.display = "none";
+      }
+    }
+
+    // Initialize on page load
+    function initApp() {
+      setupDateAutoHyphen("cfgBirth");
+      setupDateAutoHyphen("cfgJoin");
+
+      // Dark mode init
+      if (localStorage.getItem("setting_dark_mode") === "true") {
+        document.body.classList.add("dark");
+        const darkBtn = document.getElementById("darkToggleBtn");
+        if (darkBtn) darkBtn.innerText = "☀️";
+      }
+
+      updateFactoryUI();
+      updateDdayAndUserSummary();
+      renderCalendar();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
+    window.addEventListener("load", initApp);
+  </script>
+  <!-- Floating Action Bar for Multi-Select Input & Delete -->
+  <div id="multiSelectBar" class="multi-select-bar">
+    <span id="multiSelectCount" class="count-text">선택 1일</span>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button class="btn-cancel" onclick="cancelMultiSelect()">취소</button>
+      <button id="btnMultiApply" class="btn-apply-batch" onclick="openMultiApplyModal()" style="background:var(--blue); color:#fff; border:none; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">⚡ 일괄 입력 (1)</button>
+      <button id="btnMultiDel" class="btn-del-batch" onclick="confirmMultiDeleteWeb()">🗑️ 일괄 삭제 (1)</button>
+    </div>
+  </div>
+
+  <!-- Multi Apply Modal -->
+  <div class="modal-overlay" id="multiApplyOverlay" onclick="closeMultiApplyModal(event)">
+    <div class="modal-card" style="max-width:380px;">
+      <div class="modal-header">
+        <h3 id="multiApplyTitle" style="font-size:16px; font-weight:700;">⚡ 선택 일괄 근무 입력</h3>
+        <button class="modal-close" onclick="closeMultiApplyModal()">&times;</button>
+      </div>
+      <p id="multiApplyDesc" style="font-size:13px; color:var(--sub); margin-bottom:14px;">선택된 날짜들에 적용할 근무를 선택하세요.</p>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button class="preset-btn" onclick="applyBatchPreset('ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#d97706;">⚡ 주간 10h</span>
+          <span style="font-size:12px; color:var(--sub);">정상 8h + 연장 2h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#0284c7;">● 주간 정상</span>
+          <span style="font-size:12px; color:var(--sub);">8시간 인정</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('night_ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 10h</span>
+          <span style="font-size:12px; color:var(--sub);">8h + 2h + 심야7.5h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('night_normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 정상</span>
+          <span style="font-size:12px; color:var(--sub);">8h + 심야6.0h</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('holiday')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#dc2626;">🔥 휴일 특근</span>
+          <span style="font-size:12px; color:var(--sub);">8h 특근 (150%)</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('annual')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌴 연차 휴가</span>
+          <span style="font-size:12px; color:var(--sub);">유급 8h 차감</span>
+        </button>
+        <button class="preset-btn" onclick="applyBatchPreset('half_am')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
+          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌗 오전 반차</span>
+          <span style="font-size:12px; color:var(--sub);">4h 근무 + 4h 연차</span>
+        </button>
+      </div>
+      <button onclick="closeMultiApplyModal()" style="margin-top:14px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); font-weight:600; cursor:pointer;">닫기</button>
+    </div>
+  </div>
+
+  <!-- 피코(PICO) 스플래시 로딩 화면 (2번 시안: 안전모+파란 작업복 파이팅) -->
+  <div id="picoSplash" style="position:fixed; inset:0; z-index:99999; background:#0D3470; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .3s ease; cursor:pointer;">
+    <div style="background:#fff; border-radius:28px; padding:10px; box-shadow:0 12px 32px rgba(0,0,0,0.35); width:min(68vw,340px);">
+      <img src="pico/pico_splash.gif" alt="현대스틸파이프 피코" style="width:100%; display:block; border-radius:20px;">
+    </div>
+    <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.2 · 현대스틸파이프</div>
+    <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
+    <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
+  </div>
+  <script>
+    (function () {
+      var sp = document.getElementById("picoSplash");
+      if (!sp) return;
+      var seen = false;
+      try { seen = sessionStorage.getItem("picoSplashShown") === "1"; } catch (e) {}
+      if (seen) { sp.parentNode.removeChild(sp); return; }
+      try { sessionStorage.setItem("picoSplashShown", "1"); } catch (e) {}
+      var hidden = false;
+      var hide = function () {
+        if (hidden) return;
+        hidden = true;
+        sp.style.opacity = "0";
+        setTimeout(function () { if (sp && sp.parentNode) sp.parentNode.removeChild(sp); }, 340);
+      };
+      setTimeout(hide, 2100);
+      sp.addEventListener("click", hide);
+    })();
+  </script>
+
+  <!-- ===== TEMPORARY VERIFICATION HARNESS (batch input) ===== -->
+  <pre id="batchTestOut" style="position:fixed; inset:0; z-index:100000; background:#fff; color:#111; font-size:12px; padding:12px; overflow:auto; white-space:pre-wrap;"></pre>
+  <script>
+  setTimeout(function () {
+    var log = [];
+    function L(s) { log.push(s); }
+    function q(k) { return localStorage.getItem(k); }
+    function keysOf(k) {
+      var o = {};
+      ["mode","norm","ot","hol","holot","night","paid","extra","memo"].forEach(function (s) {
+        var v = localStorage.getItem(k + "-" + s);
+        if (v !== null) o[s] = v;
+      });
+      return o;
+    }
+    function clearDays(days) {
+      days.forEach(function (d) {
+        var k = "2026-11-" + (d < 10 ? "0" + d : d);
+        ["mode","norm","ot","hol","holot","night","paid","extra","memo"].forEach(function (s) {
+          localStorage.removeItem(k + "-" + s);
+        });
+      });
+    }
+    var TEST_DAYS = [10,11,12,13,14,15,16,17];
+    try {
+      clearDays(TEST_DAYS);
+      curYear = 2026; curMonth = 11;
+      renderCalendar(); updateDdayAndUserSummary(); calculateMonthlyPayroll();
+      function run(label, days, preset) {
+        selectedDays.clear();
+        days.forEach(function (d) { selectedDays.add(d); });
+        isMultiSelectMode = true;
+        applyBatchPreset(preset);
+        var out = days.map(function (d) {
+          var k = "2026-11-" + (d < 10 ? "0" + d : d);
+          return d + "일=" + JSON.stringify(keysOf(k));
+        });
+        L("[" + label + "] " + out.join(" | "));
+        L("   합계: 정상 " + document.getElementById("sumNorm").innerText + " / 연장 " + document.getElementById("sumOt").innerText +
+          " / 휴일 " + document.getElementById("sumHol").innerText + " / 휴일연장 " + document.getElementById("sumExtra").innerText +
+          " / 야간 " + document.getElementById("sumNight").innerText + " / 남은연차 " + document.getElementById("leaveLine").innerText);
+      }
+      run("주간10h 10~12일", [10,11,12], "ot");
+      run("주간정상 15일(일)", [15], "normal");
+      run("야간10h 13일", [13], "night_ot");
+      run("야간정상 13일", [13], "night_normal");
+      run("휴일특근 14일(토)", [14], "holiday");
+      run("연차 16일", [16], "annual");
+      run("오전반차 17일", [17], "half_am");
+      L("");
+      L("모드 잔존 확인: " + JSON.stringify(keysOf("2026-11-10")));
+
+      // 정리: 테스트로 만든 11월 기록 제거 후 재렌더
+      clearDays(TEST_DAYS);
+      renderCalendar(); updateDdayAndUserSummary(); calculateMonthlyPayroll();
+      L("");
+      L("테스트 데이터 정리 완료 · 정상 " + document.getElementById("sumNorm").innerText + " 연장 " + document.getElementById("sumOt").innerText);
+      var ok = log.join("\n").indexOf("undefined") < 0;
+      document.getElementById("batchTestOut").textContent = "BATCH TEST RESULT\n" + log.join("\n") + "\nDONE";
+    } catch (e) {
+      document.getElementById("batchTestOut").textContent = "BATCH TEST ERROR: " + (e && e.message) + "\n" + (e && e.stack) + "\n" + log.join("\n");
+    }
+  }, 400);
+  </script>
+</body>
+</html>
