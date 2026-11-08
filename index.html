@@ -698,6 +698,60 @@
       border-color: rgba(79,70,229,0.3);
     }
 
+    /* 선택 일괄 입력 — 2열 카드형 프리셋 그리드 (설치형 앱과 동일 디자인) */
+    .batch-preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .batch-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 11px;
+      min-height: 56px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+    .batch-card:active {
+      filter: brightness(0.94);
+    }
+    .batch-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .batch-card-sub {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--sub);
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .batch-card.wide {
+      grid-column: span 2;
+    }
+    .batch-sheet-handle {
+      width: 38px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--sub);
+      opacity: 0.55;
+      margin: 0 auto 10px;
+    }
+
     /* Settings Form */
     .form-group {
       margin-bottom: 12px;
@@ -1953,13 +2007,15 @@
     function openMultiApplyModal() {
       if (selectedDays.size === 0) return;
       document.getElementById("multiApplyTitle").innerText = `⚡ 선택 일괄 근무 입력 (${selectedDays.size}일)`;
-      document.getElementById("multiApplyDesc").innerText = `선택하신 ${selectedDays.size}개 날짜에 일괄 적용할 근무 형태를 선택하세요.`;
-      document.getElementById("multiApplyOverlay").classList.add("active");
+      document.getElementById("multiApplyDesc").innerText = `선택하신 ${selectedDays.size()}개 날짜에 적용할 근무를 고르세요.`;
+      document.getElementById("multiApplyOverlay").style.display = "flex";
+      vibrate();
     }
 
+    // 닫기: 바깥(오버레이) 터치 또는 닫기 버튼. 인자 없이 호출하면 무조건 닫는다.
     function closeMultiApplyModal(e) {
       if (e && e.target !== document.getElementById("multiApplyOverlay")) return;
-      document.getElementById("multiApplyOverlay").classList.remove("active");
+      document.getElementById("multiApplyOverlay").style.display = "none";
     }
 
     // 일괄 입력 프리셋 정의: 단일 날짜 프리셋(selectPreset) 및 급여 엔진이 읽는 모드명과 100% 일치시킨다.
@@ -1995,7 +2051,7 @@
       });
 
       const count = days.length;
-      document.getElementById("multiApplyOverlay").classList.remove("active");
+      document.getElementById("multiApplyOverlay").style.display = "none";
       isMultiSelectMode = false;
       selectedDays.clear();
       renderCalendar();
@@ -2969,6 +3025,7 @@
 • 📅 휴일 수동 등록 날짜 자동 정규화: 하이픈/점/슬래시 입력도 20261120 형태로 저장
 • 🔒 설치형 앱 자동백업 동시 쓰기 스레드 동기화로 xlsx 손상 원천 차단
 • ⚡ 달력 다중 선택 [⚡ 일괄 입력] 정밀 패치: 선택한 여러 날짜에 주간·야간·특근·연차·반차 7종 프리셋을 한 번에 저장 (버튼 먹통·근무시간 0h·연차/반차 차감 누락 해결)
+• 📐 4대 UI 일관성 개편 (설치형 앱과 1:1): 캘린더 헤더 [통계] 버튼 · 아래 3버튼(빠른 근무 입력 / 선택 모드 / 통계) 통일 · 일괄 입력 바텀시트 2열 카드형 프리셋 그리드 · 바깥 터치/닫기 정상 동작
 
 v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
 • 📊 근무 통계 & 분석 차트 신설: 월간 총 근로시간 중심의 근무 유형별(정상/연장/특근) 도넛 차트 및 요일별(월~일) 누적 근로시간 막대 그래프 탑재
@@ -3497,45 +3554,50 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     </div>
   </div>
 
-  <!-- Multi Apply Modal -->
-  <div class="modal-overlay" id="multiApplyOverlay" onclick="closeMultiApplyModal(event)">
-    <div class="modal-card" style="max-width:380px;">
-      <div class="modal-header">
-        <h3 id="multiApplyTitle" style="font-size:16px; font-weight:700;">⚡ 선택 일괄 근무 입력</h3>
-        <button class="modal-close" onclick="closeMultiApplyModal()">&times;</button>
+  <!-- 선택 일괄 근무 입력 바텀시트 (2열 카드형 프리셋 그리드) -->
+  <div class="sheet-overlay" id="multiApplyOverlay" onclick="closeMultiApplyModal(event)">
+    <div class="bottom-sheet" style="max-height:88vh; padding:10px 16px calc(var(--safe-bottom) + 16px);">
+      <div class="batch-sheet-handle"></div>
+      <div style="display:flex; align-items:flex-start; gap:8px;">
+        <div style="flex:1; min-width:0;">
+          <div id="multiApplyTitle" style="font-size:17px; font-weight:800; color:var(--text);">⚡ 선택 일괄 근무 입력</div>
+          <div id="multiApplyDesc" style="font-size:12px; color:var(--blue); margin-top:2px;">선택된 날짜들에 적용할 근무를 선택하세요.</div>
+        </div>
+        <button onclick="closeMultiApplyModal()" style="background:none; border:none; color:var(--sub); font-size:18px; line-height:1; padding:6px 8px; cursor:pointer;">✕</button>
       </div>
-      <p id="multiApplyDesc" style="font-size:13px; color:var(--sub); margin-bottom:14px;">선택된 날짜들에 적용할 근무를 선택하세요.</p>
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button class="preset-btn" onclick="applyBatchPreset('ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#d97706;">⚡ 주간 10h</span>
-          <span style="font-size:12px; color:var(--sub);">정상 8h + 연장 2h</span>
+      <div style="font-size:13px; font-weight:700; color:var(--sub); margin:10px 0 6px;">⚡ 1초 원터치 퀵 프리셋 (탭 즉시 저장)</div>
+      <div class="batch-preset-grid">
+        <button class="batch-card" onclick="applyBatchPreset('ot')">
+          <span class="batch-card-title" style="color:#d97706;">⚡ 주간 10h</span>
+          <span class="batch-card-sub">정상 8h + 연장 2h</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#0284c7;">● 주간 정상</span>
-          <span style="font-size:12px; color:var(--sub);">8시간 인정</span>
+        <button class="batch-card" onclick="applyBatchPreset('normal')">
+          <span class="batch-card-title" style="color:#0284c7;">● 주간 정상</span>
+          <span class="batch-card-sub">8시간 인정</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('night_ot')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 10h</span>
-          <span style="font-size:12px; color:var(--sub);">8h + 2h + 심야7.5h</span>
+        <button class="batch-card" onclick="applyBatchPreset('night_ot')">
+          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 10h</span>
+          <span class="batch-card-sub">8h + 2h + 심야 7.5h</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('night_normal')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#7c3aed;">🌙 야간 정상</span>
-          <span style="font-size:12px; color:var(--sub);">8h + 심야6.0h</span>
+        <button class="batch-card" onclick="applyBatchPreset('night_normal')">
+          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 정상</span>
+          <span class="batch-card-sub">8h + 심야 6.0h</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('holiday')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#dc2626;">🔥 휴일 특근</span>
-          <span style="font-size:12px; color:var(--sub);">8h 특근 (150%)</span>
+        <button class="batch-card" onclick="applyBatchPreset('holiday')">
+          <span class="batch-card-title" style="color:#dc2626;">🔥 휴일 특근</span>
+          <span class="batch-card-sub">8h 특근 (150%)</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('annual')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌴 연차 휴가</span>
-          <span style="font-size:12px; color:var(--sub);">유급 8h 차감</span>
+        <button class="batch-card" onclick="applyBatchPreset('annual')">
+          <span class="batch-card-title" style="color:#059669;">🌴 연차 휴가</span>
+          <span class="batch-card-sub">유급 8h 차감</span>
         </button>
-        <button class="preset-btn" onclick="applyBatchPreset('half_am')" style="display:flex; justify-content:space-between; align-items:center; padding:11px 14px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); font-weight:700; cursor:pointer;">
-          <span style="display:flex; align-items:center; gap:8px; color:#059669;">🌗 오전 반차</span>
-          <span style="font-size:12px; color:var(--sub);">4h 근무 + 4h 연차</span>
+        <button class="batch-card wide" onclick="applyBatchPreset('half_am')">
+          <span class="batch-card-title" style="color:#059669;">🌗 오전 반차</span>
+          <span class="batch-card-sub">4h 근무 + 4h 연차</span>
         </button>
       </div>
-      <button onclick="closeMultiApplyModal()" style="margin-top:14px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); font-weight:600; cursor:pointer;">닫기</button>
+      <div style="font-size:11px; color:var(--sub); margin-top:10px;">• 이미 기록된 날짜는 선택한 프리셋으로 대체됩니다.</div>
+      <button onclick="closeMultiApplyModal()" style="margin-top:8px; width:100%; padding:11px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--sub); font-size:13px; font-weight:700; cursor:pointer;">닫기</button>
     </div>
   </div>
 
