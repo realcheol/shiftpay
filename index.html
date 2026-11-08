@@ -978,9 +978,10 @@
       <div class="calendar-grid" id="calendarGrid"></div>
 
       <!-- Quick Action Buttons under calendar -->
-      <div class="quick-actions" style="display:flex; gap:8px;">
-        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.4; display:flex; align-items:center; justify-content:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
-        <button class="btn-quick" id="btnStatsChart" onclick="openStatsModal()" style="flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 근무 통계</button>
+      <div class="quick-actions" style="display:flex; gap:6px;">
+        <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:5px; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
+        <button class="btn-quick" id="btnToggleMulti" onclick="toggleMultiSelectMode()" style="flex:1.05; background:var(--surface); border:1px solid var(--border); color:var(--blue); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드</button>
+        <button class="btn-quick" id="btnStatsChart" onclick="openStatsModal()" style="flex:0.85; background:var(--surface); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 통계</button>
       </div>
     </div>
 
@@ -1880,6 +1881,19 @@
 
     let isMultiSelectMode = false;
     let selectedDays = new Set();
+    let lastLongPressTime = 0;
+
+    function toggleMultiSelectMode() {
+      vibrate();
+      isMultiSelectMode = !isMultiSelectMode;
+      if (!isMultiSelectMode) {
+        selectedDays.clear();
+        showToast("다중 선택 모드가 취소되었습니다.");
+      } else {
+        showToast("날짜를 톡톡 터치하여 여러 날을 선택하세요.");
+      }
+      renderCalendar();
+    }
 
     function cancelMultiSelect() {
       vibrate();
@@ -1901,7 +1915,7 @@
         });
         isMultiSelectMode = false;
         selectedDays.clear();
-        alert(`${cnt}개 날짜의 근무 기록이 삭제되었습니다.`);
+        showToast(`선택하신 ${cnt}개 날짜의 근무 기록이 삭제되었습니다.`);
         renderCalendar();
         updateDdayAndUserSummary();
         calculateMonthlyPayroll();
@@ -2000,6 +2014,19 @@
           document.getElementById("btnMultiDel").innerText = `🗑️ 일괄 삭제 (${selectedDays.size})`;
         } else {
           multiBar.classList.remove("show");
+        }
+      }
+
+      const btnMulti = document.getElementById("btnToggleMulti");
+      if (btnMulti) {
+        if (isMultiSelectMode) {
+          btnMulti.style.borderColor = "#ef4444";
+          btnMulti.style.color = "#ef4444";
+          btnMulti.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> 선택 취소`;
+        } else {
+          btnMulti.style.borderColor = "var(--border)";
+          btnMulti.style.color = "var(--blue)";
+          btnMulti.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드`;
         }
       }
 
@@ -2134,6 +2161,7 @@
         // Cell Click & Long Press Handling
         if (isMultiSelectMode) {
           cell.onclick = (e) => {
+            if (Date.now() - lastLongPressTime < 650) return;
             e.stopPropagation();
             vibrate();
             if (selectedDays.has(d)) {
@@ -2148,6 +2176,7 @@
           let longTimer = null;
           cell.addEventListener("touchstart", (e) => {
             longTimer = setTimeout(() => {
+              lastLongPressTime = Date.now();
               vibrate();
               isMultiSelectMode = true;
               selectedDays.clear();
@@ -2159,6 +2188,7 @@
           cell.addEventListener("touchend", () => clearTimeout(longTimer), { passive: true });
           cell.addEventListener("contextmenu", (e) => {
             e.preventDefault();
+            lastLongPressTime = Date.now();
             vibrate();
             isMultiSelectMode = true;
             selectedDays.clear();
@@ -2167,6 +2197,7 @@
           });
 
           cell.onclick = () => {
+            if (Date.now() - lastLongPressTime < 650) return;
             if (isMultiSelectMode) return;
             openShiftSheet(dateKey, d);
           };
