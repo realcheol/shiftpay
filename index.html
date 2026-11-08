@@ -270,7 +270,7 @@
     /* Weekday bar */
     .weekday-row {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       text-align: center;
       font-size: 12px;
       font-weight: 700;
@@ -278,6 +278,7 @@
       color: var(--sub);
       border-bottom: 1px solid var(--border);
       margin-bottom: 4px;
+      width: 100%;
     }
     .weekday-row .sun { color: var(--red); }
     .weekday-row .sat { color: var(--blue); }
@@ -285,19 +286,24 @@
     /* Calendar Grid */
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 2px;
+      width: 100%;
     }
     .cal-cell {
-      min-height: 64px;
+      min-width: 0;
+      width: 100%;
+      height: 72px;
+      box-sizing: border-box;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 3px;
+      padding: 2px 3px;
       display: flex;
       flex-direction: column;
       cursor: pointer;
       position: relative;
+      overflow: hidden;
       transition: transform 0.1s;
     }
     .cal-cell:active {
@@ -312,9 +318,12 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      gap: 3px;
-      font-size: 11.5px;
+      gap: 2px;
+      font-size: 11px;
       font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      min-width: 0;
     }
     .cell-lunar {
       font-size: 8.5px;
@@ -345,7 +354,7 @@
       font-size: 10px;
     }
     .holiday-name {
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 700;
       color: var(--red);
       line-height: 1.1;
@@ -359,8 +368,8 @@
     .shift-pill {
       margin-top: auto;
       border-radius: 4px;
-      padding: 2px 3px;
-      font-size: 9px;
+      padding: 1px 2px;
+      font-size: 8.5px;
       font-weight: 700;
       text-align: center;
       white-space: nowrap;
