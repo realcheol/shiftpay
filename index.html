@@ -1083,9 +1083,10 @@
 
       <div class="menu-sec-title">앱 정보</div>
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
+      <a class="menu-item" href="ShiftPay_v1.3.2.apk" download style="text-decoration:none; color:inherit;"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 📲 설치형 앱 다운로드 (v1.3.2)</a>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.1)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.2)</div>
     </div>
   </div>
 
@@ -2850,8 +2851,18 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.3.1)",
-        body: `v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
+        title: "📋 버전 업데이트 내역 (v1.3.2)",
+        body: `v1.3.2 (2026-11-09) — 피코 스플래시 탑재 & 클로드 검증 6대 정밀 패치
+• 🏗️ 사내 캐릭터 '피코(PICO)' 스플래시 로딩 화면 신설: 안전모+파란 작업복 파이팅 애니메이션 (터치 시 바로 건너뛰기)
+• 📊 근무 통계 & 분석 차트 (v1.3.2 정식 통합): 정상·연장·특근 도넛 차트 + 요일별(일~토) 누적 막대 그래프 + 월 이동 조회
+• 💾 데이터 통합 관리 카드 (v1.3.2 정식 통합): 엑셀 내보내기 / 전체 백업 / 복원 3종 원터치 카드
+• 🛡️ 연도별 설정(setting_YYYY_*)·기본 설정(setting_*) 불일치 전수 보정: 저장·초기화·OCR 동기화·직급 직책수당·근속수당 선택 시 두 키를 항상 함께 저장/삭제 (설치형 앱 동일 패치)
+• 🗓️ 정년 퇴직일 단협 제28조 반영: 만 60세 도달 연도의 12월 31일로 정확 산출 (연월 점프 프리셋도 12월 연동)
+• ⚖️ 근속수당 20년 경계 교정: 19년차 84,500원 → 20년차부터 89,500원 정상 적용
+• 📅 휴일 수동 등록 날짜 자동 정규화: 하이픈/점/슬래시 입력도 20261120 형태로 저장
+• 🔒 설치형 앱 자동백업 동시 쓰기 스레드 동기화로 xlsx 손상 원천 차단
+
+v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
 • 📊 근무 통계 & 분석 차트 신설: 월간 총 근로시간 중심의 근무 유형별(정상/연장/특근) 도넛 차트 및 요일별(월~일) 누적 근로시간 막대 그래프 탑재
 • 💾 데이터 관리 전용 카드 모달: 엑셀 내보내기, 전체 백업, 데이터 복원을 한눈에 직관적으로 다루는 3종 카드 UI 개편
 • 🎄 공휴일 정식 명칭 친숙화: 12월 25일 공휴일 표기를 '기독탄신일'에서 '성탄절'로 친근하게 전면 교정
@@ -2881,6 +2892,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         body: `📱 ShiftPay 안드로이드 설치형 앱 (APK) 안내
 
 안드로이드(삼성 갤럭시 등) 스마트폰을 사용하시는 임직원분들은 100% 오프라인 전용 앱을 설치하여 출근카드 자동 스캔을 가장 편리하게 이용하실 수 있습니다.
+
+※ 최신 정식 버전: v1.3.2 (피코 스플래시·근무 통계 차트·데이터 통합 관리 탑재)
 
 [전용 앱 주요 장점]
 1. 📸 초고속 출근카드 자동 스캔 (구글 ML Kit 온디바이스 탑재)
@@ -3416,5 +3429,31 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <button onclick="closeMultiApplyModal()" style="margin-top:14px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); font-weight:600; cursor:pointer;">닫기</button>
     </div>
   </div>
+
+  <!-- 피코(PICO) 스플래시 로딩 화면 (2번 시안: 안전모+파란 작업복 파이팅) -->
+  <div id="picoSplash" style="position:fixed; inset:0; z-index:99999; background:#0D3470; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .3s ease; cursor:pointer;">
+    <div style="background:#fff; border-radius:28px; padding:10px; box-shadow:0 12px 32px rgba(0,0,0,0.35); width:min(68vw,340px);">
+      <img src="pico/pico_splash.gif" alt="현대스틸파이프 피코" style="width:100%; display:block; border-radius:20px;">
+    </div>
+    <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.2 · 현대스틸파이프</div>
+    <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
+    <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
+  </div>
+  <script>
+    (function () {
+      var sp = document.getElementById("picoSplash");
+      if (!sp) return;
+      var hidden = false;
+      var hide = function () {
+        if (hidden) return;
+        hidden = true;
+        sp.style.opacity = "0";
+        setTimeout(function () { if (sp && sp.parentNode) sp.parentNode.removeChild(sp); }, 340);
+      };
+      setTimeout(hide, 2100);
+      sp.addEventListener("click", hide);
+    })();
+  </script>
 </body>
 </html>
