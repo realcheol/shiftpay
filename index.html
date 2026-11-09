@@ -362,10 +362,13 @@
       font-size: 8px;
       font-weight: 700;
       color: var(--red);
-      line-height: 1.1;
-      white-space: nowrap;
+      line-height: 1.15;
+      white-space: normal;
+      word-break: keep-all;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       margin-top: 1px;
     }
 
@@ -1152,7 +1155,6 @@
 
       <div class="menu-sec-title">앱 정보</div>
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
-      <a class="menu-item" href="ShiftPay_v1.3.2.apk" download style="text-decoration:none; color:inherit;"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 📲 설치형 앱 다운로드 (v1.3.2)</a>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
       <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.2)</div>
@@ -1555,6 +1557,21 @@
     <div class="bottom-sheet" style="max-height:88vh;">
       <div class="sheet-title" id="docTitle">문서 제목</div>
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
+      <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
+      <div id="docApkActions" style="display:none; margin-bottom:14px;">
+        <a class="sheet-btn blue" href="downloads/ShiftPay_v1.3.2.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14px; font-weight:800; padding:15px 10px; margin-bottom:8px; border-radius:12px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          최신 ShiftPay v1.3.2 APK 다운로드
+        </a>
+        <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.2.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.2.apk</a><br>
+          웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
+        </div>
+        <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          설치 없이 웹 버전 바로 열기
+        </a>
+      </div>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDoc()">닫기</button>
     </div>
   </div>
@@ -3026,6 +3043,10 @@
 • 🔒 설치형 앱 자동백업 동시 쓰기 스레드 동기화로 xlsx 손상 원천 차단
 • ⚡ 달력 다중 선택 [⚡ 일괄 입력] 정밀 패치: 선택한 여러 날짜에 주간·야간·특근·연차·반차 7종 프리셋을 한 번에 저장 (버튼 먹통·근무시간 0h·연차/반차 차감 누락 해결)
 • 📐 4대 UI 일관성 개편 (설치형 앱과 1:1): 캘린더 헤더 [통계] 버튼 · 아래 3버튼(빠른 근무 입력 / 선택 모드 / 통계) 통일 · 일괄 입력 바텀시트 2열 카드형 프리셋 그리드 · 바깥 터치/닫기 정상 동작
+• 📊 근무 통계에 상주휴게(가급) 반영: 도넛·범례를 정상·연장·상주가급·휴일특근 4종으로 구분하고 총 근무시간·요일별 누적에 가급을 포함해 출근카드 환산 총시간과 같은 기준으로 일치
+• 🗓️ 달력 공휴일 이름 2줄 표시: '추석 대체공...'처럼 말줄임표로 잘리지 않고 설치형 앱과 동일하게 두 줄로 표시
+• 📥 서랍 메뉴 정리: 중복되던 [설치형 앱 다운로드] 항목을 없애고 [안드로이드 전용 앱(APK) 안내] 모달 안에 최신 APK 다운로드 버튼·직다운로드 주소·웹 버전 바로가기를 통합
+• 📸 [설치형] 출근카드 OCR 인식률 보강: 28일 이후 하단 행 허용오차 40% 확대 · 번진 날짜 숫자(29·30) 정제 · 기울어진 사진의 행별 가로 밀림 보정 · 검토표 상단 [월말 평일 누락] 뱃지와 원터치 채우기
 
 v1.3.1 (2026-11-08) — 근무 통계 차트 신설 & 데이터 관리 카드 개편
 • 📊 근무 통계 & 분석 차트 신설: 월간 총 근로시간 중심의 근무 유형별(정상/연장/특근) 도넛 차트 및 요일별(월~일) 누적 근로시간 막대 그래프 탑재
@@ -3060,6 +3081,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
 ※ 최신 정식 버전: v1.3.2 (피코 스플래시·근무 통계 차트·데이터 통합 관리 탑재)
 
+▼ 아래 파란 버튼을 누르면 최신 APK를 바로 받을 수 있습니다.
+
 [전용 앱 주요 장점]
 1. 📸 초고속 출근카드 자동 스캔 (구글 ML Kit 온디바이스 탑재)
    • 인터넷 연결 없이 스마트폰 칩셋에서 0.3초 만에 1원 오차 없이 자동 판독
@@ -3075,6 +3098,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (!d) return;
       document.getElementById("docTitle").innerText = d.title;
       document.getElementById("docBody").innerText = d.body;
+      const apkActions = document.getElementById("docApkActions");
+      if (apkActions) apkActions.style.display = (key === "apk") ? "block" : "none";
       document.getElementById("docOverlay").style.display = "flex";
       vibrate();
     }
@@ -3326,6 +3351,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       let totalOt = 0;
       let totalHol = 0;
       let totalNight = 0;
+      let totalGageub = 0;
       let daysWorkedCount = 0;
       let weekdayHours = [0, 0, 0, 0, 0, 0, 0]; // 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
 
@@ -3361,6 +3387,13 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0");
         }
 
+        // 상주휴게(가급): 직접입력으로 저장된 값(-extra)이 있으면 그 값, 없으면 상주근무 실근무 8시간 이상인 날 1시간
+        const isShiftWorkerWeb = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+        const extraStored = localStorage.getItem(`${dateKey}-extra`);
+        let ex = 0;
+        if (extraStored !== null && extraStored !== "") ex = parseFloat(extraStored) || 0;
+        else if (!isShiftWorkerWeb && n >= 8) ex = 1;
+
         const dayTotal = n + o + h + ho;
         if (dayTotal > 0 || p > 0 || mode) {
           daysWorkedCount++;
@@ -3368,13 +3401,14 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           totalOt += o;
           totalHol += (h + ho);
           totalNight += nt;
+          totalGageub += ex;
 
           const dayOfWeek = new Date(statsYear, statsMonth - 1, d).getDay();
-          weekdayHours[dayOfWeek] += dayTotal;
+          weekdayHours[dayOfWeek] += dayTotal + ex;
         }
       }
 
-      const totalWorked = totalNorm + totalOt + totalHol;
+      const totalWorked = totalNorm + totalOt + totalHol + totalGageub;
 
       // Donut Chart SVG
       const R = 52;
@@ -3392,15 +3426,18 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       } else {
         const normRatio = totalNorm / totalWorked;
         const otRatio = totalOt / totalWorked;
+        const gageubRatio = totalGageub / totalWorked;
         const holRatio = totalHol / totalWorked;
 
         const normLen = (normRatio * C).toFixed(2);
         const otLen = (otRatio * C).toFixed(2);
+        const gageubLen = (gageubRatio * C).toFixed(2);
         const holLen = (holRatio * C).toFixed(2);
 
         const normOffset = 0;
         const otOffset = (-normLen).toFixed(2);
-        const holOffset = (-(parseFloat(normLen) + parseFloat(otLen))).toFixed(2);
+        const gageubOffset = (-(parseFloat(normLen) + parseFloat(otLen))).toFixed(2);
+        const holOffset = (-(parseFloat(normLen) + parseFloat(otLen) + parseFloat(gageubLen))).toFixed(2);
 
         donutSvgHtml = `
           <div style="display:flex; align-items:center; justify-content:space-around; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 12px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
@@ -3412,6 +3449,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
                 <circle cx="70" cy="70" r="${R}" fill="none" stroke="#005BAC" stroke-width="20" stroke-dasharray="${normLen} ${C}" stroke-dashoffset="${normOffset}"></circle>
                 <!-- OT (Amber) -->
                 <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="${otLen} ${C}" stroke-dashoffset="${otOffset}"></circle>
+                <!-- 상주휴게 가급 (Emerald) -->
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#10b981" stroke-width="20" stroke-dasharray="${gageubLen} ${C}" stroke-dashoffset="${gageubOffset}"></circle>
                 <!-- Hol (Red) -->
                 <circle cx="70" cy="70" r="${R}" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="${holLen} ${C}" stroke-dashoffset="${holOffset}"></circle>
               </svg>
@@ -3433,6 +3472,10 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
                 <span style="font-weight:800; color:#d97706;">${totalOt.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(otRatio*100).toFixed(0)}%)</span></span>
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#10b981;"></span>상주가급</span>
+                <span style="font-weight:800; color:#059669;">${totalGageub.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(gageubRatio*100).toFixed(0)}%)</span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
                 <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#ef4444;"></span>휴일특근</span>
                 <span style="font-weight:800; color:#dc2626;">${totalHol.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(holRatio*100).toFixed(0)}%)</span></span>
               </div>
@@ -3444,6 +3487,9 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
             </div>
           </div>
         `;
+        donutSvgHtml += (totalGageub > 0
+          ? `<div style="font-size:10.5px; color:var(--subtext); line-height:1.5; margin:-6px 0 12px 2px;">※ 총 근무시간과 요일별 누적에는 상주휴게(가급) ${totalGageub.toFixed(1)}h가 포함되어 있습니다. (출근카드 환산 기준)</div>`
+          : "");
       }
 
       // Weekday bar chart calculation (Mon~Sun order)
