@@ -1386,9 +1386,9 @@
       <div class="form-group">
         <label>직급 선택</label>
         <select class="form-input" id="cfgDuty" onchange="autoFillDutyPay()">
-          <option value="사원">기술직 - 사원 (직책수당 0원)</option>
+          <option value="사원" selected>기술직 - 사원 (직책수당 0원)</option>
           <option value="주임">기술직 - 주임 (직책수당 50,000원)</option>
-          <option value="계장" selected>기술직 - 계장 (직책수당 100,000원)</option>
+          <option value="계장">기술직 - 계장 (직책수당 100,000원)</option>
           <option value="기장">기술직 - 기장 (직책수당 200,000원)</option>
           <option value="G1 매니저">일반직 - G1 매니저</option>
           <option value="G2 매니저">일반직 - G2 매니저</option>
@@ -2837,7 +2837,7 @@
       document.getElementById("cfgName").value = localStorage.getItem("user_name") || "";
       document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
       document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
-      document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "계장";
+      document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "사원";
       document.getElementById("cfgShiftType").value = localStorage.getItem("user_shift_type") || "normal";
       document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
       document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
