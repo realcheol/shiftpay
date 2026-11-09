@@ -1175,6 +1175,7 @@
         <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
         <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
         <button class="sheet-btn red" onclick="selectPreset('holiday')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
+        <button class="sheet-btn red" style="background:#dc2626; color:#ffffff;" onclick="selectPreset('holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 휴일특근 10h<br><span style="font-size:11px;font-weight:normal;">8h 150% + 2h 200%</span></button>
         <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
         <button class="sheet-btn emerald" onclick="selectPreset('annual')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
         <button class="sheet-btn" onclick="selectPreset('half_am')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg> 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
@@ -2051,6 +2052,7 @@
       'night_ot':     { mode: 'night_10', times: { norm: '8', ot: '2', night: '7.5' } },
       'night_normal': { mode: 'night_8',  times: { norm: '8', night: '6' } },
       'holiday':      { mode: 'holiday',  times: { hol: '8' } },
+      'holiday_10':   { mode: 'holiday_10', times: {} },
       'annual':       { mode: 'annual',   times: {} },
       'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } }
     };
@@ -2162,7 +2164,7 @@
         if (isSelected) {
           dateHtml += `<span class="badge-check" style="background:#ef4444; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">✓</span>`;
         } else if (isToday) {
-          dateHtml += `<span class="badge-today" style="background:#2563eb; color:#ffffff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:10px; margin-left:4px;">● 오늘</span>`;
+          dateHtml += `<span class="badge-today" style="background:#2563eb; color:#ffffff; font-size:8.5px; font-weight:800; letter-spacing:-0.5px; padding:1px 4px; border-radius:4px; margin-left:3px; flex-shrink:0; line-height:1.2; white-space:nowrap;">오늘</span>`;
         }
         const extra = getLunarOrSolarTermWeb(curYear, curMonth, d);
         if (extra) {
@@ -2206,6 +2208,9 @@
           } else if (mode === "holiday") {
             pill.classList.add("shift-holiday");
             pill.innerText = "특근 8h";
+          } else if (mode === "holiday_10") {
+            pill.classList.add("shift-holiday");
+            pill.innerText = "특근 8+2h";
           } else if (mode === "holiday_12") {
             pill.classList.add("shift-holiday");
             pill.innerText = "특근 12h";
@@ -2329,6 +2334,9 @@
           nightHours += 6.0;
         } else if (mode === "holiday") {
           holHours += 8;
+        } else if (mode === "holiday_10") {
+          holHours += 8;
+          holOtHours += 2;
         } else if (mode === "night_holiday_10") {
           holHours += 8;
           holOtHours += 2;
@@ -2701,8 +2709,8 @@
         document.getElementById("customPaidHours").value = paid !== null ? paid : (mode === "annual" || mode === "summer" ? "8" : "0");
         document.getElementById("customOtHours").value = ot !== null ? ot : (mode === "ot" || mode === "night_10" ? "2" : "0");
         document.getElementById("customNightHours").value = night !== null ? night : (mode === "night_10" ? "7.5" : "0");
-        document.getElementById("customHolHours").value = hol !== null ? hol : (mode === "holiday" ? "8" : "0");
-        document.getElementById("customHolOtHours").value = holOt !== null ? holOt : "0";
+        document.getElementById("customHolHours").value = hol !== null ? hol : ((mode === "holiday" || mode === "holiday_10") ? "8" : "0");
+        document.getElementById("customHolOtHours").value = holOt !== null ? holOt : (mode === "holiday_10" ? "2" : "0");
         document.getElementById("customExtraHours").value = extra !== null ? extra : (mode === "norm" || mode === "ot" ? "1.0" : "0");
         document.getElementById("customMemo").value = memo || "";
         
@@ -3081,6 +3089,8 @@
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.2)",
         body: `v1.3.2 (2026-11-10) — 새 피코 스플래시 · 3대 급여 계산식 · 직책/직무수당 분리 (버전 유지)
+• 🔥 휴일특근 10h (8+2h) 원터치 프리셋: 휴일·주말 06:30~17:30 근무를 탭 한 번에 8h 특근(150%) + 2h 특근연장(200%)으로 저장 (날짜 터치 바텀시트 · 선택 일괄 입력 공통)
+• 🏷️ 캘린더 칸에 '특근 8+2h' 분리 표기 · 오늘 뱃지를 '오늘' 두 글자로 컴팩트하게 정돈해 좁은 모바일 칸에서도 글자가 잘리지 않습니다
 • 🏗️ 새 피코(PICO) 스플래시 적용: 엄지척 12프레임 애니메이션(276×312)으로 교체, 첫 프레임 650ms + 이후 80ms 재생
 • 💼 직책수당/직무수당 완전 분리 (단협 제42조): 직급(사원·주임·계장·기장)은 직책수당에만 연동되고, 직무수당 55,000원은 사원을 골라도 그대로 유지됩니다. 설정창과 영수증에 두 항목이 각각 별도로 표시됩니다.
 • ① 휴일특근 8시간 초과분 자동 분리: 휴일 10시간 근무 시 8시간은 150%, 초과 2시간은 200%로 자동 계산
@@ -3335,6 +3345,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         else if (mode === "night_10") { modeName = "야간 10h (교대)"; n = 8; o = 2; nt = 7.5; }
         else if (mode === "night_8") { modeName = "야간 정상"; n = 8; nt = 6.0; }
         else if (mode === "holiday") { modeName = "휴일 특근"; h = 8; }
+        else if (mode === "holiday_10") { modeName = "휴일특근 10h"; h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { modeName = "야간 특근"; h = 8; ho = 2; nt = 7.5; }
         else if (mode === "holiday_12") { modeName = "특근 12h"; h = 8; ho = 4; }
         else if (mode === "annual") { modeName = "연차 유급"; p = 8; }
@@ -3421,6 +3432,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         else if (mode === "night_10") { n = 8; o = 2; nt = 7.5; }
         else if (mode === "night_8") { n = 8; nt = 6.0; }
         else if (mode === "holiday") { h = 8; }
+        else if (mode === "holiday_10") { h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
         else if (mode === "holiday_12") { h = 8; ho = 4; }
         else if (mode === "annual") { p = 8; }
@@ -3695,7 +3707,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           <span class="batch-card-title" style="color:#059669;">🌴 연차 휴가</span>
           <span class="batch-card-sub">유급 8h 차감</span>
         </button>
-        <button class="batch-card wide" onclick="applyBatchPreset('half_am')">
+        <button class="batch-card" onclick="applyBatchPreset('holiday_10')">
+          <span class="batch-card-title" style="color:#dc2626;">🔥 휴일특근 10h</span>
+          <span class="batch-card-sub">8h 150% + 2h 200%</span>
+        </button>
+        <button class="batch-card" onclick="applyBatchPreset('half_am')">
           <span class="batch-card-title" style="color:#059669;">🌗 오전 반차</span>
           <span class="batch-card-sub">4h 근무 + 4h 연차</span>
         </button>
