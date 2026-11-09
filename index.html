@@ -330,6 +330,10 @@
       overflow: hidden;
       min-width: 0;
     }
+    /* 날짜 숫자와 '오늘' 뱃지는 절대 줄어들지 않게 — 좁은 칸에서 음력 표기가 먼저 양보한다 */
+    .cell-top > span:first-child {
+      flex: 0 0 auto;
+    }
     .cell-lunar {
       font-size: 8.5px;
       font-weight: 500;
