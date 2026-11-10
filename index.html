@@ -3706,24 +3706,24 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
             <!-- Donut SVG -->
             <div style="position:relative; width:150px; height:150px; flex-shrink:0;">
               <svg viewBox="0 0 140 140" width="150" height="150" style="transform: rotate(-90deg);">
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--bg)" stroke-width="20"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--bg)" stroke-width="16"></circle>
                 <!-- 정취 (Blue) -->
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#2563eb" stroke-width="20" stroke-dasharray="${normLen} ${C}" stroke-dashoffset="${normOffset}"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#2563eb" stroke-width="16" stroke-dasharray="${normLen} ${C}" stroke-dashoffset="${normOffset}"></circle>
                 <!-- 연장 (Amber) -->
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="${otLen} ${C}" stroke-dashoffset="${otOffset}"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f59e0b" stroke-width="16" stroke-dasharray="${otLen} ${C}" stroke-dashoffset="${otOffset}"></circle>
                 <!-- 휴일특근 (Red) -->
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="${holLen} ${C}" stroke-dashoffset="${holOffset}"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#ef4444" stroke-width="16" stroke-dasharray="${holLen} ${C}" stroke-dashoffset="${holOffset}"></circle>
                 <!-- 가급 (Emerald) -->
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#10b981" stroke-width="20" stroke-dasharray="${gageubLen} ${C}" stroke-dashoffset="${gageubOffset}"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#10b981" stroke-width="16" stroke-dasharray="${gageubLen} ${C}" stroke-dashoffset="${gageubOffset}"></circle>
                 <!-- 유급·주휴 (Violet — 일한 시간이 아닌 유급 인정) -->
-                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#8b5cf6" stroke-width="20" stroke-dasharray="${paidLen} ${C}" stroke-dashoffset="${paidOffset}"></circle>
+                <circle cx="70" cy="70" r="${R}" fill="none" stroke="#8b5cf6" stroke-width="16" stroke-dasharray="${paidLen} ${C}" stroke-dashoffset="${paidOffset}"></circle>
               </svg>
               <!-- Center Text: 실제 근로 / 급여 인정 병기 -->
               <div style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none;">
-                <span style="font-size:8.5px; color:var(--subtext); font-weight:700; letter-spacing:-0.3px;">실제 근로</span>
-                <span style="font-size:14.5px; font-weight:800; color:var(--text); line-height:1.1; letter-spacing:-0.5px;">${actualWorked.toFixed(1)}<span style="font-size:10px;">h</span></span>
-                <span style="font-size:8.5px; color:var(--subtext); font-weight:700; margin-top:4px; letter-spacing:-0.3px;">급여 인정</span>
-                <span style="font-size:12px; font-weight:800; color:#10b981; line-height:1.1; letter-spacing:-0.4px;">${totalWorked.toFixed(1)}<span style="font-size:9px;">h</span></span>
+                <span style="font-size:8.5px; color:var(--subtext); font-weight:700; letter-spacing:-0.2px;">실제 근로</span>
+                <span style="font-size:15px; font-weight:800; color:var(--text); line-height:1.05; letter-spacing:-0.5px;">${actualWorked.toFixed(1)}<span style="font-size:10px;">h</span></span>
+                <span style="width:26px; height:1px; background:var(--border); margin:5px 0;"></span>
+                <span style="font-size:10px; font-weight:800; color:#10b981; line-height:1.1; letter-spacing:-0.3px;">급여 ${totalWorked.toFixed(1)}h</span>
               </div>
             </div>
 
