@@ -1251,19 +1251,8 @@
   <div class="sheet-overlay" id="shiftSheetOverlay" onclick="closeShiftSheet(event)">
     <div class="bottom-sheet">
       <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
-      <div class="sheet-grid">
-        <button class="sheet-btn indigo" onclick="selectPreset('norm')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> 주간 정상<br><span style="font-size:11px;font-weight:normal;">8시간 인정</span></button>
-        <button class="sheet-btn blue" onclick="selectPreset('ot')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 주간 10h<br><span style="font-size:11px;font-weight:normal;">8h + 2h 연장</span></button>
-        <button class="sheet-btn" style="background:#581c87; color:#f3e8ff;" onclick="selectPreset('night_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> 야간 10h<br><span style="font-size:11px;font-weight:normal;">8h+2h+심야7.5h</span></button>
-        <button class="sheet-btn" style="background:#3b0764; color:#e9d5ff;" onclick="selectPreset('night_8')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 야간 정상<br><span style="font-size:11px;font-weight:normal;">8h + 심야6.0h</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('holiday')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 휴일 특근<br><span style="font-size:11px;font-weight:normal;">8h 특근 (150%)</span></button>
-        <button class="sheet-btn red" style="background:#dc2626; color:#ffffff;" onclick="selectPreset('holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 휴일특근 10h<br><span style="font-size:11px;font-weight:normal;">8h 150% + 2h 200%</span></button>
-        <button class="sheet-btn red" onclick="selectPreset('night_holiday_10')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> 야간 특근<br><span style="font-size:11px;font-weight:normal;">8특+2연+심야7.5</span></button>
-        <button class="sheet-btn emerald" onclick="selectPreset('annual')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> 연차 휴가<br><span style="font-size:11px;font-weight:normal;">유급 8시간 차감</span></button>
-        <button class="sheet-btn" onclick="selectPreset('half_am')"><svg class="preset-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path></svg> 오전 반차<br><span style="font-size:11px;font-weight:normal;">4h 근무 + 4h 연차</span></button>
-      </div>
+      <div class="sheet-grid" id="shiftSheetGrid"></div>
       <button class="sheet-btn" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openCustomTimeModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> 직접 시간 입력 및 메모</button>
-      <button class="sheet-btn red" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="deleteSelectedDay()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 해당 날짜 근무 삭제</button>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
     </div>
   </div>
@@ -2135,6 +2124,8 @@
       'night_normal': { mode: 'night_8',  times: { norm: '8', night: '6' } },
       'holiday':      { mode: 'holiday',  times: { hol: '8' } },
       'holiday_10':   { mode: 'holiday_10', times: {} },
+      'holiday_night_10': { mode: 'holiday_night_10', times: {} },
+      'summer':       { mode: 'summer',   times: {} },
       'annual':       { mode: 'annual',   times: {} },
       'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } }
     };
@@ -2266,7 +2257,7 @@
 
         // Shift Mode Pill
         const mode = localStorage.getItem(`${dateKey}-mode`);
-        if (mode) {
+        if (mode && mode !== "auto") {
           const pill = document.createElement("div");
           pill.className = "shift-pill";
           if (mode === "norm") {
@@ -2283,6 +2274,10 @@
             pill.style.background = "#3b0764";
             pill.style.color = "#e9d5ff";
             pill.innerText = "야간 8h";
+          } else if (mode === "holiday_night_10") {
+            pill.style.background = "#701a75";
+            pill.style.color = "#fdf4ff";
+            pill.innerText = "🌙특근 8+2h";
           } else if (mode === "night_holiday_10") {
             pill.style.background = "#701a75";
             pill.style.color = "#fdf4ff";
@@ -2306,6 +2301,10 @@
           } else if (mode === "half_am" || mode === "half_pm") {
             pill.classList.add("shift-annual");
             pill.innerText = mode === "half_am" ? "오전반차 4h" : "오후반차 4h";
+          } else if (mode === "none") {
+            pill.classList.add("shift-norm");
+            pill.style.opacity = "0.55";
+            pill.innerText = "무급";
           } else if (mode === "custom") {
             pill.classList.add("shift-ot");
             const cn = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0");
@@ -2414,6 +2413,7 @@
         const mode = localStorage.getItem(`${dateKey}-mode`) || "";
         const isLeave = (mode === "annual" || mode === "summer");
         const isHalf = (mode === "half_am" || mode === "half_pm");
+        const isNone = (mode === "none");   // 무급 — 토·일·공휴일 자동 유급/주차도 인정하지 않는다
 
         let n = 0, p = 0, o = 0, h = 0, ho = 0, nt = 0;
         if (mode === "norm") { n = 8; }
@@ -2423,6 +2423,7 @@
         else if (mode === "holiday") { h = 8; }
         else if (mode === "holiday_10") { h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_night_10") { h = 8; ho = 2; nt = 3.5; }
         else if (mode === "holiday_12") { h = 8; ho = 4; }
         else if (mode === "annual" || mode === "summer") { p = 8; }
         else if (mode === "half_am" || mode === "half_pm") { n = 4; p = 4; }
@@ -2450,7 +2451,7 @@
 
         // 유급(토·평일 공휴일 8h) / 주차(일요일 8h) 자동 인정 — 연차일은 주차·유급 중복 없음
         let autoPaid = 0, autoWeekly = 0;
-        if (!isLeave) {
+        if (!isLeave && !isNone) {
           if (dow === 0) autoWeekly = 8;
           else if (dow === 6 || isHolDay) autoPaid = 8;
         }
@@ -2485,7 +2486,8 @@
         if (mode === "norm" || mode === "ot" || mode === "night_10") n = 8;
         else if (mode === "night_8") n = 8;
         else if (mode === "half_am" || mode === "half_pm") n = 4;
-        else if (mode === "holiday" || mode === "holiday_10" || mode === "night_holiday_10") h = 8;
+        else if (mode === "holiday" || mode === "holiday_10" || mode === "night_holiday_10"
+                 || mode === "holiday_night_10") h = 8;
         else if (mode === "holiday_12") h = 8;
         else {
           n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0") || 0;
@@ -2501,6 +2503,10 @@
       r.actual = r.norm + r.ot + r.hol + r.holot;
       r.pay = r.base + r.ot + r.hol + r.holot + r.gageub;
       r.convert = r.base + r.ot + r.hol + r.holot + r.gageubWeekday + r.holPremium;
+      // 교대근무자는 종이 출근카드 합계에 심야(4번 열)가 그대로 더해진다.
+      //  실물 카드: 정취132+연장32+가급16+심야35+휴일근로20+휴일가급12+연차16+유급64+주차32 = 환산 359h
+      //  (상주는 심야 0h라 값이 달라지지 않는다)
+      if (isShift) r.convert += r.night;
       return r;
     }
 
@@ -2543,7 +2549,8 @@
           `실제 근로 <b>${fmtH(cb.actual)}</b>(정취+연장+휴일특근) · 유급 인정 <b>${fmtH(cb.paid + cb.weekly + cb.annual)}</b> · 급여 인정 <b>${fmtH(cb.pay)}</b><br>` +
           `환산 <b>${fmtH(cb.convert)}</b> = 급여 인정 ${fmtH(cb.pay)}` +
           (holidayGageub > 0 ? ` − 특근일 가급 ${fmtH(holidayGageub)}` : "") +
-          ` + 휴일가급 ${fmtH(cb.holPremium)}`;
+          ` + 휴일가급 ${fmtH(cb.holPremium)}` +
+          (isShift && cb.night > 0 ? ` + 심야 ${fmtH(cb.night)}` : "");
       }
     }
 
@@ -2581,6 +2588,10 @@
           holHours += 8;
           holOtHours += 2;
           nightHours += 7.5;
+        } else if (mode === "holiday_night_10") {
+          holHours += 8;
+          holOtHours += 2;
+          nightHours += 3.5;
         } else if (mode === "holiday_12") {
           holHours += 8;
           holOtHours += 4;
@@ -2813,7 +2824,41 @@
     }
 
     // Shift Sheet Handlers
+    // 2열 대칭 프리셋 — 상주/교대에 맞춰 같은 성격끼리 짝을 맞춘다 (설치형 앱과 1:1)
+    function renderShiftSheetPresets() {
+      const grid = document.getElementById("shiftSheetGrid");
+      if (!grid) return;
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      const S = (t, s, c, bg) => `<button class="sheet-btn" style="${bg ? "background:" + bg + "; color:#fff;" : ""}" onclick="selectPreset('${c}')">${t}<br><span style="font-size:11px;font-weight:normal;">${s}</span></button>`;
+      const rows = [];
+      rows.push(S('● 주간 정상 (8h)', '8시간 인정', 'norm'));
+      rows.push(S('⚡ 주간 10h (8+2h)', '8h + 연장 2h', 'ot'));
+      if (isShift) {
+        rows.push(S('🌙 야간 정상 (8h)', '8h + 심야 6.0h', 'night_8', '#3b0764'));
+        rows.push(S('🌙 야간 10h (8+2h)', '8h+2h+심야 7.5h', 'night_10', '#581c87'));
+        rows.push(S('🔥 주간특근 10h (8+2h)', '8h 150% + 2h 200%', 'holiday_10', '#dc2626'));
+        rows.push(S('🔥🌙 야간특근 10h (8+2h)', '8h+2h + 심야 3.5h', 'holiday_night_10', '#9f1239'));
+        rows.push(S('🔥 주간특근 (8h)', '휴일근로 150%', 'holiday', '#dc2626'));
+        rows.push(S('🌴 연차 유급 (8h)', '유급 8h 차감', 'annual', '#059669'));
+        rows.push(S('🏖️ 하계휴가 (8h)', '유급 인정', 'summer', '#059669'));
+        rows.push(S('↺ 기본값(자동인정)', '주말 유급 자동복구', 'auto'));
+        rows.push(S('✕ 근무 없음(무급)', '인정시간 0시간', 'none'));
+        rows.push(S('🗑️ 입력 내용 삭제', '이 날짜의 기록을 완전 삭제', 'delete', '#b91c1c'));
+      } else {
+        rows.push(S('⚡ 연장 4h (8+4h)', '12시간 근무', 'ot_4'));
+        rows.push(S('🔥 휴일특근 10h (8+2h)', '8h 150% + 2h 200%', 'holiday_10', '#dc2626'));
+        rows.push(S('🔥 주말특근 (8h)', '휴일근로 150%', 'holiday', '#dc2626'));
+        rows.push(S('🌴 연차 유급 (8h)', '유급 8h 차감', 'annual', '#059669'));
+        rows.push(S('🏖️ 하계휴가 (8h)', '유급 인정', 'summer', '#059669'));
+        rows.push(S('↺ 기본값(자동인정)', '주말 유급 자동복구', 'auto'));
+        rows.push(S('✕ 근무 없음(무급)', '인정시간 0시간', 'none'));
+        rows.push(S('🗑️ 입력 내용 삭제', '이 날짜의 기록을 완전 삭제', 'delete', '#b91c1c'));
+      }
+      grid.innerHTML = rows.join("");
+    }
+
     function openShiftSheet(dateKey, d) {
+      renderShiftSheetPresets();
       selectedDateStr = dateKey;
       document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
       const btnQuick = document.getElementById("btnQuickInput");
@@ -2830,6 +2875,22 @@
     }
     function selectPreset(mode) {
       if (!selectedDateStr) return;
+      if (mode === "delete") { deleteSelectedDay(); return; }
+      if (mode === "ot_4") {
+        localStorage.setItem(`${selectedDateStr}-mode`, "custom");
+        localStorage.setItem(`${selectedDateStr}-norm`, "8");
+        localStorage.setItem(`${selectedDateStr}-ot`, "4");
+        closeShiftSheet();
+        renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
+        vibrate();
+        return;
+      }
+      if (mode === "auto" || mode === "none") {
+        // 자동인정/무급은 남아 있는 직접입력 시간값을 지워야 화면·집계가 어긋나지 않는다
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
+      }
       localStorage.setItem(`${selectedDateStr}-mode`, mode);
       closeShiftSheet();
       renderCalendar();
@@ -3325,7 +3386,12 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.2)",
-        body: `v1.3.2 (2026-11-10) — 새 피코 스플래시 · 3대 급여 계산식 · 직책/직무수당 분리 (버전 유지)
+        body: `v1.3.2 (2026-11-11) — 교대조 환산 359h · 휴일 야간특근 10h 프리셋 · 프리셋 2열 재디자인 (버전 유지)
+• 🌙 교대조 출근카드 환산시간에 심야를 포함: 정취132 + 연장32 + 가급16 + 심야35 + 휴일근로20 + 휴일가급12 + 연차16 + 유급64 + 주차32 = 환산 359h (상주는 심야 0h로 종전과 같습니다)
+• 🔥🌙 [야간특근 10h (8+2h)] 신설: 휴일근로 8h(150%) + 휴일연장 2h(200%) + 심야 3.5h — 날짜 터치 바텀시트·선택 일괄 입력 공통, 달력 칸에는 '🌙특근 8+2h'
+• 🎛️ 프리셋 바텀시트를 2열 대칭으로 재디자인: 주간 라인 → 야간 라인 → 주간특근/야간특근 대칭 → 연차·휴가·기본값 → 무급·삭제
+• ✕ 근무 없음(무급) · ↺ 기본값(자동인정) 모드 신설
+v1.3.2 (2026-11-10) — 새 피코 스플래시 · 3대 급여 계산식 · 직책/직무수당 분리 (버전 유지)
 • 🔥 휴일특근 10h (8+2h) 원터치 프리셋: 휴일·주말 06:30~17:30 근무를 탭 한 번에 8h 특근(150%) + 2h 특근연장(200%)으로 저장 (날짜 터치 바텀시트 · 선택 일괄 입력 공통)
 • 🏷️ 캘린더 칸에 '특근 8+2h' 분리 표기 · 오늘 뱃지를 '오늘' 두 글자로 컴팩트하게 정돈해 좁은 모바일 칸에서도 글자가 잘리지 않습니다
 • 🏗️ 새 피코(PICO) 스플래시 적용: 엄지척 12프레임 애니메이션(276×312)으로 교체, 첫 프레임 650ms + 이후 80ms 재생
@@ -3584,6 +3650,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         else if (mode === "holiday") { modeName = "휴일 특근"; h = 8; }
         else if (mode === "holiday_10") { modeName = "휴일특근 10h"; h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { modeName = "야간 특근"; h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_night_10") { modeName = "야간특근 10h"; h = 8; ho = 2; nt = 3.5; }
         else if (mode === "holiday_12") { modeName = "특근 12h"; h = 8; ho = 4; }
         else if (mode === "annual") { modeName = "연차 유급"; p = 8; }
         else if (mode === "summer") { modeName = "하계휴가"; p = 8; }
@@ -3668,6 +3735,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       const actualWorked = B.actual;    // 실제 근로 (정취 + 연장 + 휴일근로 + 휴일연장)
       const cardTotal = B.convert;      // 출근카드 환산시간
       const paidOnly = B.paid + B.weekly + B.annual;
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
 
       // Donut Chart SVG
       const R = 52;
@@ -3761,7 +3829,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           <div style="font-size:10.5px; color:var(--subtext); line-height:1.55; margin:-6px 0 12px 2px;">
             ※ <b style="color:#2563eb;">실제 근로 ${actualWorked.toFixed(1)}h</b>는 출근해 일한 시간(정취+연장+휴일특근), <b style="color:#059669;">급여 인정 ${totalWorked.toFixed(1)}h</b>는 유급·주차·연차 ${totalPaid.toFixed(1)}h와 가급 ${totalGageub.toFixed(1)}h까지 더한 시간입니다.<br>
             ※ 출근카드 환산시간: <b style="color:#059669;">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함)<br>
-            &nbsp;&nbsp;= 급여 인정 ${totalWorked.toFixed(1)}h${(totalGageub - totalGageubWeekday) > 0 ? ` − 특근일 가급 ${(totalGageub - totalGageubWeekday).toFixed(1)}h` : ""} + 휴일가급 ${totalHoliPremium.toFixed(1)}h · 실물 출근카드 합계와 같은 기준
+            &nbsp;&nbsp;= 급여 인정 ${totalWorked.toFixed(1)}h${(totalGageub - totalGageubWeekday) > 0 ? ` − 특근일 가급 ${(totalGageub - totalGageubWeekday).toFixed(1)}h` : ""} + 휴일가급 ${totalHoliPremium.toFixed(1)}h${isShift && totalNight > 0 ? ` + 심야 ${totalNight.toFixed(1)}h` : ""} · 실물 출근카드 합계와 같은 기준
           </div>`;
       }
 
@@ -3899,37 +3967,45 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       </div>
       <div style="font-size:13px; font-weight:700; color:var(--sub); margin:10px 0 6px;">⚡ 1초 원터치 퀵 프리셋 (탭 즉시 저장)</div>
       <div class="batch-preset-grid">
-        <button class="batch-card" onclick="applyBatchPreset('ot')">
-          <span class="batch-card-title" style="color:#d97706;">⚡ 주간 10h</span>
-          <span class="batch-card-sub">정상 8h + 연장 2h</span>
-        </button>
         <button class="batch-card" onclick="applyBatchPreset('normal')">
           <span class="batch-card-title" style="color:#0284c7;">● 주간 정상</span>
           <span class="batch-card-sub">8시간 인정</span>
         </button>
-        <button class="batch-card" onclick="applyBatchPreset('night_ot')">
-          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 10h</span>
-          <span class="batch-card-sub">8h + 2h + 심야 7.5h</span>
+        <button class="batch-card" onclick="applyBatchPreset('ot')">
+          <span class="batch-card-title" style="color:#d97706;">⚡ 주간 10h</span>
+          <span class="batch-card-sub">정상 8h + 연장 2h</span>
         </button>
         <button class="batch-card" onclick="applyBatchPreset('night_normal')">
           <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 정상</span>
           <span class="batch-card-sub">8h + 심야 6.0h</span>
         </button>
+        <button class="batch-card" onclick="applyBatchPreset('night_ot')">
+          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 10h</span>
+          <span class="batch-card-sub">8h + 2h + 심야 7.5h</span>
+        </button>
+        <button class="batch-card" onclick="applyBatchPreset('holiday_10')">
+          <span class="batch-card-title" style="color:#dc2626;">🔥 주간특근 10h</span>
+          <span class="batch-card-sub">8h 150% + 2h 200%</span>
+        </button>
+        <button class="batch-card" onclick="applyBatchPreset('holiday_night_10')">
+          <span class="batch-card-title" style="color:#9f1239;">🔥🌙 야간특근 10h</span>
+          <span class="batch-card-sub">8h+2h + 심야 3.5h</span>
+        </button>
         <button class="batch-card" onclick="applyBatchPreset('holiday')">
-          <span class="batch-card-title" style="color:#dc2626;">🔥 휴일 특근</span>
+          <span class="batch-card-title" style="color:#dc2626;">🔥 주간특근 8h</span>
           <span class="batch-card-sub">8h 특근 (150%)</span>
         </button>
         <button class="batch-card" onclick="applyBatchPreset('annual')">
           <span class="batch-card-title" style="color:#059669;">🌴 연차 휴가</span>
           <span class="batch-card-sub">유급 8h 차감</span>
         </button>
-        <button class="batch-card" onclick="applyBatchPreset('holiday_10')">
-          <span class="batch-card-title" style="color:#dc2626;">🔥 휴일특근 10h</span>
-          <span class="batch-card-sub">8h 150% + 2h 200%</span>
-        </button>
         <button class="batch-card" onclick="applyBatchPreset('half_am')">
           <span class="batch-card-title" style="color:#059669;">🌗 오전 반차</span>
           <span class="batch-card-sub">4h 근무 + 4h 연차</span>
+        </button>
+        <button class="batch-card" onclick="applyBatchPreset('summer')">
+          <span class="batch-card-title" style="color:#059669;">🏖️ 하계휴가</span>
+          <span class="batch-card-sub">유급 8h 인정</span>
         </button>
       </div>
       <div style="font-size:11px; color:var(--sub); margin-top:10px;">• 이미 기록된 날짜는 선택한 프리셋으로 대체됩니다.</div>
