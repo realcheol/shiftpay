@@ -3581,7 +3581,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         donutSvgHtml += `
           <div style="font-size:10.5px; color:var(--subtext); line-height:1.55; margin:-6px 0 12px 2px;">
             ※ 총 근무시간에는 상주휴게(가급) ${totalGageub.toFixed(1)}h와 유급·주차 ${totalPaid.toFixed(1)}h가 포함되어 있습니다.<br>
-            ※ 출근카드 환산시간: <b style="color:#059669;">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함) — 실물 출근카드 합계와 같은 기준
+            ※ 출근카드 환산시간: <b style="color:#059669;">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함)<br>
+            &nbsp;&nbsp;= 총 근무 ${totalWorked.toFixed(1)}h${(totalGageub - totalGageubWeekday) > 0 ? ` − 특근일 가급 ${(totalGageub - totalGageubWeekday).toFixed(1)}h` : ""} + 휴일가급 ${totalHoliPremium.toFixed(1)}h · 실물 출근카드 합계와 같은 기준
           </div>`;
       }
 
