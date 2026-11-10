@@ -3423,6 +3423,9 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       let totalHol = 0;
       let totalNight = 0;
       let totalGageub = 0;
+      let totalPaid = 0;          // 유급(토·평일 공휴일) + 주차(일) 8h
+      let totalHoliPremium = 0;   // 휴일가급 = 휴일근로 50% + 휴일연장 100%
+      let totalGageubWeekday = 0; // 출근카드 '가급' 칸 = 평일 실근무 8h 이상인 날만
       let daysWorkedCount = 0;
       let weekdayHours = [0, 0, 0, 0, 0, 0, 0]; // 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
 
@@ -3467,6 +3470,17 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         // ② 상주휴게(가급)는 실근무 8시간 이상인 날에 지급 — 평일뿐 아니라 주말·공휴일 특근일 포함
         else if (!isShiftWorkerWeb && (n >= 8 || (h + ho) >= 8)) ex = 1;
 
+        // 출근카드 환산 부속값 — 휴일가급(할증) / 평일 가급 / 유급·주차 (설치형과 동일 기준)
+        const dowIdx = new Date(statsYear, statsMonth - 1, d).getDay();
+        const isHolDay = !!(officialHolidays[dateKey] || localStorage.getItem(`holiday_${dateKey.replace(/-/g, "")}`));
+        const isLeaveDay = (mode === "annual" || mode === "summer");
+        totalHoliPremium += (h * 0.5 + ho);
+        if (n >= 8) totalGageubWeekday += ex;
+        if (!isLeaveDay) {
+          if (dowIdx === 0) totalPaid += 8;                    // 일요일 주차 8h
+          else if (dowIdx === 6 || isHolDay) totalPaid += 8;   // 토요일·평일 공휴일 유급 8h
+        }
+
         const dayTotal = n + o + h + ho;
         if (dayTotal > 0 || p > 0 || mode) {
           daysWorkedCount++;
@@ -3481,7 +3495,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         }
       }
 
+      // 정상근무 칸에 유급·주차 8h(토·일·평일 공휴일)를 합쳐 설치형 총 근무시간과 같은 기준으로 맞춘다
+      totalNorm += totalPaid;
       const totalWorked = totalNorm + totalOt + totalHol + totalGageub;
+      // 출근카드 환산시간 = 정상+유급·주차 + 연장 + 휴일특근 + 평일 가급 + 휴일가급(할증)
+      const cardTotal = totalWorked - totalGageub + totalGageubWeekday + totalHoliPremium;
 
       // Donut Chart SVG
       const R = 52;
@@ -3560,9 +3578,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
             </div>
           </div>
         `;
-        donutSvgHtml += (totalGageub > 0
-          ? `<div style="font-size:10.5px; color:var(--subtext); line-height:1.5; margin:-6px 0 12px 2px;">※ 총 근무시간과 요일별 누적에는 상주휴게(가급) ${totalGageub.toFixed(1)}h가 포함되어 있습니다. (출근카드 환산 기준)</div>`
-          : "");
+        donutSvgHtml += `
+          <div style="font-size:10.5px; color:var(--subtext); line-height:1.55; margin:-6px 0 12px 2px;">
+            ※ 총 근무시간에는 상주휴게(가급) ${totalGageub.toFixed(1)}h와 유급·주차 ${totalPaid.toFixed(1)}h가 포함되어 있습니다.<br>
+            ※ 출근카드 환산시간: <b style="color:#059669;">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함) — 실물 출근카드 합계와 같은 기준
+          </div>`;
       }
 
       // Weekday bar chart calculation (Mon~Sun order)
@@ -3602,6 +3622,16 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
             <div style="font-size:11px; color:var(--subtext); font-weight:600;">근무 일수</div>
             <div style="font-size:17px; font-weight:800; color:var(--text); margin-top:2px;">${daysWorkedCount} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">일 출근</span></div>
+          </div>
+          <div style="grid-column:1 / -1; background:var(--surface); border:1px solid rgba(16,185,129,0.45); border-radius:10px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <div style="font-size:11px; color:var(--subtext); font-weight:600;">출근카드 환산시간</div>
+              <div style="font-size:17px; font-weight:800; color:#059669; margin-top:2px;">${cardTotal.toFixed(1)} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">시간</span></div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; color:var(--subtext); font-weight:600;">휴일가급 할증</div>
+              <div style="font-size:15px; font-weight:800; color:#dc2626; margin-top:2px;">${totalHoliPremium.toFixed(1)} <span style="font-size:11px; font-weight:normal; color:var(--subtext);">시간</span></div>
+            </div>
           </div>
         </div>
 
