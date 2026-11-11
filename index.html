@@ -2412,6 +2412,10 @@
             const memoTag = memo.includes("조퇴") ? "💊조퇴" : (memo.includes("외출") ? "🚶외출" : "");
             if (memoTag) {
               pill.innerText = total > 0 ? `${total}h ${memoTag}` : memoTag;
+              pill.style.whiteSpace = "nowrap";
+              pill.style.fontSize = "9.5px";
+              pill.style.letterSpacing = "-0.4px";
+              pill.style.padding = "1px 2px";
             } else {
               pill.innerText = memo ? memo : (total > 0 ? `${total}h 직접` : "직접입력");
             }
