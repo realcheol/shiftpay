@@ -10,12 +10,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ShiftPay">
   <meta name="theme-color" content="#142035">
-  <link rel="icon" href="favicon.ico?v=20261109" sizes="any">
-  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=20261109">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=20261109">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=20261109">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261109">
-  <link rel="manifest" href="manifest.json?v=20261109">
+  <link rel="icon" href="favicon.ico?v=20261111" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=20261111">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=20261111">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=20261111">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261111">
+  <link rel="manifest" href="manifest.json?v=20261111">
 
   <style>
     :root {
@@ -473,46 +473,126 @@
       margin-top: 2px;
     }
 
-    /* ── 출근카드 1:1 월간 집계 카드 (라이트/다크 모두 같은 다크 네이비) ── */
+    /* ── 출근카드 1:1 월간 집계 카드 (v1.3.3: 라이트/다크 자동 연동) ── */
     .card-out {
-      background: #101a2b;
-      border: 1px solid #2a3b57;
+      --co-bg: var(--surface);
+      --co-border: var(--border);
+      --co-cell: #f1f5f9;
+      --co-ink: var(--text);
+      --co-sub: var(--sub);
+      --co-accent: #0369a1;
+      background: var(--co-bg);
+      border: 1px solid var(--co-border);
       border-radius: 16px;
       padding: 14px 13px 12px;
       margin-bottom: 12px;
-      color: #f1f5f9;
+      color: var(--co-ink);
+    }
+    body.dark .card-out {
+      --co-bg: #101a2b;
+      --co-border: #2a3b57;
+      --co-cell: #17233a;
+      --co-ink: #f1f5f9;
+      --co-sub: #93a4be;
+      --co-accent: #38bdf8;
     }
     .card-out-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-    .card-out-title { font-size: 15px; font-weight: 800; color: #f1f5f9; letter-spacing: -0.3px; }
-    .card-out-sub { font-size: 10px; color: #93a4be; font-weight: 600; margin-top: 3px; }
+    .card-out-title { font-size: 15px; font-weight: 800; color: var(--co-ink); letter-spacing: -0.3px; }
+    .card-out-sub { font-size: 10px; color: var(--co-sub); font-weight: 600; margin-top: 3px; }
     .card-out-stamp {
-      font-size: 9px; font-weight: 800; color: #38bdf8; background: #17233a;
-      border: 1px solid #38bdf8; border-radius: 6px; padding: 3px 7px; white-space: nowrap;
+      font-size: 9px; font-weight: 800; color: var(--co-accent); background: var(--co-cell);
+      border: 1px solid var(--co-accent); border-radius: 6px; padding: 3px 7px; white-space: nowrap;
     }
     .card-badge-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
     .card-badge {
-      background: #17233a; border: 1px solid #2a3b57; border-radius: 8px;
+      background: var(--co-cell); border: 1px solid var(--co-border); border-radius: 8px;
       padding: 5px 4px; display: flex; align-items: center; justify-content: center; gap: 4px;
     }
-    .card-badge .k { font-size: 9px; color: #93a4be; font-weight: 600; white-space: nowrap; }
-    .card-badge .v { font-size: 12px; font-weight: 800; color: #f1f5f9; white-space: nowrap; }
-    .card-group { background: #17233a; border: 1px solid #2a3b57; border-radius: 10px; padding: 8px 8px 7px; margin-top: 8px; }
+    .card-badge .k { font-size: 9px; color: var(--co-sub); font-weight: 600; white-space: nowrap; }
+    .card-badge .v { font-size: 12px; font-weight: 800; color: var(--co-ink); white-space: nowrap; }
+    .card-group { background: var(--co-cell); border: 1px solid var(--co-border); border-radius: 10px; padding: 8px 8px 7px; margin-top: 8px; }
     .card-group-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
     .card-group-title { font-size: 12px; font-weight: 800; }
-    .card-group-sum { font-size: 10px; font-weight: 700; color: #93a4be; }
+    .card-group-sum { font-size: 10px; font-weight: 700; color: var(--co-sub); }
     .card-cells { display: grid; gap: 4px; }
     .card-cells.g4 { grid-template-columns: repeat(4, 1fr); }
     .card-cells.g3 { grid-template-columns: repeat(3, 1fr); }
     .card-cells.g1 { grid-template-columns: 1fr; }
-    .card-cell { background: #101a2b; border: 1px solid #2a3b57; border-radius: 8px; padding: 6px 2px; text-align: center; }
-    .card-cell.hl { background: #0f2a29; border-color: #10b981; }
-    .card-cell .k { font-size: 10px; color: #93a4be; font-weight: 600; white-space: nowrap; }
-    .card-cell .v { font-size: 14px; font-weight: 800; margin-top: 2px; color: #f1f5f9; white-space: nowrap; }
-    .card-cell.hl .v { font-size: 16px; color: #34d399; }
-    .card-cell .s { font-size: 8px; color: #93a4be; margin-top: 1px; white-space: nowrap; }
-    .card-cell.hl .s { color: #6ee7b7; }
-    .card-out-note { font-size: 9px; color: #93a4be; line-height: 1.55; margin-top: 9px; }
-    .card-out-note b { color: #cbd5e1; }
+    .card-cell { background: var(--co-bg); border: 1px solid var(--co-border); border-radius: 8px; padding: 6px 2px; text-align: center; }
+    .card-cell.hl { background: #ecfdf5; border-color: #10b981; }
+    body.dark .card-cell.hl { background: #0f2a29; }
+    .card-cell .k { font-size: 10px; color: var(--co-sub); font-weight: 600; white-space: nowrap; }
+    .card-cell .v { font-size: 14px; font-weight: 800; margin-top: 2px; color: var(--co-ink); white-space: nowrap; }
+    .card-cell.hl .v { font-size: 16px; color: #059669; }
+    body.dark .card-cell.hl .v { color: #34d399; }
+    .card-cell .s { font-size: 8px; color: var(--co-sub); margin-top: 1px; white-space: nowrap; }
+    .card-cell.hl .s { color: #047857; }
+    body.dark .card-cell.hl .s { color: #6ee7b7; }
+    .card-out-note { font-size: 9px; color: var(--co-sub); line-height: 1.55; margin-top: 9px; }
+    .card-out-note b { color: var(--co-ink); }
+
+    /* ── v1.3.3 4색 프리미엄 시인성 컬러 (소프트 파스텔 틴트) ── */
+    .preset-stack { display: block; margin-bottom: 12px; }
+    .preset-grid-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 7px; }
+    .pcard {
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px;
+      padding: 11px 10px; min-height: 58px; border: 1px solid var(--border); border-radius: 13px;
+      background: var(--surface); color: var(--text); cursor: pointer; text-align: left;
+      font-family: inherit; transition: transform .12s ease;
+    }
+    .pcard:active { transform: scale(0.97); }
+    .pcard .pt { font-size: 13px; font-weight: 800; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pcard .ps { font-size: 10.5px; font-weight: 600; color: var(--sub); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pcard.tint-blue   { background: #eff6ff; border-color: #93c5fd; }
+    .pcard.tint-purple { background: #faf5ff; border-color: #c084fc; }
+    .pcard.tint-red    { background: #fef2f2; border-color: #f87171; }
+    .pcard.tint-mint   { background: #ecfdf5; border-color: #6ee7b7; }
+    .pcard.tint-delete { background: #f8fafc; border-color: #e2e8f0; }
+    .pcard.tint-plain  { background: #f8fafc; border-color: #e2e8f0; }
+    .pcard.tint-blue   .pt { color: #1d4ed8; }
+    .pcard.tint-purple .pt { color: #6b21a8; }
+    .pcard.tint-red    .pt { color: #b91c1c; }
+    .pcard.tint-mint   .pt { color: #047857; }
+    .pcard.tint-delete .pt { color: #ef4444; }
+    .pcard.tint-plain  .pt { color: #64748b; }
+    body.dark .pcard.tint-blue   { background: #112642; border-color: #1d4ed8; }
+    body.dark .pcard.tint-purple { background: #261638; border-color: #6b21a8; }
+    body.dark .pcard.tint-red    { background: #301619; border-color: #991b1b; }
+    body.dark .pcard.tint-mint   { background: #0c2a22; border-color: #047857; }
+    body.dark .pcard.tint-delete,
+    body.dark .pcard.tint-plain  { background: #1e2937; border-color: #475569; }
+    body.dark .pcard.tint-blue   .pt { color: #93c5fd; }
+    body.dark .pcard.tint-purple .pt { color: #d8b4fe; }
+    body.dark .pcard.tint-red    .pt { color: #fca5a5; }
+    body.dark .pcard.tint-mint   .pt { color: #6ee7b7; }
+    body.dark .pcard.tint-delete .pt { color: #f87171; }
+    body.dark .pcard.tint-plain  .pt { color: #94a3b8; }
+
+    /* 접힌 영역 아코디언 */
+    .acc-head {
+      width: 100%; margin: 2px 0 7px; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--sub);
+      font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .acc-head:active { filter: brightness(0.96); }
+    .acc-body { display: block; }
+
+    /* 초단시간 태그 (조퇴 / 외출) */
+    .tag-chip-row { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; }
+    .tag-chip-label { font-size: 11px; font-weight: 700; color: var(--sub); margin-right: 2px; }
+    .tag-chip {
+      padding: 6px 11px; border-radius: 15px; font-family: inherit; font-size: 11.5px; font-weight: 800;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--sub);
+    }
+    .tag-chip.t-early { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
+    .tag-chip.t-out   { background: #f0f9ff; border-color: #7dd3fc; color: #0369a1; }
+    .tag-chip.t-early.on { background: #f97316; border-color: #ea580c; color: #fff; }
+    .tag-chip.t-out.on   { background: #0284c7; border-color: #0369a1; color: #fff; }
+    body.dark .tag-chip.t-early { background: #3a200a; border-color: #c2410c; color: #fdba74; }
+    body.dark .tag-chip.t-out   { background: #0a2c44; border-color: #0369a1; color: #7dd3fc; }
+    body.dark .tag-chip.t-early.on { background: #ea580c; color: #fff; }
+    body.dark .tag-chip.t-out.on   { background: #0369a1; color: #fff; }
 
     .pay-receipt {
       background: var(--surface);
@@ -1243,7 +1323,7 @@
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.2)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.3)</div>
     </div>
   </div>
 
@@ -1251,7 +1331,7 @@
   <div class="sheet-overlay" id="shiftSheetOverlay" onclick="closeShiftSheet(event)">
     <div class="bottom-sheet">
       <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
-      <div class="sheet-grid" id="shiftSheetGrid"></div>
+      <div class="preset-stack" id="shiftSheetGrid"></div>
       <button class="sheet-btn" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openCustomTimeModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> 직접 시간 입력 및 메모</button>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
     </div>
@@ -1267,6 +1347,13 @@
           세부 시간 직접 입력
         </div>
         <span id="customDateBadge" style="font-size:11px; font-weight:700; color:var(--blue); background:rgba(2,132,199,0.1); padding:4px 8px; border-radius:12px;">2026-11-07</span>
+      </div>
+
+      <!-- 초단시간 근무 태그 (v1.3.3): 조퇴 / 외출 -->
+      <div class="tag-chip-row">
+        <span class="tag-chip-label">초단시간 태그</span>
+        <button class="tag-chip t-early" id="tagChipEarly" onclick="toggleMemoTag('조퇴')">💊 조퇴</button>
+        <button class="tag-chip t-out" id="tagChipOut" onclick="toggleMemoTag('외출')">🚶 외출</button>
       </div>
 
       <!-- Quick Preset Chips -->
@@ -1393,7 +1480,7 @@
           <div>
             <label class="time-input-label">특이사항 메모</label>
             <div class="time-input-wrap">
-              <input type="text" id="customMemo" placeholder="예: 설명회, 조퇴">
+              <input type="text" id="customMemo" placeholder="예: 설명회, 조퇴" oninput="refreshMemoTags()">
             </div>
           </div>
         </div>
@@ -1639,12 +1726,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.2.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.3.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.3.2 APK 다운로드
+          최신 ShiftPay v1.3.3 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.2.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.2.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.3.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -2105,6 +2192,10 @@
       if (selectedDays.size === 0) return;
       document.getElementById("multiApplyTitle").innerText = `⚡ 선택 일괄 근무 입력 (${selectedDays.size}일)`;
       document.getElementById("multiApplyDesc").innerText = `선택하신 ${selectedDays.size}개 날짜에 적용할 근무를 고르세요.`;
+      const stack = document.getElementById("batchPresetStack");
+      if (stack) {
+        stack.innerHTML = presetCardsHtml().replace(/onclick="selectPreset\('([^']+)'\)"/g, 'onclick="applyBatchPreset(\'$1\')"');
+      }
       document.getElementById("multiApplyOverlay").style.display = "flex";
       vibrate();
     }
@@ -2127,7 +2218,10 @@
       'holiday_night_10': { mode: 'holiday_night_10', times: {} },
       'summer':       { mode: 'summer',   times: {} },
       'annual':       { mode: 'annual',   times: {} },
-      'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } }
+      'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } },
+      'auto':         { mode: 'auto',     times: {} },
+      'none':         { mode: 'none',     times: {} },
+      'delete':       { mode: 'delete',   times: {} }
     };
 
     function applyBatchPreset(preset) {
@@ -2146,6 +2240,7 @@
         const keysToClear = ['mode', 'norm', 'ot', 'hol', 'holot', 'night', 'paid', 'extra', 'memo'];
         keysToClear.forEach(suffix => localStorage.removeItem(`${k}-${suffix}`));
 
+        if (preset === 'delete') return;             // 🗑️ 선택 날짜 기록 삭제
         localStorage.setItem(`${k}-mode`, def.mode);
         Object.keys(def.times).forEach(suffix => localStorage.setItem(`${k}-${suffix}`, def.times[suffix]));
       });
@@ -2158,7 +2253,9 @@
       updateDdayAndUserSummary();
       calculateMonthlyPayroll();
       vibrate();
-      showToast(`선택하신 ${count}개 날짜에 근무가 일괄 입력되었습니다.`);
+      showToast(preset === 'delete'
+        ? `선택하신 ${count}개 날짜의 근무 기록이 삭제되었습니다.`
+        : `선택하신 ${count}개 날짜에 근무가 일괄 입력되었습니다.`);
     }
 
     function renderCalendar() {
@@ -2311,8 +2408,13 @@
             const co = parseFloat(localStorage.getItem(`${dateKey}-ot`) || "0");
             const ch = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0");
             const total = cn + co + ch;
-            const memo = localStorage.getItem(`${dateKey}-memo`);
-            pill.innerText = memo ? memo : (total > 0 ? `${total}h 직접` : "직접입력");
+            const memo = localStorage.getItem(`${dateKey}-memo`) || "";
+            const memoTag = memo.includes("조퇴") ? "💊조퇴" : (memo.includes("외출") ? "🚶외출" : "");
+            if (memoTag) {
+              pill.innerText = total > 0 ? `${total}h ${memoTag}` : memoTag;
+            } else {
+              pill.innerText = memo ? memo : (total > 0 ? `${total}h 직접` : "직접입력");
+            }
           } else {
             pill.classList.add("shift-norm");
             pill.innerText = "근무";
@@ -2824,37 +2926,63 @@
     }
 
     // Shift Sheet Handlers
-    // 2열 대칭 프리셋 — 상주/교대에 맞춰 같은 성격끼리 짝을 맞춘다 (설치형 앱과 1:1)
+    // ── 상주/교대 전용 3행 6대 퀵 카드 (v1.3.3, 설치형 앱과 1:1) ──
+    const PC = (t, s, tone, mode) =>
+      `<button class="pcard tint-${tone}" onclick="selectPreset('${mode}')"><span class="pt">${t}</span><span class="ps">${s}</span></button>`;
+    const PR = (a, b) => `<div class="preset-grid-3">${a}${b}</div>`;
+    const PC_DELETE = `<button class="pcard tint-delete" onclick="selectPreset('delete')"><span class="pt">🗑️ 입력 내용 삭제</span><span class="ps">이 날짜 기록 완전 삭제</span></button>`;
+    const ACC_HEAD = (label) =>
+      `<button class="acc-head" onclick="toggleAccordion(this)"><span>${label}</span><span class="acc-arrow">▾</span></button>`;
+
+    function toggleAccordion(head) {
+      const body = head.nextElementSibling;
+      if (!body) return;
+      const open = body.style.display !== "none";
+      body.style.display = open ? "none" : "block";
+      const arrow = head.querySelector(".acc-arrow");
+      if (arrow) arrow.innerText = open ? "▾" : "▴";
+      vibrate();
+    }
+
+    // 상주/교대 6대 카드 (단일 날짜 시트 · 일괄 입력 공용)
+    function presetCardsHtml() {
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      if (isShift) {
+        return PR(PC('⚡ 주간 10h (8+2h)', '8h + 연장 2h', 'blue', 'ot'),
+                  PC('🌙 야간 10h (8+2h)', '8h+2h + 심야 7.5h', 'purple', 'night_10'))
+             + PR(PC('🔥 주간특근 10h', '8h 150% + 2h 200%', 'red', 'holiday_10'),
+                  PC('🔥🌙 야간특근 10h', '8h+2h + 심야 3.5h', 'red', 'holiday_night_10'))
+             + PR(PC('🌴 연차 유급 (8h)', '유급 8h 차감', 'mint', 'annual'), PC_DELETE)
+             + ACC_HEAD('기타 및 8h 정상근무')
+             + '<div class="acc-body" style="display:none">'
+             + PR(PC('● 주간 정상 (8h)', '기본 8시간 인정', 'blue', 'norm'),
+                  PC('🌙 야간 정상 (8h)', '심야할증 6.0h 인정', 'purple', 'night_8'))
+             + PR(PC('🌗 반차 (4h)', '4h 근무 + 4h 연차', 'mint', 'half_am'),
+                  PC('🏖️ 하계휴가 (8h)', '유급 인정', 'mint', 'summer'))
+             + PR(PC('↺ 기본값(자동인정)', '주말 유급 자동복구', 'plain', 'auto'),
+                  PC('✕ 근무 없음(무급)', '인정시간 0시간', 'plain', 'none'))
+             + '</div>';
+      }
+      return PR(PC('● 주간 정상 (8h)', '기본 8시간 인정', 'blue', 'norm'),
+                PC('⚡ 주간 10h (8+2h)', '8h + 연장 2h', 'blue', 'ot'))
+           + PR(PC('🔥 휴일특근 (8h)', '휴일근로 150%', 'red', 'holiday'),
+                PC('🔥 휴일특근 10h (8+2h)', '8h 150% + 2h 200%', 'red', 'holiday_10'))
+           + PR(PC('🌴 연차 유급 (8h)', '유급 8h 차감', 'mint', 'annual'), PC_DELETE)
+           + ACC_HEAD('기타 및 교대조 근무')
+           + '<div class="acc-body" style="display:none">'
+           + PR(PC('🌗 반차 (4h)', '4h 근무 + 4h 연차', 'mint', 'half_am'),
+                PC('🏖️ 하계휴가 (8h)', '유급 인정', 'mint', 'summer'))
+           + PR(PC('🌙 야간 10h (8+2h)', '대타 투입 · 심야 7.5h', 'purple', 'night_10'),
+                PC('🔥🌙 야간특근 10h', '대타 · 8h+2h+심야 3.5h', 'red', 'holiday_night_10'))
+           + PR(PC('↺ 기본값(자동인정)', '주말 유급 자동복구', 'plain', 'auto'),
+                PC('✕ 근무 없음(무급)', '인정시간 0시간', 'plain', 'none'))
+           + '</div>';
+    }
+
     function renderShiftSheetPresets() {
       const grid = document.getElementById("shiftSheetGrid");
       if (!grid) return;
-      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
-      const S = (t, s, c, bg) => `<button class="sheet-btn" style="${bg ? "background:" + bg + "; color:#fff;" : ""}" onclick="selectPreset('${c}')">${t}<br><span style="font-size:11px;font-weight:normal;">${s}</span></button>`;
-      const rows = [];
-      rows.push(S('● 주간 정상 (8h)', '8시간 인정', 'norm'));
-      rows.push(S('⚡ 주간 10h (8+2h)', '8h + 연장 2h', 'ot'));
-      if (isShift) {
-        rows.push(S('🌙 야간 정상 (8h)', '8h + 심야 6.0h', 'night_8', '#3b0764'));
-        rows.push(S('🌙 야간 10h (8+2h)', '8h+2h+심야 7.5h', 'night_10', '#581c87'));
-        rows.push(S('🔥 주간특근 10h (8+2h)', '8h 150% + 2h 200%', 'holiday_10', '#dc2626'));
-        rows.push(S('🔥🌙 야간특근 10h (8+2h)', '8h+2h + 심야 3.5h', 'holiday_night_10', '#9f1239'));
-        rows.push(S('🔥 주간특근 (8h)', '휴일근로 150%', 'holiday', '#dc2626'));
-        rows.push(S('🌴 연차 유급 (8h)', '유급 8h 차감', 'annual', '#059669'));
-        rows.push(S('🏖️ 하계휴가 (8h)', '유급 인정', 'summer', '#059669'));
-        rows.push(S('↺ 기본값(자동인정)', '주말 유급 자동복구', 'auto'));
-        rows.push(S('✕ 근무 없음(무급)', '인정시간 0시간', 'none'));
-        rows.push(S('🗑️ 입력 내용 삭제', '이 날짜의 기록을 완전 삭제', 'delete', '#b91c1c'));
-      } else {
-        rows.push(S('⚡ 연장 4h (8+4h)', '12시간 근무', 'ot_4'));
-        rows.push(S('🔥 휴일특근 10h (8+2h)', '8h 150% + 2h 200%', 'holiday_10', '#dc2626'));
-        rows.push(S('🔥 주말특근 (8h)', '휴일근로 150%', 'holiday', '#dc2626'));
-        rows.push(S('🌴 연차 유급 (8h)', '유급 8h 차감', 'annual', '#059669'));
-        rows.push(S('🏖️ 하계휴가 (8h)', '유급 인정', 'summer', '#059669'));
-        rows.push(S('↺ 기본값(자동인정)', '주말 유급 자동복구', 'auto'));
-        rows.push(S('✕ 근무 없음(무급)', '인정시간 0시간', 'none'));
-        rows.push(S('🗑️ 입력 내용 삭제', '이 날짜의 기록을 완전 삭제', 'delete', '#b91c1c'));
-      }
-      grid.innerHTML = rows.join("");
+      grid.innerHTML = presetCardsHtml();
     }
 
     function openShiftSheet(dateKey, d) {
@@ -2876,6 +3004,32 @@
     function selectPreset(mode) {
       if (!selectedDateStr) return;
       if (mode === "delete") { deleteSelectedDay(); return; }
+      if (mode === "half_am") {                    // 🌗 반차: 4h 근무 + 4h 유급 연차
+        const k = selectedDateStr;
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        localStorage.setItem(`${k}-mode`, "half_am");
+        localStorage.setItem(`${k}-norm`, "4");
+        localStorage.setItem(`${k}-paid`, "4");
+        closeShiftSheet();
+        renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
+        vibrate();
+        return;
+      }
+      if (mode === "night_8") {                    // 🌙 야간 정상: 8h + 심야 6.0h
+        const k = selectedDateStr;
+        ["paid", "ot", "hol", "holot", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        localStorage.setItem(`${k}-mode`, "night_8");
+        localStorage.setItem(`${k}-norm`, "8");
+        localStorage.setItem(`${k}-night`, "6");
+        closeShiftSheet();
+        renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
+        vibrate();
+        return;
+      }
       if (mode === "ot_4") {
         localStorage.setItem(`${selectedDateStr}-mode`, "custom");
         localStorage.setItem(`${selectedDateStr}-norm`, "8");
@@ -2928,6 +3082,28 @@
       if (badge) {
         badge.innerText = `${total.toFixed(1)}h`;
       }
+    }
+
+    // 조퇴 / 외출 태그: 메모에 낱말을 넣고/빼고, 칩 상태를 갱신한다
+    function toggleMemoTag(word) {
+      const el = document.getElementById("customMemo");
+      if (!el) return;
+      const cur = el.value || "";
+      const rest = cur.replace(/💊/g, "").replace(/🚶/g, "").split(",")
+        .map(s => s.trim())
+        .filter(s => s && s !== "조퇴" && s !== "외출");
+      if (!cur.includes(word)) rest.push(word);
+      el.value = rest.join(", ");
+      refreshMemoTags();
+      vibrate();
+    }
+
+    function refreshMemoTags() {
+      const memo = (document.getElementById("customMemo") || {}).value || "";
+      const early = document.getElementById("tagChipEarly");
+      const out = document.getElementById("tagChipOut");
+      if (early) early.classList.toggle("on", memo.includes("조퇴"));
+      if (out) out.classList.toggle("on", memo.includes("외출"));
     }
 
     function applyCustomPreset(p) {
@@ -3011,7 +3187,8 @@
         document.getElementById("customHolOtHours").value = holOt !== null ? holOt : (mode === "holiday_10" ? "2" : "0");
         document.getElementById("customExtraHours").value = extra !== null ? extra : (mode === "norm" || mode === "ot" ? "1.0" : "0");
         document.getElementById("customMemo").value = memo || "";
-        
+        refreshMemoTags();
+
         updateLiveTotalHours();
       }
       vibrate();
@@ -3385,8 +3562,15 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.3.2)",
-        body: `v1.3.2 (2026-11-11) — 교대조 환산 359h · 휴일 야간특근 10h 프리셋 · 프리셋 2열 재디자인 (버전 유지)
+        title: "📋 버전 업데이트 내역 (v1.3.3)",
+        body: `v1.3.3 (2026-11-11) — 어댑티브 아이콘 1안 · 상주/교대 6대 퀵 카드 · 4색 틴트 · 조퇴/외출 태그 (빌드 25)
+• 🖼️ 신규 어댑티브 아이콘 1안(풀블리드) 적용: 시계 다이얼 + 안전모 쓴 피코 엄지척 — 모서리 흰 여백을 블루 그라데이션으로 연장한 1024 마스터로 앱 아이콘·파비콘·PWA 아이콘 전면 교체
+• 📇 출근카드 1:1 월간 집계 카드 라이트/다크 자동 연동: 라이트 모드에서 짙은 밤색으로 고정되던 카드를 흰 서피스 카드로 (다크는 기존 딥 네이비 유지)
+• 🎛️ 상주조/교대조 전용 3행 6대 퀵 카드: 상주 [주간 정상·주간 10h / 휴일특근 8h·10h / 연차·삭제], 교대 [주간 10h·야간 10h / 주간특근·야간특근 / 연차·삭제]
+• 🎨 4색 프리미엄 시인성 컬러: 주간 Ocean Blue · 야간 Soft Purple · 특근 Coral Red · 휴가 Mint Green (라이트/다크 각각 최적화)
+• ▾ [기타 및 교대조 근무]·[기타 및 8h 정상근무] 아코디언: 반차·하계휴가·야간 대타·기본값·무급을 접어 두고 필요할 때만 펼침 (단일 날짜 시트·일괄 입력 1:1)
+• 💊 🚶 초단시간 근무 태그: [세부 시간 직접 입력] 화면 상단 [조퇴]·[외출] 태그 → 메모 자동 반영, 달력에 [4h 💊조퇴]·[6h 🚶외출] 뱃지
+v1.3.2 (2026-11-11) — 교대조 환산 359h · 휴일 야간특근 10h 프리셋 · 프리셋 2열 재디자인 (버전 유지)
 • 🌙 교대조 출근카드 환산시간에 심야를 포함: 정취132 + 연장32 + 가급16 + 심야35 + 휴일근로20 + 휴일가급12 + 연차16 + 유급64 + 주차32 = 환산 359h (상주는 심야 0h로 종전과 같습니다)
 • 🔥🌙 [야간특근 10h (8+2h)] 신설: 휴일근로 8h(150%) + 휴일연장 2h(200%) + 심야 3.5h — 날짜 터치 바텀시트·선택 일괄 입력 공통, 달력 칸에는 '🌙특근 8+2h'
 • 🎛️ 프리셋 바텀시트를 2열 대칭으로 재디자인: 주간 라인 → 야간 라인 → 주간특근/야간특근 대칭 → 연차·휴가·기본값 → 무급·삭제
@@ -3449,7 +3633,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
 안드로이드(삼성 갤럭시 등) 스마트폰을 사용하시는 임직원분들은 100% 오프라인 전용 앱을 설치하여 출근카드 자동 스캔을 가장 편리하게 이용하실 수 있습니다.
 
-※ 최신 정식 버전: v1.3.2 (피코 스플래시·근무 통계 차트·데이터 통합 관리 탑재)
+※ 최신 정식 버전: v1.3.3 (빌드 25 — 신규 어댑티브 아이콘·상주/교대 6대 퀵 카드·조퇴/외출 태그)
 
 ▼ 아래 파란 버튼을 누르면 최신 APK를 바로 받을 수 있습니다.
 
@@ -3966,48 +4150,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         <button onclick="closeMultiApplyModal()" style="background:none; border:none; color:var(--sub); font-size:18px; line-height:1; padding:6px 8px; cursor:pointer;">✕</button>
       </div>
       <div style="font-size:13px; font-weight:700; color:var(--sub); margin:10px 0 6px;">⚡ 1초 원터치 퀵 프리셋 (탭 즉시 저장)</div>
-      <div class="batch-preset-grid">
-        <button class="batch-card" onclick="applyBatchPreset('normal')">
-          <span class="batch-card-title" style="color:#0284c7;">● 주간 정상</span>
-          <span class="batch-card-sub">8시간 인정</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('ot')">
-          <span class="batch-card-title" style="color:#d97706;">⚡ 주간 10h</span>
-          <span class="batch-card-sub">정상 8h + 연장 2h</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('night_normal')">
-          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 정상</span>
-          <span class="batch-card-sub">8h + 심야 6.0h</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('night_ot')">
-          <span class="batch-card-title" style="color:#7c3aed;">🌙 야간 10h</span>
-          <span class="batch-card-sub">8h + 2h + 심야 7.5h</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('holiday_10')">
-          <span class="batch-card-title" style="color:#dc2626;">🔥 주간특근 10h</span>
-          <span class="batch-card-sub">8h 150% + 2h 200%</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('holiday_night_10')">
-          <span class="batch-card-title" style="color:#9f1239;">🔥🌙 야간특근 10h</span>
-          <span class="batch-card-sub">8h+2h + 심야 3.5h</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('holiday')">
-          <span class="batch-card-title" style="color:#dc2626;">🔥 주간특근 8h</span>
-          <span class="batch-card-sub">8h 특근 (150%)</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('annual')">
-          <span class="batch-card-title" style="color:#059669;">🌴 연차 휴가</span>
-          <span class="batch-card-sub">유급 8h 차감</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('half_am')">
-          <span class="batch-card-title" style="color:#059669;">🌗 오전 반차</span>
-          <span class="batch-card-sub">4h 근무 + 4h 연차</span>
-        </button>
-        <button class="batch-card" onclick="applyBatchPreset('summer')">
-          <span class="batch-card-title" style="color:#059669;">🏖️ 하계휴가</span>
-          <span class="batch-card-sub">유급 8h 인정</span>
-        </button>
-      </div>
+      <div class="preset-stack" id="batchPresetStack"></div>
       <div style="font-size:11px; color:var(--sub); margin-top:10px;">• 이미 기록된 날짜는 선택한 프리셋으로 대체됩니다.</div>
       <button onclick="closeMultiApplyModal()" style="margin-top:8px; width:100%; padding:11px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--sub); font-size:13px; font-weight:700; cursor:pointer;">닫기</button>
     </div>
@@ -4019,7 +4162,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.2 · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.3 (빌드 25) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
