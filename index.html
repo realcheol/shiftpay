@@ -2932,9 +2932,9 @@
     const PR = (a, b) => `<div class="preset-grid-3">${a}${b}</div>`;
     const PC_DELETE = `<button class="pcard tint-delete" onclick="selectPreset('delete')"><span class="pt">🗑️ 입력 내용 삭제</span><span class="ps">이 날짜 기록 완전 삭제</span></button>`;
     const ACC_HEAD = (label) =>
-      `<button class="acc-head" onclick="toggleAccordion(this)"><span>${label}</span><span class="acc-arrow">▾</span></button>`;
+      `<button class="acc-head" onclick="togglePresetAccordion(this)"><span>${label}</span><span class="acc-arrow">▾</span></button>`;
 
-    function toggleAccordion(head) {
+    function togglePresetAccordion(head) {
       const body = head.nextElementSibling;
       if (!body) return;
       const open = body.style.display !== "none";
