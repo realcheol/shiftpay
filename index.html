@@ -1273,7 +1273,7 @@
           • 통상시급: <span id="accOrdinaryRate">13,500</span>원 (기본시급: <span id="accBaseRate">12,000</span>원)<br>
           • 연장수당: 연장시간 × 통상시급 × 1.5배<br>
           • 특근수당: 특근(8h 이내) × 통상시급 × 1.5배 + 특근연장(8h 초과) × 통상시급 × 2.0배<br>
-          • 야간수당: 야간시간 × 통상시급 × 0.5배<br>
+          • 야간수당: <span id="acNightFormula">야간시간 × 통상시급 × 0.5배</span><br>
           • 정년 만 60세 D-Day 및 근속연차 자동 연동
         </div>
       </div>
@@ -2662,6 +2662,7 @@
 
     // Monthly Payroll Calculation Engine (Hyundai Steel Pipe 2026 CBA)
     function calculateMonthlyPayroll() {
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
       const totalDays = new Date(curYear, curMonth, 0).getDate();
       let normHours = 0;
       let paidHours = 0;
@@ -2669,6 +2670,8 @@
       let holHours = 0;
       let holOtHours = 0;
       let nightHours = 0;
+      let nightWorkDays = 0;   // 실제 야간근무일 (심야 기록 + 그날 근로)
+      let nightAnyDays = 0;    // 심야 기록이 있는 날 (OCR로 심야 칸만 읽힌 경우 대비)
 
       for (let d = 1; d <= totalDays; d++) {
         const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
@@ -2682,9 +2685,11 @@
           normHours += 8;
           otHours += 2;
           nightHours += 7.5;
+          nightWorkDays++; nightAnyDays++;
         } else if (mode === "night_8") {
           normHours += 8;
           nightHours += 6.0;
+          nightWorkDays++; nightAnyDays++;
         } else if (mode === "holiday") {
           holHours += 8;
         } else if (mode === "holiday_10") {
@@ -2694,10 +2699,12 @@
           holHours += 8;
           holOtHours += 2;
           nightHours += 7.5;
+          nightWorkDays++; nightAnyDays++;
         } else if (mode === "holiday_night_10") {
           holHours += 8;
           holOtHours += 2;
           nightHours += 3.5;
+          nightWorkDays++; nightAnyDays++;
         } else if (mode === "holiday_12") {
           holHours += 8;
           holOtHours += 4;
@@ -2725,8 +2732,17 @@
             holOtHours += cho;
           }
           nightHours += cnt;
+          if (cnt > 0) {
+            nightAnyDays++;
+            if (cn + co + ch > 0) nightWorkDays++;
+          }
         }
       }
+
+      // 야간 할증 기준시간 — 교대조는 종이 카드 심야 3.5h(가산시간)가 아니라 1일 7.0h로 되돌려 계산
+      // (22:00~06:00 8h − 야간 휴게 1h = 7.0h, 단협 제51조 3항 / 10월 김동현 님 9일 × 7.0h = 63.0h = 506,898원)
+      const shiftNightDays = nightWorkDays > 0 ? nightWorkDays : nightAnyDays;
+      const nightPayHours = isShift ? shiftNightDays * 7.0 : nightHours;
 
       // 출근카드 1:1 집계 카드 (정취·유급·주차·연차 / 연장·휴일근로·휴일연장·심야 / 가급·휴일가급·환산)
       renderCardBreakdown();
@@ -2748,7 +2764,19 @@
       const otPay = Math.round(ordinaryRate * otHours * 1.5);
       const holPay = Math.round(ordinaryRate * holHours * 1.5);
       const holOtPay = Math.round(ordinaryRate * holOtHours * 2.0);
-      const nightPay = Math.round(ordinaryRate * nightHours * 0.5);
+      const nightPay = Math.round(ordinaryRate * nightPayHours * 0.5);
+
+      // 상세 산출 계산식(아코디언) 야간 줄 — 교대조는 야간 일수 × 7.0h 공식을 투명하게 노출
+      const accNight = document.getElementById("accNightFormula");
+      if (accNight) {
+        if (nightPayHours > 0) {
+          accNight.innerHTML = isShift
+            ? `야간 ${shiftNightDays}일 × 7.0h = <b>${nightPayHours.toFixed(1)}h</b> × ${ordinaryRate.toLocaleString()}원 × 0.5배 = <b>${nightPay.toLocaleString()}원</b>`
+            : `${fmtH(nightHours)} × ${ordinaryRate.toLocaleString()}원 × 0.5배 = <b>${nightPay.toLocaleString()}원</b>`;
+        } else {
+          accNight.textContent = "야간 기록 없음";
+        }
+      }
       const totalOvertimePay = otPay + holPay + holOtPay + nightPay;
 
       // Summer Health Allowance (only July, August, Sept)
@@ -2761,7 +2789,6 @@
       }
 
       // Shift allowance (200,000 won if shift worker)
-      const isShift = localStorage.getItem("user_shift_type") === "shift";
       const shiftPay = isShift ? 200000 : 0;
 
       // Retroactive Pay (2026 단협 타결 소급분)
@@ -3567,7 +3594,10 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.3.3)",
-        body: `v1.3.3 (2026-11-11) — 어댑티브 아이콘 1안 · 상주/교대 6대 퀵 카드 · 4색 틴트 · 조퇴/외출 태그 (빌드 25)
+        body: `v1.3.3 (2026-11-11) — 홈화면 스퀘어클 아이콘 · 교대조 야간수당 63.0h 정규화 · 상주/교대 6대 퀵 카드 (빌드 25)
+• 🌙 교대조 야간수당 63.0h 정규화: 종이 출근카드 심야 3.5h는 50% 가산이 이미 곱해진 가산시간 — 실제 인정은 1일 7.0h(22:00~06:00 8h − 휴게 1h). 10월 9일 × 7.0h = 63.0h × 16,092원 × 0.5 = 506,898원으로 급여명세서와 1원 일치 (출근카드 1:1 집계의 심야 35h·환산 359h는 그대로 유지)
+• 📐 상세 산출 계산식에 야간 일수·7.0h 공식 표기: '야간 9일 × 7.0h = 63.0h × 16,092원 × 0.5배 = 506,898원'
+• 🟦 홈화면 아이콘을 삼성 스퀘어클(모서리 곡률 22.5%)로 교정 — 설치형·웹 파비콘 전면 교체
 • 🖼️ 신규 어댑티브 아이콘 1안(풀블리드) 적용: 시계 다이얼 + 안전모 쓴 피코 엄지척 — 모서리 흰 여백을 블루 그라데이션으로 연장한 1024 마스터로 앱 아이콘·파비콘·PWA 아이콘 전면 교체
 • 📇 출근카드 1:1 월간 집계 카드 라이트/다크 자동 연동: 라이트 모드에서 짙은 밤색으로 고정되던 카드를 흰 서피스 카드로 (다크는 기존 딥 네이비 유지)
 • 🎛️ 상주조/교대조 전용 3행 6대 퀵 카드: 상주 [주간 정상·주간 10h / 휴일특근 8h·10h / 연차·삭제], 교대 [주간 10h·야간 10h / 주간특근·야간특근 / 연차·삭제]
