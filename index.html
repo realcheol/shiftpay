@@ -510,8 +510,8 @@
     .pay-hero-amount { font-size: 21px; font-weight: 800; color: var(--blue); margin: 2px 0 4px; letter-spacing: -0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .pay-hero-sub { font-size: 11px; color: var(--sub); line-height: 1.45; }
     .pay-hero-sub b { color: var(--text); }
-    .pay-hero-actions { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; flex-shrink: 0; width: 92px; }
-    .pay-hero-btn { background: var(--surface); border: 1px solid var(--border); color: var(--sub); font-family: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; line-height: 1.1; }
+    .pay-hero-actions { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; flex-shrink: 0; width: 104px; }
+    .pay-hero-btn { background: var(--surface); border: 1px solid var(--border); color: var(--sub); font-family: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; line-height: 1.1; width: 100%; box-sizing: border-box; text-align: center; }
     .pay-hero-btn.bonus { background: rgba(0,91,172,0.08); border-color: var(--blue); color: var(--blue); }
     .card-out-title { font-size: 15px; font-weight: 800; color: var(--co-ink); letter-spacing: -0.3px; }
     .card-out-sub { font-size: 10px; color: var(--co-sub); font-weight: 600; margin-top: 3px; }
@@ -1259,8 +1259,8 @@
           <div class="pay-hero-sub">예상 공제액: <b id="heroDed" style="color:var(--red);">-0원</b></div>
         </div>
         <div class="pay-hero-actions">
-          <button type="button" class="pay-hero-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 ON/OFF (켜면 옆 실수령액이 바로 바뀝니다)" style="font-size:11.5px; padding:8px 6px; font-weight:800; border-radius:10px;">소급ON</button>
-          <button type="button" class="pay-hero-btn bonus" onclick="openBonusCalc()" title="2026년 성과·격려금 계산기" style="font-size:11px; padding:8px 4px; font-weight:800; border-radius:10px;">🏆 성과격려금</button>
+          <button type="button" class="pay-hero-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 ON/OFF (켜면 옆 실수령액이 바로 바뀝니다)" style="font-size:11.5px; padding:8px 2px; font-weight:800; border-radius:10px;">소급ON</button>
+          <button type="button" class="pay-hero-btn bonus" onclick="openBonusCalc()" title="2026년 성과·격려금 계산기" style="font-size:10.5px; padding:8px 2px; font-weight:800; border-radius:10px; letter-spacing:-0.4px;">🏆 성과격려금</button>
         </div>
       </div>
 
