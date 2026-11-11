@@ -497,6 +497,22 @@
       --co-accent: #38bdf8;
     }
     .card-out-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+
+    /* ── v1.3.4 예상 실수령액 히어로 (설치형 앱과 1:1) ── */
+    .pay-hero {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      background: linear-gradient(135deg, rgba(0,91,172,0.10) 0%, rgba(0,91,172,0.04) 100%);
+      border: 1px solid rgba(0,91,172,0.35); border-radius: 14px;
+      padding: 12px 12px; margin-bottom: 12px;
+    }
+    .pay-hero-text { flex: 1; min-width: 0; }
+    .pay-hero-label { font-size: 12.5px; font-weight: 800; color: var(--blue); }
+    .pay-hero-amount { font-size: 21px; font-weight: 800; color: var(--blue); margin: 2px 0 4px; letter-spacing: -0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pay-hero-sub { font-size: 11px; color: var(--sub); line-height: 1.45; }
+    .pay-hero-sub b { color: var(--text); }
+    .pay-hero-actions { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; flex-shrink: 0; width: 92px; }
+    .pay-hero-btn { background: var(--surface); border: 1px solid var(--border); color: var(--sub); font-family: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; line-height: 1.1; }
+    .pay-hero-btn.bonus { background: rgba(0,91,172,0.08); border-color: var(--blue); color: var(--blue); }
     .card-out-title { font-size: 15px; font-weight: 800; color: var(--co-ink); letter-spacing: -0.3px; }
     .card-out-sub { font-size: 10px; color: var(--co-sub); font-weight: 600; margin-top: 3px; }
     .card-out-stamp {
@@ -1137,7 +1153,6 @@
       <div class="cal-header">
         <div class="cal-nav-left" style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
           <button type="button" class="nav-btn" onclick="confirmResetCurrentMonth()" title="이번 달 근무기록 일괄 초기화" style="color:var(--red); font-size:12px; padding:4px 7px; border-color:rgba(235,87,87,0.4); background:rgba(235,87,87,0.06); border-radius:8px; white-space:nowrap; flex-shrink:0; display:inline-flex; align-items:center;"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
-          <button type="button" class="nav-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 토글 (롱클릭/설정: 금액 수정)" style="font-size:11px; padding:4px 6px; font-weight:700; border-radius:8px; white-space:nowrap; flex-shrink:0; letter-spacing:-0.3px; display:inline-flex; align-items:center; gap:2px;"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급ON</button>
         </div>
         <div class="cal-nav-center" style="display:flex; align-items:center; gap:5px;">
           <button class="nav-btn" onclick="prevMonth()" style="padding:4px 10px; font-size:13px;">◀</button>
@@ -1147,7 +1162,6 @@
           <button class="nav-btn" onclick="nextMonth()" style="padding:4px 10px; font-size:13px;">▶</button>
         </div>
         <div class="cal-nav-right" style="display:flex; align-items:center; gap:4px;">
-          <button class="today-btn" onclick="openStatsModal()" title="근무 통계 및 차트" style="background:var(--surface); border:1px solid var(--border); color:var(--text); padding:5px 8px; font-size:11.5px; display:inline-flex; align-items:center; gap:3px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 9 9"></path></svg>통계</button>
           <button class="today-btn" onclick="goToday()" style="padding:4px 10px; font-size:12px;">오늘</button>
         </div>
       </div>
@@ -1167,8 +1181,7 @@
       <!-- Quick Action Buttons under calendar -->
       <div class="quick-actions" style="display:flex; gap:6px;">
         <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:5px; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
-        <button class="btn-quick" id="btnToggleMulti" onclick="toggleMultiSelectMode()" style="flex:1.05; background:var(--surface); border:1px solid var(--border); color:var(--blue); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드</button>
-        <button class="btn-quick" id="btnStatsChart" onclick="openStatsModal()" style="flex:0.85; background:var(--surface); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#f59e0b"></path></svg> 통계</button>
+        <button class="btn-quick" id="btnToggleMulti" onclick="toggleMultiSelectMode()" style="flex:1.0; background:var(--surface); border:1px solid var(--border); color:var(--blue); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드</button>
       </div>
     </div>
 
@@ -1181,7 +1194,10 @@
             <div class="card-out-title">📇 출근카드 1:1 월간 집계</div>
             <div class="card-out-sub" id="cardOutSub">현대스틸파이프 출근카드 기준</div>
           </div>
-          <div class="card-out-stamp">카드 1:1</div>
+          <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+            <div class="card-out-stamp">카드 1:1</div>
+            <button type="button" onclick="openStatsModal()" title="근무 통계 및 차트" style="background:var(--blue); border:1px solid var(--blue); color:#fff; padding:4px 8px; font-size:10.5px; font-weight:800; border-radius:8px; white-space:nowrap; display:inline-flex; align-items:center; gap:3px; font-family:inherit; cursor:pointer;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 9 9"></path></svg>근무 통계</button>
+          </div>
         </div>
 
         <div class="card-badge-row">
@@ -1232,6 +1248,20 @@
         </div>
 
         <div class="card-out-note" id="cardOutNote"></div>
+      </div>
+
+      <!-- 💰 예상 실수령액 히어로 (v1.3.4: 소급 ON/OFF · 성과격려금을 카드 내부 우측 가운데로) -->
+      <div class="pay-hero">
+        <div class="pay-hero-text">
+          <div class="pay-hero-label">💰 예상 실수령액</div>
+          <div class="pay-hero-amount" id="heroNetPay">0원</div>
+          <div class="pay-hero-sub">세전 총지급액: <b id="heroGross">0원</b></div>
+          <div class="pay-hero-sub">예상 공제액: <b id="heroDed" style="color:var(--red);">-0원</b></div>
+        </div>
+        <div class="pay-hero-actions">
+          <button type="button" class="pay-hero-btn" id="btnRetroToggle" onclick="toggleRetroPay(event)" title="임단협 소급분 ON/OFF (켜면 옆 실수령액이 바로 바뀝니다)" style="font-size:11.5px; padding:8px 6px; font-weight:800; border-radius:10px;">소급ON</button>
+          <button type="button" class="pay-hero-btn bonus" onclick="openBonusCalc()" title="2026년 성과·격려금 계산기" style="font-size:11px; padding:8px 4px; font-weight:800; border-radius:10px;">🏆 성과격려금</button>
+        </div>
       </div>
 
       <div class="pay-receipt">
@@ -1307,12 +1337,13 @@
     </div>
 
     <div class="drawer-menu">
-      <div class="menu-sec-title">급여 및 통계 분석</div>
-      <div class="menu-item" onclick="openStatsModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> <strong>근무 통계 및 분석 차트</strong></div>
+      <div class="menu-sec-title">급여 및 데이터 관리</div>
       <div class="menu-item" onclick="openSettings(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> 기본정보 및 급여 설정</div>
       <div class="menu-item" onclick="openBonusCalc(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg> 2026년 성과·격려금 계산기</div>
+      <div class="menu-item" onclick="openStatsModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> 근무 통계 및 분석 차트</div>
       <div class="menu-item" onclick="openDataModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <strong>데이터 통합 관리 (백업·복원·엑셀)</strong></div>
-      <div class="menu-item" onclick="clearCurrentMonth(); closeDrawer();" style="color:var(--red);"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> 이번 달 전체 근무 초기화</div>
+      <div class="menu-item" onclick="openHolidayRefresh(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path></svg> 공휴일 데이터 갱신</div>
+      <div class="menu-item" onclick="openManualHoliday(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M12 14v4"></path><path d="M10 16h4"></path></svg> 휴일 수동 설정</div>
 
       <div class="menu-sec-title">사내 복지 & 협약</div>
       <div class="menu-item" onclick="showDoc('cba'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15l2 2 4-4"></path></svg> 2026년 노사단체협약 요약</div>
@@ -1323,7 +1354,7 @@
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.3)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.4)</div>
     </div>
   </div>
 
@@ -1725,13 +1756,22 @@
       <div class="sheet-title" id="docTitle">문서 제목</div>
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
+      <div id="docHwpActions" style="display:none; margin-bottom:14px;">
+        <a class="sheet-btn" id="docHwpCba" href="downloads/cba_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid #10b981;">
+          💾 단체협약서 전문 HWP 다운로드 (cba_2026.hwp)
+        </a>
+        <a class="sheet-btn" id="docHwpSupport" href="downloads/support_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid #10b981;">
+          💾 지원제도 원본 HWP 다운로드 (support_2026.hwp)
+        </a>
+      </div>
+
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.3.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.4.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           최신 ShiftPay v1.3.3 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.3.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.4.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.4.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -2844,6 +2884,14 @@
       document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
       document.getElementById("valDeduction").innerText = "-" + deductions.toLocaleString() + "원";
       document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
+
+      // v1.3.4 히어로: 소급 토글 옆에서 실수령액 변화가 바로 보이도록 동시 갱신
+      const heroNet = document.getElementById("heroNetPay");
+      if (heroNet) heroNet.innerText = netPay.toLocaleString() + "원";
+      const heroGross = document.getElementById("heroGross");
+      if (heroGross) heroGross.innerText = grossPay.toLocaleString() + "원";
+      const heroDed = document.getElementById("heroDed");
+      if (heroDed) heroDed.innerText = "-" + deductions.toLocaleString() + "원";
     }
 
 
@@ -3593,8 +3641,17 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.3.3)",
-        body: `v1.3.3 (2026-11-11) — 홈화면 스퀘어클 아이콘 · 교대조 야간수당 63.0h 정규화 · 상주/교대 6대 퀵 카드 (빌드 25)
+        title: "📋 버전 업데이트 내역 (v1.3.4)",
+        body: `v1.3.4 (2026-11-11) — 6대 메인 UI·버튼 동선 대개편 · 웹 드로어 순서 일치 · HWP 원본 다운로드 (빌드 26)
+• 🧭 6대 메인 UI·버튼 동선 대개편: 매일 쓰는 손가락 동선 기준으로 캘린더·급여·출근카드 카드의 버튼을 다시 배치
+• 📸 캘린더 아래 퀵 액션 바를 [빠른 근무 입력 1.2] · [선택 모드 1.0] 2버튼으로 정리 (웹은 스마트 OCR 없음 — 설치형은 [스마트 OCR]까지 3버튼)
+• 💰 소급 ON/OFF 토글을 [예상 실수령액] 카드 내부 우측 가운데로 이동: 토글을 켜고 끄면 바로 옆 실수령액이 즉시 바뀜
+• 🗓️ 캘린더 상단 바 슬림화: 리셋(↺) · 월 넘김(◀ 2026-11 ▾ ▶) · [오늘]만 남김
+• 🏆 [성과격려금] 버튼 신설: 소급 토글 바로 아래에서 2026년 성과·격려금 계산기로 원터치 연결
+• 📊 [근무 통계] 버튼을 [출근카드 1:1 월간 집계] 헤더 [카드 1:1] 옆으로 단일화: 중복되던 통계 버튼 2개 삭제
+• 🧭 좌측 드로어 순서를 설치형과 100% 일치 (급여 및 데이터 관리 → 사내 복지 & 협약 → 앱 정보), 공휴일 데이터 갱신 · 휴일 수동 설정 신설
+• 💾 사내 복지 & 협약 문서 뷰어에 [단체협약서 전문 HWP] · [지원제도 원본 HWP] 다운로드 버튼 추가
+v1.3.3 (2026-11-11) — 홈화면 스퀘어클 아이콘 · 교대조 야간수당 63.0h 정규화 · 상주/교대 6대 퀵 카드 (빌드 25)
 • 🌙 교대조 야간수당 63.0h 정규화: 종이 출근카드 심야 3.5h는 50% 가산이 이미 곱해진 가산시간 — 실제 인정은 1일 7.0h(22:00~06:00 8h − 휴게 1h). 10월 9일 × 7.0h = 63.0h × 16,092원 × 0.5 = 506,898원으로 급여명세서와 1원 일치 (출근카드 1:1 집계의 심야 35h·환산 359h는 그대로 유지)
 • 📐 상세 산출 계산식에 야간 일수·7.0h 공식 표기: '야간 9일 × 7.0h = 63.0h × 16,092원 × 0.5배 = 506,898원'
 • 🟦 홈화면 아이콘을 삼성 스퀘어클(모서리 곡률 22.5%)로 교정 — 설치형·웹 파비콘 전면 교체
@@ -3667,7 +3724,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
 안드로이드(삼성 갤럭시 등) 스마트폰을 사용하시는 임직원분들은 100% 오프라인 전용 앱을 설치하여 출근카드 자동 스캔을 가장 편리하게 이용하실 수 있습니다.
 
-※ 최신 정식 버전: v1.3.3 (빌드 25 — 신규 어댑티브 아이콘·상주/교대 6대 퀵 카드·조퇴/외출 태그)
+※ 최신 정식 버전: v1.3.4 (빌드 26 — 6대 UI 동선 개편·엑셀 4단 서식·인앱 업데이트 감지)
 
 ▼ 아래 파란 버튼을 누르면 최신 APK를 바로 받을 수 있습니다.
 
@@ -3686,6 +3743,13 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       document.getElementById("docBody").innerText = d.body;
       const apkActions = document.getElementById("docApkActions");
       if (apkActions) apkActions.style.display = (key === "apk") ? "block" : "none";
+      // 사내 복지 & 협약 문서: 원본 HWP 다운로드 버튼 (설치형 앱과 1:1)
+      const hwpWrap = document.getElementById("docHwpActions");
+      if (hwpWrap) hwpWrap.style.display = (key === "cba" || key === "support") ? "block" : "none";
+      const hwpCba = document.getElementById("docHwpCba");
+      if (hwpCba) hwpCba.style.display = (key === "cba") ? "flex" : "none";
+      const hwpSupport = document.getElementById("docHwpSupport");
+      if (hwpSupport) hwpSupport.style.display = (key === "support") ? "flex" : "none";
       document.getElementById("docOverlay").style.display = "flex";
       vibrate();
     }
@@ -3693,6 +3757,40 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (!e || e.target.id === "docOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
         document.getElementById("docOverlay").style.display = "none";
       }
+    }
+
+    // 📅 공휴일 데이터 갱신 (설치형 앱 드로어와 1:1)
+    function openHolidayRefresh() {
+      const total = Object.keys(officialHolidays).length;
+      const mine = Object.keys(localStorage).filter(k => k.startsWith("holiday_")).length;
+      safeStorage.setItem("holiday_data_version", "2026-11");
+      renderCalendar();
+      alert("공휴일 데이터를 최신 상태로 갱신했습니다.\n\n"
+        + "· 내장 공휴일: " + total + "일 (2025 ~ 2028년)\n"
+        + "· 직접 등록한 휴일: " + mine + "일\n\n"
+        + "공휴일·대체휴무 데이터는 웹 파일에 내장되어 있어 인터넷 없이도 그대로 적용됩니다.");
+      vibrate();
+    }
+
+    // 📅 휴일 수동 설정 (설치형 앱 드로어와 1:1)
+    function openManualHoliday() {
+      const today = new Date();
+      const def = `${curYear}-${pad(curMonth)}-${pad(Math.min(today.getMonth() + 1 === curMonth && today.getFullYear() === curYear ? today.getDate() : 15, 28))}`;
+      const raw = prompt("휴일로 등록할 날짜를 입력하세요.\n(예: 2026-11-20)", def);
+      if (!raw) return;
+      const norm = raw.trim().replace(/[.\/]/g, "-").replace(/^([0-9]{4})([0-9]{2})([0-9]{2})$/, "$1-$2-$3");
+      if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(norm)) {
+        alert("날짜 형식이 올바르지 않습니다.\n예) 2026-11-20");
+        return;
+      }
+      const name = prompt("휴일 이름을 입력하세요.\n(예: 사내 행사, 창립기념일)", "사내 휴일");
+      if (name === null) return;
+      const clean = (name || "사내 휴일").trim() || "사내 휴일";
+      safeStorage.setItem("holiday_" + norm.replace(/-/g, ""), clean);
+      renderCalendar();
+      calculateMonthlyPayroll();
+      alert(`${norm} 을(를) '${clean}'(으)로 등록했습니다.\n달력에 휴일로 표시되며, 그 날의 근무는 휴일특근 기준으로 계산됩니다.`);
+      vibrate();
     }
 
     // 2026년 성과·격려금 계산기
@@ -4196,7 +4294,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.3 (빌드 25) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.4 (빌드 26) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
