@@ -1231,7 +1231,8 @@
     }
     .spot-blocker { position: fixed; inset: 0; }
     .spot-card {
-      position: fixed; left: 14px; right: 14px; background: var(--surface);
+      position: fixed; left: 14px; right: 14px; max-width: 460px; margin: 0 auto;
+      background: var(--surface);
       border: 1px solid var(--blue); border-radius: 18px;
       box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38); padding: 14px 16px 12px;
       animation: obPop .2s ease;
@@ -4798,7 +4799,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         const hasData = ["user_name", "setting_base", "setting_ordinary", "user_shift_type", "user_join"]
           .some(k => localStorage.getItem(k));
         if (hasData) { localStorage.setItem("onboarding_v14_completed", "1"); return; }
-        setTimeout(showOnboarding, 900);
+        setTimeout(showOnboarding, 2600);
       } catch (e) {}
     }
 
