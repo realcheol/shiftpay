@@ -1,9 +1,9 @@
 {
-  "versionCode": 29,
-  "versionName": "1.4.0",
-  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0.apk",
-  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0_source.zip",
+  "versionCode": 30,
+  "versionName": "1.4.1",
+  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1.apk",
+  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "3스텝 온보딩 마법사 · 스팟라이트 5곳 기능 투어 · 드로어 다시보기 (v1.3.6 무결점 유지)",
-  "releasedAt": "2026-11-12T14:02:22+09:00"
+  "note": "근무 통계 좌우 스와이프 월 넘김 · 달력 날짜 더블탭 입력 · 교대조 주간특근/야간특근 8h (v1.4.0 무결점 유지)",
+  "releasedAt": "2026-11-12T15:54:28+09:00"
 }

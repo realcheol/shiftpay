@@ -1482,7 +1482,7 @@
       <div class="menu-item" onclick="showOnboarding(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ❓ 온보딩 & 기능 투어 다시보기</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.0)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.1)</div>
     </div>
   </div>
 
@@ -1839,7 +1839,7 @@
           </div>
           <div>
             <div style="font-size:16px; font-weight:800; color:var(--text);" id="statsModalTitle">2026년 11월 근무 통계</div>
-            <div style="font-size:11.5px; color:var(--subtext);">근무 유형별 비율 및 요일별 근무 패턴 분석</div>
+            <div style="font-size:11.5px; color:var(--subtext);">근무 유형별 비율 및 요일별 근무 패턴 분석 · 좌우로 밀어 월 이동</div>
           </div>
         </div>
         <button onclick="closeStatsModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
@@ -1953,12 +1953,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.0.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.1.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.4.0 APK 다운로드
+          최신 ShiftPay v1.4.1 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.0.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.1.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -1989,6 +1989,9 @@
     let curYear = 2026;
     let curMonth = 11; // 1-indexed (11 = Nov)
     let selectedDateStr = "";
+    // v1.4.1 ② — 달력에서 파란 선택 테두리가 놓인 날짜 (설치형 chosenDay 와 1:1)
+    //   null 이면 renderCalendar 가 이번 달이면 오늘, 아니면 1일로 잡는다.
+    let chosenDayWeb = null;
     let pickerYear = 2026;
     let currentFactoryIdx = 1;
 
@@ -2477,6 +2480,7 @@
       'holiday':      { mode: 'holiday',  times: { hol: '8' } },
       'holiday_10':   { mode: 'holiday_10', times: {} },
       'holiday_night_10': { mode: 'holiday_night_10', times: {} },
+      'holiday_night_8':  { mode: 'holiday_night_8', times: { hol: '8', night: '6' } },
       'summer':       { mode: 'summer',   times: {} },
       'annual':       { mode: 'annual',   times: {} },
       'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } },
@@ -2577,11 +2581,17 @@
 
         const isSelected = isMultiSelectMode && selectedDays.has(d);
         const isToday = isThisMonth && (d === todayDate);
+        if (chosenDayWeb === null) chosenDayWeb = isThisMonth ? todayDate : 1;
+        const isChosen = !isMultiSelectMode && (d === chosenDayWeb);   // v1.4.1 ② 선택 활성화
 
         if (isSelected) {
           cell.style.borderColor = "#ef4444";
           cell.style.borderWidth = "2px";
           cell.style.background = "rgba(239, 68, 68, 0.12)";
+        } else if (isChosen) {
+          cell.style.background = "rgba(37, 99, 235, 0.14)";
+          cell.style.borderColor = "#2563eb";
+          cell.style.borderWidth = "2px";
         } else if (isToday) {
           cell.style.background = "var(--blue-bg)";
           cell.style.borderColor = "var(--blue)";
@@ -2660,6 +2670,10 @@
             pill.style.background = "#701a75";
             pill.style.color = "#fdf4ff";
             pill.innerText = "야간특근 10h";
+          } else if (mode === "holiday_night_8") {
+            pill.style.background = "#701a75";
+            pill.style.color = "#fdf4ff";
+            pill.innerText = "🌙특근 8h";
           } else if (mode === "holiday") {
             pill.classList.add("shift-holiday");
             pill.innerText = "특근 8h";
@@ -2764,7 +2778,14 @@
             if (Date.now() - lastLongPressTime < 650) return;
             if (Date.now() - lastSwipeTime < 500) return;   // 좌우 스와이프로 월을 넘긴 경우 날짜 클릭 무시
             if (isMultiSelectMode) return;
-            openShiftSheet(dateKey, d);
+            // v1.4.1 ② — 처음 누른 날짜는 파란 선택 테두리만 이동하고, 같은 날짜를 한 번 더 누르면 입력창이 열린다
+            if (chosenDayWeb !== d) {
+              chosenDayWeb = d;
+              renderCalendar();
+              vibrate();
+            } else {
+              openShiftSheet(dateKey, d);
+            }
           };
         }
 
@@ -2773,7 +2794,7 @@
 
       const btnQuick = document.getElementById("btnQuickInput");
       if (btnQuick) {
-        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${todayDate}일)`;
+        btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${chosenDayWeb || todayDate}일)`;
       }
 
       calculateMonthlyPayroll();
@@ -2811,6 +2832,7 @@
         else if (mode === "holiday_10") { h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
         else if (mode === "holiday_night_10") { h = 8; ho = 2; nt = 3.5; }
+        else if (mode === "holiday_night_8") { h = 8; nt = 6.0; }   // v1.4.1 ③ 야간특근 8h
         else if (mode === "holiday_12") { h = 8; ho = 4; }
         else if (mode === "annual" || mode === "summer") { p = 8; }
         else if (mode === "half_am" || mode === "half_pm") { n = 4; p = 4; }
@@ -2874,7 +2896,7 @@
         else if (mode === "night_8") n = 8;
         else if (mode === "half_am" || mode === "half_pm") n = 4;
         else if (mode === "holiday" || mode === "holiday_10" || mode === "night_holiday_10"
-                 || mode === "holiday_night_10") h = 8;
+                 || mode === "holiday_night_10" || mode === "holiday_night_8") h = 8;
         else if (mode === "holiday_12") h = 8;
         else {
           n = parseFloat(localStorage.getItem(`${dateKey}-norm`) || "0") || 0;
@@ -2982,6 +3004,10 @@
           holHours += 8;
           holOtHours += 2;
           nightHours += 7.5;
+          nightWorkDays++; nightAnyDays++;
+        } else if (mode === "holiday_night_8") {
+          holHours += 8;
+          nightHours += 6.0;
           nightWorkDays++; nightAnyDays++;
         } else if (mode === "holiday_night_10") {
           holHours += 8;
@@ -3287,6 +3313,7 @@
       curMonth += dir;
       if (curMonth < 1) { curMonth = 12; curYear--; }
       if (curMonth > 12) { curMonth = 1; curYear++; }
+      chosenDayWeb = 1;   // v1.4.1 ② — 달을 넘기면 선택 활성화도 새 달 1일로 (설치형과 동일)
       renderCalendar();
       calculateMonthlyPayroll();
     }
@@ -3324,6 +3351,7 @@
       const grid = document.getElementById("calendarGrid");
       curYear = today.getFullYear();
       curMonth = today.getMonth() + 1;
+      chosenDayWeb = today.getDate();
       renderCalendar();
       calculateMonthlyPayroll();
       if (grid && grid.animate) {
@@ -3404,6 +3432,8 @@
              + '<div class="acc-body" style="display:none">'
              + PR(PC('● 주간 정상 (8h)', '기본 8시간 인정', 'blue', 'norm'),
                   PC('🌙 야간 정상 (8h)', '심야할증 6.0h 인정', 'purple', 'night_8'))
+             + PR(PC('🔥 주간특근 (8h)', '휴일근로 8h 150%', 'red', 'holiday'),
+                  PC('🔥🌙 야간특근 (8h)', '특근 8h + 심야 6.0h', 'red', 'holiday_night_8'))
              + PR(PC('🌗 반차 (4h)', '4h 근무 + 4h 연차', 'mint', 'half_am'),
                   PC('🏖️ 하계휴가 (8h)', '유급 인정', 'mint', 'summer'))
              + PR(PC('↺ 기본값(자동인정)', '주말 유급 자동복구', 'plain', 'auto'),
@@ -3435,6 +3465,7 @@
     function openShiftSheet(dateKey, d) {
       renderShiftSheetPresets();
       selectedDateStr = dateKey;
+      chosenDayWeb = d;   // v1.4.1 ② 입력창을 연 날짜가 곧 선택 활성화 날짜
       document.getElementById("sheetDateTitle").innerText = `${curYear}년 ${curMonth}월 ${d}일 근무 입력`;
       const btnQuick = document.getElementById("btnQuickInput");
       if (btnQuick) {
@@ -3477,6 +3508,19 @@
         vibrate();
         return;
       }
+      if (mode === "holiday_night_8") {            // v1.4.1 ③ 🔥🌙 야간특근 (8h): 휴일근로 8h + 심야 6.0h
+        const k = selectedDateStr;
+        ["norm", "paid", "ot", "holot", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        localStorage.setItem(`${k}-mode`, "holiday_night_8");
+        localStorage.setItem(`${k}-hol`, "8");
+        localStorage.setItem(`${k}-night`, "6");
+        closeShiftSheet();
+        renderCalendar();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll();
+        vibrate();
+        return;
+      }
       if (mode === "ot_4") {
         localStorage.setItem(`${selectedDateStr}-mode`, "custom");
         localStorage.setItem(`${selectedDateStr}-norm`, "8");
@@ -3511,9 +3555,10 @@
       vibrate();
     }
     function quickTodayShift() {
-      const today = new Date();
-      const dateKey = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
-      openShiftSheet(dateKey, today.getDate());
+      // v1.4.1 ② — [빠른 근무 입력 (N일)]은 달력에서 선택 활성화된 날짜의 입력창을 연다
+      const d = chosenDayWeb || 1;
+      const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
+      openShiftSheet(dateKey, d);
     }
 
     // Custom Time Modal Handlers
@@ -4171,8 +4216,13 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.4.0)",
-        body: `v1.4.0 (2026-11-12) — 3스텝 온보딩 마법사 · 스팟라이트 5곳 메뉴 투어 · 드로어 다시보기 (빌드 29)
+        title: "📋 버전 업데이트 내역 (v1.4.1)",
+        body: `v1.4.1 (2026-11-12) — 통계 스와이프 월 넘김 · 날짜 더블탭 입력 · 교대조 8h 특근 카드 (빌드 30)
+• 📊 근무 통계 창 좌우 스와이프 월 넘김: 왼쪽으로 밀면 다음 달, 오른쪽으로 밀면 이전 달 — 메인 달력처럼 지금 통계가 밀려 나가고 새 달 도넛·요일별 막대가 반대편에서 슬라이드로 들어옵니다. 상단 [◀ YYYY년 M월 ▶] 바와 항상 같은 달을 가리킵니다
+• 📅 달력 날짜 더블탭 입력: 다른 날짜를 한 번 누르면 파란 선택 테두리만 그 날짜로 이동하고 입력창은 열리지 않습니다. 이미 선택된 날짜를 한 번 더 누를 때만 퀵 프리셋 입력창이 열립니다 — [빠른 근무 입력 (N일)] 버튼은 그대로 동작
+• 🔥 교대조 [기타 및 8h 정상근무] 아코디언에 [주간특근 (8h)] · [야간특근 (8h)] 신설: 주간 교대로 들어온 토요일 8시간 특근(휴일근로 150%)을 바로 입력하고, 야간특근은 심야 6.0h까지 인정
+• 🔒 v1.4.0의 3스텝 온보딩 마법사·스팟라이트 5곳 투어를 그대로 유지
+v1.4.0 (2026-11-12) — 3스텝 온보딩 마법사 · 스팟라이트 5곳 메뉴 투어 · 드로어 다시보기 (빌드 29)
 • 🧭 최초 방문 시 3스텝 미니 온보딩 마법사: [근무 형태 선택] → [내 급여 기본 설정(통상시급·발생연차·부양가족 수)] → [준비 완료 & 투어 안내]
 • ✨ 인터랙티브 스팟라이트 코치마크 투어: 화면을 어둡게 딤 처리하고 대상 버튼만 둥근 컷아웃으로 밝게 비추며 5곳의 주요 기능을 큰 글자 카드로 설명
 • ❓ 좌측 메뉴에 [온보딩 & 기능 투어 다시보기] 신설: 기존 사용자도 언제든 마법사와 투어를 다시 볼 수 있습니다
@@ -4519,6 +4569,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         else if (mode === "holiday_10") { modeName = "휴일특근 10h"; h = 8; ho = 2; }
         else if (mode === "night_holiday_10") { modeName = "야간 특근"; h = 8; ho = 2; nt = 7.5; }
         else if (mode === "holiday_night_10") { modeName = "야간특근 10h"; h = 8; ho = 2; nt = 3.5; }
+        else if (mode === "holiday_night_8") { modeName = "야간특근 8h"; h = 8; nt = 6.0; }
         else if (mode === "holiday_12") { modeName = "특근 12h"; h = 8; ho = 4; }
         else if (mode === "annual") { modeName = "연차 유급"; p = 8; }
         else if (mode === "summer") { modeName = "하계휴가"; p = 8; }
@@ -4554,6 +4605,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       statsMonth = month || curMonth;
       renderStatsModal();
       document.getElementById("statsOverlay").style.display = "flex";
+      bindStatsSwipe();
       vibrate();
     }
 
@@ -4563,7 +4615,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       }
     }
 
-    function prevStatsMonth() {
+    function prevStatsMonthCore() {
       statsMonth--;
       if (statsMonth < 1) {
         statsMonth = 12;
@@ -4572,13 +4624,77 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       renderStatsModal();
     }
 
-    function nextStatsMonth() {
+    function nextStatsMonthCore() {
       statsMonth++;
       if (statsMonth > 12) {
         statsMonth = 1;
         statsYear++;
       }
       renderStatsModal();
+    }
+
+    // v1.4.1 ① — 근무 통계 창 좌우 스와이프 월 넘김 (설치형 앱과 1:1)
+    //   왼쪽으로 밀면 다음 달, 오른쪽으로 밀면 이전 달. 메인 달력처럼 갤러리식 슬라이드로
+    //   지금 통계가 밀려 나가고 새 달 도넛·요일별 막대가 반대편에서 미끄러져 들어온다.
+    let statsSliding = false;
+
+    function slideStatsMonth(dir) {
+      const body = document.getElementById("statsModalBody");
+      if (!body || !body.animate || statsSliding) {
+        if (dir < 0) prevStatsMonthCore(); else nextStatsMonthCore();
+        return;
+      }
+      statsSliding = true;
+      const w = Math.max(240, body.offsetWidth || 300);
+      const step = Math.round(w * 0.5);
+      const out = body.animate(
+        [{ transform: "translateX(0px)", opacity: 1 },
+         { transform: `translateX(${-dir * step}px)`, opacity: 0.12 }],
+        { duration: 150, easing: "cubic-bezier(.4,0,1,1)", fill: "forwards" });
+      out.onfinish = () => {
+        out.cancel();
+        if (dir < 0) prevStatsMonthCore(); else nextStatsMonthCore();
+        const enter = body.animate(
+          [{ transform: `translateX(${dir * step}px)`, opacity: 0.12 },
+           { transform: "translateX(0px)", opacity: 1 }],
+          { duration: 200, easing: "cubic-bezier(.16,.84,.32,1)" });
+        enter.onfinish = () => { statsSliding = false; };
+        setTimeout(() => { statsSliding = false; }, 500);
+      };
+      vibrate();
+    }
+
+    function prevStatsMonth() { slideStatsMonth(-1); }
+    function nextStatsMonth() { slideStatsMonth(1); }
+
+    function bindStatsSwipe() {
+      const body = document.getElementById("statsModalBody");
+      if (!body || body.dataset.statsSwipeBound === "1") return;
+      body.dataset.statsSwipeBound = "1";
+      let sx = null, sy = null, st = 0;
+      body.addEventListener("touchstart", (e) => {
+        if (!e.touches || e.touches.length !== 1) { sx = null; return; }
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now();
+      }, { passive: true });
+      body.addEventListener("touchend", (e) => {
+        if (sx === null || !e.changedTouches || !e.changedTouches.length) { sx = null; return; }
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        const dt = Date.now() - st;
+        sx = null;
+        if (dt > 900) return;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.25) slideStatsMonth(dx < 0 ? 1 : -1);
+      }, { passive: true });
+      // 데스크톱 마우스로 끌어도 같은 동작
+      let md = null;
+      body.addEventListener("mousedown", (e) => { md = { x: e.clientX, y: e.clientY, t: Date.now() }; });
+      body.addEventListener("mouseup", (e) => {
+        if (!md) return;
+        const dx = e.clientX - md.x, dy = e.clientY - md.y, dt = Date.now() - md.t;
+        md = null;
+        if (dt > 900) return;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.25) slideStatsMonth(dx < 0 ? 1 : -1);
+      });
     }
 
     function renderStatsModal() {
@@ -4920,7 +5036,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       { sel: "#tourQuickBar", title: "① ⚡ 빠른 근무 입력 바",
         desc: "터치 한 번으로 근무를 기록합니다. 설치형 앱에서는 출근카드 사진 한 장으로 자동 입력됩니다." },
       { sel: ".cal-cell.today", fallback: "#calendarGrid", title: "② 📅 캘린더 날짜 셀",
-        desc: "날짜를 누르면 상주·교대 전용 6대 퀵 버튼과 조퇴·외출 직접 입력창이 열립니다." },
+        desc: "날짜를 한 번 누르면 선택만 되고, 같은 날짜를 다시 누르면 6대 퀵 버튼과 직접 입력창이 열립니다." },
       { sel: "#tourStatsCard", title: "③ 📇 출근카드 1:1 · 📊 근무 통계",
         desc: "종이 출근카드와 1시간 오차 없는 환산 집계표와 도넛 통계를 확인합니다." },
       { sel: "#tourHero", title: "④ 💰 예상 실수령액 · 소급 · 🏆 격려금",
@@ -5074,7 +5190,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.0 (빌드 29) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.1 (빌드 30) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
