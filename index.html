@@ -666,7 +666,8 @@
     .top-float {
       position: fixed;
       right: 16px;
-      bottom: 24px;
+      /* v1.3.6 ②: 안드로이드 3버튼 내비게이션 바·iOS 홈 인디케이터에 가려지지 않도록 80px 위로 */
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       z-index: 90;
       width: 68px; height: 38px;
       border-radius: 19px;
@@ -816,6 +817,20 @@
     @keyframes slideUp {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
+    }
+    /* v1.3.6 ④: 서브 메뉴 창이 화면 중앙에서 0.9 → 1.0 으로 0.2초 만에 커지며 페이드인 */
+    @keyframes scaleBloom {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    @keyframes scaleOut {
+      from { transform: scale(1);   opacity: 1; }
+      to   { transform: scale(0.9); opacity: 0; }
+    }
+    .sheet-overlay.scale-in > .bottom-sheet {
+      animation: scaleBloom 0.2s cubic-bezier(.22,.9,.3,1);
+      transform-origin: 50% 60%;
+      will-change: transform, opacity;
     }
     .sheet-title {
       font-size: 16px;
@@ -1380,7 +1395,7 @@
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.5)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.6)</div>
     </div>
   </div>
 
@@ -1583,7 +1598,7 @@
   </div>
 
   <!-- Settings Modal -->
-  <div class="sheet-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+  <div class="sheet-overlay scale-in" id="settingsOverlay" onclick="closeSettings(event)">
     <div class="bottom-sheet">
       <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>나의 기본정보 및 급여 설정</div>
       
@@ -1706,7 +1721,7 @@
   </div>
 
   <!-- 근무 통계 & 분석 차트 Modal -->
-  <div class="sheet-overlay" id="statsOverlay" onclick="closeStatsModal(event)">
+  <div class="sheet-overlay scale-in" id="statsOverlay" onclick="closeStatsModal(event)">
     <div class="bottom-sheet" style="max-height:90vh; padding:18px 16px;">
       <!-- Title & Close -->
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
@@ -1740,7 +1755,7 @@
   </div>
 
   <!-- 데이터 통합 관리 (백업·복원·엑셀) Modal -->
-  <div class="sheet-overlay" id="dataOverlay" onclick="closeDataModal(event)">
+  <div class="sheet-overlay scale-in" id="dataOverlay" onclick="closeDataModal(event)">
     <div class="bottom-sheet" style="max-height:88vh; padding:18px 16px;">
       <!-- Title -->
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
@@ -1814,7 +1829,7 @@
   </div>
 
   <!-- Document Viewer Modal -->
-  <div class="sheet-overlay" id="docOverlay" onclick="closeDoc(event)">
+  <div class="sheet-overlay scale-in" id="docOverlay" onclick="closeDoc(event)">
     <div class="bottom-sheet" style="max-height:88vh;">
       <div class="sheet-title" id="docTitle">문서 제목</div>
       <div id="docHwpActions" style="display:none; margin-bottom:14px;">
@@ -1830,12 +1845,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.5.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.6.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.3.3 APK 다운로드
+          최신 ShiftPay v1.3.6 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.5.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.5.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.6.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.6.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -1848,7 +1863,7 @@
   </div>
 
   <!-- 2026년 성과·격려금 계산기 Modal -->
-  <div class="sheet-overlay" id="bonusOverlay" onclick="closeBonusCalc(event)">
+  <div class="sheet-overlay scale-in" id="bonusOverlay" onclick="closeBonusCalc(event)">
     <div class="bottom-sheet" style="max-height:88vh;">
       <div class="sheet-title" style="display:flex; align-items:center; gap:6px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>2026년 성과·격려금 계산기</div>
       <div id="bonusContent" style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:16px;"></div>
@@ -2817,7 +2832,9 @@
     }
 
     // Monthly Payroll Calculation Engine (Hyundai Steel Pipe 2026 CBA)
-    function calculateMonthlyPayroll() {
+    function calculateMonthlyPayroll(opts) {
+      // v1.3.6 ①: opts.light = true 이면 카드 재구성·스크롤 복원 없이 금액 텍스트만 갱신한다
+      const light = !!(opts && opts.light);
       const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
       const totalDays = new Date(curYear, curMonth, 0).getDate();
       let normHours = 0;
@@ -2901,7 +2918,7 @@
       const nightPayHours = isShift ? shiftNightDays * 7.0 : nightHours;
 
       // 출근카드 1:1 집계 카드 (정취·유급·주차·연차 / 연장·휴일근로·휴일연장·심야 / 가급·휴일가급·환산)
-      renderCardBreakdown();
+      if (!light) renderCardBreakdown();
 
       // Rates
       const baseRate = parseFloat(localStorage.getItem("setting_base") || "12000");
@@ -3128,10 +3145,8 @@
         const nextVal = (isRetro === "true") ? "false" : "true";
         safeStorage.setItem(retroKey, nextVal);
         vibrate();
-        // 화면을 다시 계산해도 보던 자리를 그대로 지킨다
-        const keepY = window.scrollY;
-        calculateMonthlyPayroll();
-        requestAnimationFrame(() => window.scrollTo(0, keepY));
+        // v1.3.6 ①: 재렌더·window.scrollTo 없이 수령액 span 텍스트만 교체한다 (미세 튐 0)
+        calculateMonthlyPayroll({ light: true });
       } catch (err) {
         console.error("toggleRetroPay error:", err);
       }
@@ -3655,16 +3670,23 @@
       const overlay = document.getElementById("drawerOverlay");
       if (!drawer || !overlay) return;
       let tracking = false, dragging = false, sx = 0, sy = 0, w = 300, startLeft = -300;
+      let lastX = 0, lastT = 0, vx = 0, startOpen = false;
       const widthOf = () => Math.min(drawer.offsetWidth || 300, window.innerWidth * 0.86);
 
       function begin(x, y) {
         w = widthOf();
-        startLeft = drawer.classList.contains("open") ? 0 : -w;
+        startOpen = drawer.classList.contains("open");
+        startLeft = startOpen ? 0 : -w;
         sx = x; sy = y; tracking = true; dragging = false;
+        lastX = x; lastT = performance.now(); vx = 0;
       }
       function move(x, y, ev) {
         if (!tracking) return;
         const dx = x - sx, dy = y - sy;
+        const now = performance.now();
+        const dt = Math.max(1, now - lastT);
+        vx = (x - lastX) / dt;   // px/ms
+        lastX = x; lastT = now;
         if (!dragging) {
           if (dx > 8 && Math.abs(dx) > Math.abs(dy) * 1.4) {
             dragging = true;
@@ -3680,14 +3702,41 @@
         drawer.style.left = left + "px";
         overlay.style.opacity = String(Math.max(0, Math.min(1, 1 + left / w)));
       }
+      function openDrawerNow() {
+        drawer.style.transition = "left .22s cubic-bezier(.18,.9,.28,1)";
+        drawer.style.left = "0px";
+        drawer.classList.add("open");
+        overlay.style.display = "block";
+        overlay.style.opacity = "1";
+      }
+      function closeDrawerNow() {
+        drawer.style.transition = "left .22s cubic-bezier(.18,.9,.28,1)";
+        drawer.style.left = (-w) + "px";
+        drawer.classList.remove("open");
+        overlay.style.opacity = "0";
+        setTimeout(() => { if (!drawer.classList.contains("open")) { overlay.style.display = "none"; drawer.style.left = ""; } }, 240);
+      }
       function end() {
         if (!tracking) return;
         tracking = false;
-        if (!dragging) return;
+        const totalDx = lastX - sx;
+        const flick = Math.abs(vx) >= 0.35;            // px/ms — 짧게 튕긴 손가락
+        const shortFlick = Math.abs(totalDx) >= 45;    // 40~50px 만 밀어도 열린다
+        if (!dragging) {
+          // 길게 끌지 않고 살짝 튕기기만 해도 바로 열리거나 닫힌다 (v1.3.6 ③)
+          if (shortFlick || flick) {
+            if (!startOpen && totalDx > 0) openDrawerNow();
+            else if (startOpen && totalDx < 0) closeDrawerNow();
+          }
+          return;
+        }
         dragging = false;
         const left = parseFloat(drawer.style.left || "0");
+        let open;
+        if (flick) open = vx > 0;                       // 튕긴 방향으로 결정
+        else open = (left > -w * 0.28) || totalDx >= 45;
         drawer.style.transition = "left .26s cubic-bezier(.18,.9,.28,1)";
-        if (left > -w * 0.45) {
+        if (open) {
           drawer.style.left = "0px";
           drawer.classList.add("open");
           overlay.style.display = "block";
@@ -3767,9 +3816,20 @@
       document.getElementById("settingsOverlay").style.display = "flex";
       vibrate();
     }
+    // v1.3.6 ④: 서브 메뉴 창을 닫을 때 1.0 → 0.9 로 작아지며 사라진다
+    function closeSheetAnimated(id) {
+      const ov = document.getElementById(id);
+      if (!ov) return;
+      const sheet = ov.querySelector(".bottom-sheet");
+      if (!sheet || !ov.classList.contains("scale-in")) { ov.style.display = "none"; return; }
+      try {
+        sheet.style.animation = "scaleOut 0.16s cubic-bezier(.4,0,1,1) forwards";
+        setTimeout(() => { ov.style.display = "none"; sheet.style.animation = ""; }, 150);
+      } catch (err) { ov.style.display = "none"; sheet.style.animation = ""; }
+    }
     function closeSettings(e) {
       if (!e || e.target.id === "settingsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
-        document.getElementById("settingsOverlay").style.display = "none";
+        closeSheetAnimated("settingsOverlay");
       }
     }
     // 직급 선택 → 직책수당만 갱신 (직무수당 55,000원은 그대로 유지 — 단협 제42조)
@@ -4001,8 +4061,13 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.3.5)",
-        body: `v1.3.5 (2026-11-12) — 단협 제52조 대체휴무 100% 보장 · 공제액 정밀 예측 · 드로어 스와이프 (빌드 27)
+        title: "📋 버전 업데이트 내역 (v1.3.6)",
+        body: `v1.3.6 (2026-11-12) — 소급 토글 튐 제로 · TOP 버튼 상향 · 플링 스와이프 · 서브 메뉴 스케일업 · 공제식 교정 (빌드 28)
+• 💰 소급 ON/OFF 미세 튐 제로화: 화면을 다시 그리지 않고 예상 실수령액·세전·공제 금액 텍스트만 핀포인트 갱신 (window.scrollTo 제거)
+• ▲ [▲ TOP] 버튼을 바닥에서 80px 위로 상향: 안드로이드 3버튼 내비게이션 바·iOS 홈 인디케이터에 가려지지 않음
+• 👈👉 드로어 플링 감도 개선: 길게 끌지 않고 40~50px만 살짝 튕겨도 가속도로 끝까지 펼쳐짐
+• 🎬 서브 메뉴 스케일업 애니메이션: 급여 설정·성과격려금·근무 통계·데이터 관리·사내 복지를 열면 화면 중앙에서 0.9 → 1.0 으로 0.2초 만에 커지며 페이드인 (닫을 때는 스케일다운)
+v1.3.5 (2026-11-12) — 단협 제52조 대체휴무 100% 보장 · 공제액 정밀 예측 · 드로어 스와이프 (빌드 27)
 • 🗓️ 단협 제52조 범용 대체휴무: 유급휴일이 주말·다른 공휴일과 겹친 일수만큼 정부 대체공휴일과 무관하게 익일 평일로 순차 배정 — 2027년 설날은 2/10(수)·2/11(목) '설날 대체휴무'로 6일 연속 휴일
 • 🏷️ 회사 단협 유급휴무일 명칭 통일: 10/18 '회사창립일' → 10/19 '회사창립일 대체휴무'
 • 👈 왼쪽 드로어를 화면 끝에서 밀어 열고, 열린 상태에서 왼쪽으로 밀면 감속하며 부드럽게 닫히는 스와이프 제스처 (설치형은 우측 OCR 서랍도 양방향 대칭 적용)
@@ -4126,7 +4191,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
     function closeDoc(e) {
       if (!e || e.target.id === "docOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
-        document.getElementById("docOverlay").style.display = "none";
+        closeSheetAnimated("docOverlay");
       }
     }
 
@@ -4262,7 +4327,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
     function closeBonusCalc(e) {
       if (!e || e.target.id === "bonusOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
-        document.getElementById("bonusOverlay").style.display = "none";
+        closeSheetAnimated("bonusOverlay");
       }
     }
 
@@ -4378,7 +4443,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
     function closeStatsModal(e) {
       if (!e || e.target.id === "statsOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeStatsModal()")) {
-        document.getElementById("statsOverlay").style.display = "none";
+        closeSheetAnimated("statsOverlay");
       }
     }
 
@@ -4601,7 +4666,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
     function closeDataModal(e) {
       if (!e || e.target.id === "dataOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기") || (e.target.closest && e.target.closest("button") && e.target.closest("button").getAttribute("onclick") === "closeDataModal()")) {
-        document.getElementById("dataOverlay").style.display = "none";
+        closeSheetAnimated("dataOverlay");
       }
     }
 
@@ -4665,7 +4730,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.5 (빌드 27) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.6 (빌드 28) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
