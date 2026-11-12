@@ -3694,7 +3694,7 @@
         if (!e.touches || e.touches.length !== 1) return;
         const t = e.touches[0];
         if (drawer.classList.contains("open")) begin(t.clientX, t.clientY);
-        else if (t.clientX <= 26) begin(t.clientX, t.clientY);
+        else if (t.clientX <= 36) begin(t.clientX, t.clientY);
       }, { passive: true });
       document.addEventListener("touchmove", e => {
         if (!tracking || !e.touches || e.touches.length !== 1) return;
@@ -3706,7 +3706,7 @@
       // 데스크톱 마우스 드래그도 동일하게 (검증용)
       let mouseDown = false;
       document.addEventListener("mousedown", e => {
-        if (e.clientX <= 26 || drawer.classList.contains("open")) { mouseDown = true; begin(e.clientX, e.clientY); }
+        if (e.clientX <= 36 || drawer.classList.contains("open")) { mouseDown = true; begin(e.clientX, e.clientY); }
       });
       document.addEventListener("mousemove", e => { if (mouseDown) move(e.clientX, e.clientY, e); });
       document.addEventListener("mouseup", () => { if (mouseDown) { mouseDown = false; end(); } });
