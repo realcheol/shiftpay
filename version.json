@@ -1,9 +1,9 @@
 {
-  "versionCode": 30,
-  "versionName": "1.4.1",
-  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1.apk",
-  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1_source.zip",
+  "versionCode": 31,
+  "versionName": "1.4.2",
+  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.2.apk",
+  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.2_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "근무 통계 좌우 스와이프 월 넘김 · 달력 날짜 더블탭 입력 · 교대조 주간특근/야간특근 8h (v1.4.0 무결점 유지)",
-  "releasedAt": "2026-11-12T15:54:28+09:00"
+  "note": "국세청 근로소득 간이세액표 1:1 탑재 · 8~20세 자녀 세액공제 · 상세 공제 계산식 카드 리뉴얼 (v1.4.1 무결점 유지)",
+  "releasedAt": "2026-11-12T19:10:05+09:00"
 }
