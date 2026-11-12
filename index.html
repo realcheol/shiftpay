@@ -2593,9 +2593,10 @@
           cell.style.borderColor = "#2563eb";
           cell.style.borderWidth = "2px";
         } else if (isToday) {
+          // 오늘 칸은 1px 테두리 + '오늘' 뱃지, 선택 활성화 칸은 2px 파란 테두리 — 둘을 한눈에 구분한다
           cell.style.background = "var(--blue-bg)";
           cell.style.borderColor = "var(--blue)";
-          cell.style.borderWidth = "2px";
+          cell.style.borderWidth = "1px";
         }
         cell.dataset.day = d;
         if (isToday) cell.classList.add("today");   // v1.4.0 스팟라이트 2번 대상
