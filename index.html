@@ -3091,6 +3091,17 @@
       c.style.display = c.style.display === "block" ? "none" : "block";
     }
 
+    // v1.3.5 공제 자동 예측 기본값 (설치형과 동일한 원칙):
+    //  · 아직 공제액을 입력한 적이 없으면 자동 예측 ON
+    //  · 이미 실제 공제액을 넣어 두었으면 그 값을 그대로 존중(OFF)하고, 필요할 때 설정에서 켠다
+    (function migrateDeductionAuto135() {
+      try {
+        if (localStorage.getItem("ded_auto") !== null) return;
+        const manual = parseFloat(localStorage.getItem("setting_deduction") || "0");
+        localStorage.setItem("ded_auto", manual > 0 ? "0" : "1");
+      } catch (e) {}
+    })();
+
     // Safe storage helper with memory fallback
     const memStore = {};
     const safeStorage = {
