@@ -3715,7 +3715,12 @@
     // ▲ TOP 버튼 (v1.3.5)
     (function setupTopButton() {
       const btn = document.getElementById("topFloatBtn");
-      if (!btn) return;
+      if (!btn) {
+        // 스크립트가 버튼보다 먼저 실행되는 경우 — DOM 준비 후 다시 연결
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setupTopButton);
+        else setTimeout(setupTopButton, 60);
+        return;
+      }
       const onScroll = () => {
         if (window.scrollY > 320) btn.classList.add("show");
         else btn.classList.remove("show");
