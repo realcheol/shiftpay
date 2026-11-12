@@ -1155,6 +1155,91 @@
       cursor: pointer;
       margin-left: 8px;
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       v1.4.0 — 3스텝 온보딩 마법사 & 스팟라이트 코치마크 투어
+       ══════════════════════════════════════════════════════════════ */
+    .ob-overlay {
+      position: fixed; inset: 0; z-index: 100050; display: none;
+      align-items: center; justify-content: center; padding: 16px;
+      background: rgba(8, 15, 30, 0.62); backdrop-filter: blur(2px);
+    }
+    .ob-overlay.show { display: flex; }
+    .ob-card {
+      width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32); padding: 20px 18px 16px;
+      animation: obPop .22s cubic-bezier(.2,.9,.3,1);
+    }
+    @keyframes obPop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .ob-progress { display: flex; align-items: center; gap: 5px; margin-bottom: 14px; }
+    .ob-dot { width: 8px; height: 6px; border-radius: 4px; background: var(--border); transition: all .2s ease; }
+    .ob-dot.on { width: 22px; background: var(--blue); }
+    .ob-step-num { font-size: 11px; font-weight: 800; color: var(--sub); margin-left: 4px; }
+    .ob-title { font-size: 19px; font-weight: 800; color: var(--blue); letter-spacing: -0.4px; }
+    .ob-sub { font-size: 13px; color: var(--sub); margin: 5px 0 14px; line-height: 1.45; }
+    .ob-choice {
+      border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 9px;
+      cursor: pointer; transition: all .16s ease; background: var(--surface);
+    }
+    .ob-choice.on { border: 2px solid var(--blue); background: rgba(0, 91, 172, 0.07); }
+    .ob-choice-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .ob-choice-desc { font-size: 12px; color: var(--sub); margin-top: 3px; }
+    .ob-choice-check { font-size: 12px; font-weight: 800; color: var(--blue); margin-top: 5px; min-height: 16px; }
+    .ob-label { font-size: 13px; font-weight: 800; color: var(--text); margin: 11px 0 4px; }
+    .ob-input-wrap {
+      display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);
+      border-radius: 10px; background: var(--bg); padding: 0 12px;
+    }
+    .ob-input {
+      flex: 1; min-width: 0; border: none; background: transparent; font-family: inherit;
+      font-size: 15px; font-weight: 700; color: var(--text); padding: 11px 0; outline: none;
+    }
+    .ob-suffix { font-size: 13px; font-weight: 800; color: var(--sub); }
+    .ob-note { font-size: 11px; color: var(--sub); margin-top: 10px; line-height: 1.5; }
+    .ob-actions { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+    .ob-btn {
+      border-radius: 12px; font-family: inherit; font-size: 15px; font-weight: 800;
+      padding: 12px 18px; cursor: pointer; border: 1px solid var(--border);
+      background: var(--surface); color: var(--sub);
+    }
+    .ob-btn.primary {
+      background: linear-gradient(135deg, #005BAC 0%, #0A3D74 100%);
+      border-color: #005BAC; color: #fff; box-shadow: 0 4px 14px rgba(0, 91, 172, 0.28);
+    }
+    .ob-btn.full { width: 100%; }
+    .ob-skip {
+      background: none; border: none; color: var(--sub); font-family: inherit;
+      font-size: 13px; font-weight: 800; padding: 10px 4px; cursor: pointer;
+    }
+    .ob-summary {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 14px; font-size: 12px; line-height: 1.6; color: var(--text);
+      text-align: center; margin-bottom: 16px;
+    }
+    .ob-emoji { font-size: 40px; text-align: center; margin-bottom: 4px; }
+    .ob-center { text-align: center; }
+
+    .spot-overlay { position: fixed; inset: 0; z-index: 100060; display: none; }
+    .spot-overlay.show { display: block; }
+    .spot-hole {
+      position: fixed; border-radius: 18px; pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+                  0 0 0 2.5px #38bdf8,
+                  0 0 22px 6px rgba(56, 189, 248, 0.45);
+      transition: top .22s ease, left .22s ease, width .22s ease, height .22s ease;
+    }
+    .spot-blocker { position: fixed; inset: 0; }
+    .spot-card {
+      position: fixed; left: 14px; right: 14px; background: var(--surface);
+      border: 1px solid var(--blue); border-radius: 18px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38); padding: 14px 16px 12px;
+      animation: obPop .2s ease;
+    }
+    .spot-count { font-size: 11px; font-weight: 800; color: var(--blue); }
+    .spot-title { font-size: 16px; font-weight: 800; color: var(--text); margin: 4px 0 5px; }
+    .spot-desc { font-size: 13px; color: var(--sub); line-height: 1.5; }
+    .spot-actions { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
 </style>
 </head>
 <body>
@@ -1162,7 +1247,7 @@
   <!-- App Header with Factory Background -->
   <header class="app-header" id="appHeader" style="background-image: url('factories/factory_1.jpg');">
     <div class="header-top">
-      <button class="icon-btn" onclick="openDrawer()" title="메뉴 열기" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      <button class="icon-btn" id="tourMenuBtn" onclick="openDrawer()" title="메뉴 열기" style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
       <div class="header-center">
         <h1>나의 근무·급여 관리</h1>
         <p id="factoryNameLabel" onclick="switchFactory()"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg>본사 / 울산 1공장 (ERW) ▾</p>
@@ -1217,7 +1302,7 @@
       <div class="calendar-grid" id="calendarGrid"></div>
 
       <!-- Quick Action Buttons under calendar -->
-      <div class="quick-actions" style="display:flex; gap:6px;">
+      <div class="quick-actions" id="tourQuickBar" style="display:flex; gap:6px;">
         <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:5px; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
         <button class="btn-quick" id="btnToggleMulti" onclick="toggleMultiSelectMode()" style="flex:1.0; background:var(--surface); border:1px solid var(--border); color:var(--blue); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드</button>
       </div>
@@ -1226,7 +1311,7 @@
     <!-- Payroll & Work Hours Summary Card -->
     <div class="card">
       <!-- 출근카드 실물 1:1 매칭 (정취·유급·주차·연차 / 연장·휴일근로·휴일연장·심야 / 가급·휴일가급·환산시간) -->
-      <div class="card-out">
+      <div class="card-out" id="tourStatsCard">
         <div class="card-out-head">
           <div>
             <div class="card-out-title">📇 출근카드 1:1 월간 집계</div>
@@ -1289,7 +1374,7 @@
       </div>
 
       <!-- 💰 예상 실수령액 히어로 (v1.3.5: 소급 ON/OFF · 성과격려금을 카드 내부 우측 가운데로) -->
-      <div class="pay-hero">
+      <div class="pay-hero" id="tourHero">
         <div class="pay-hero-text">
           <div class="pay-hero-label">💰 예상 실수령액</div>
           <div class="pay-hero-amount" id="heroNetPay">0원</div>
@@ -1393,9 +1478,31 @@
 
       <div class="menu-sec-title">앱 정보</div>
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
+      <div class="menu-item" onclick="showOnboarding(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ❓ 온보딩 & 기능 투어 다시보기</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.3.6)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.0)</div>
+    </div>
+  </div>
+
+  <!-- v1.4.0 ① 3스텝 미니 온보딩 마법사 (설치형 앱과 1:1) -->
+  <div class="ob-overlay" id="obOverlay">
+    <div class="ob-card" id="obCard"></div>
+  </div>
+
+  <!-- v1.4.0 ② 스팟라이트 코치마크 메뉴 투어 -->
+  <div class="spot-overlay" id="spotOverlay">
+    <div class="spot-hole" id="spotHole"></div>
+    <div class="spot-blocker"></div>
+    <div class="spot-card" id="spotCard">
+      <div class="spot-count" id="spotCount"></div>
+      <div class="spot-title" id="spotTitle"></div>
+      <div class="spot-desc" id="spotDesc"></div>
+      <div class="spot-actions">
+        <button type="button" class="ob-skip" onclick="endSpotTour()">건너뛰기</button>
+        <div style="flex:1"></div>
+        <button type="button" class="ob-btn primary" id="spotNext" onclick="spotNextStep()">다음</button>
+      </div>
     </div>
   </div>
 
@@ -1845,12 +1952,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.3.6.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.0.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.3.6 APK 다운로드
+          최신 ShiftPay v1.4.0 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.6.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.3.6.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.0.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -2479,6 +2586,8 @@
           cell.style.borderColor = "var(--blue)";
           cell.style.borderWidth = "2px";
         }
+        cell.dataset.day = d;
+        if (isToday) cell.classList.add("today");   // v1.4.0 스팟라이트 2번 대상
 
         // Cell top (Date number + today indicator + lunar 1/15 / solar term)
         const cellTop = document.createElement("div");
@@ -4061,8 +4170,13 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.3.6)",
-        body: `v1.3.6 (2026-11-12) — 소급 토글 튐 제로 · TOP 버튼 상향 · 플링 스와이프 · 서브 메뉴 스케일업 · 공제식 교정 (빌드 28)
+        title: "📋 버전 업데이트 내역 (v1.4.0)",
+        body: `v1.4.0 (2026-11-12) — 3스텝 온보딩 마법사 · 스팟라이트 5곳 메뉴 투어 · 드로어 다시보기 (빌드 29)
+• 🧭 최초 방문 시 3스텝 미니 온보딩 마법사: [근무 형태 선택] → [내 급여 기본 설정(통상시급·발생연차·부양가족 수)] → [준비 완료 & 투어 안내]
+• ✨ 인터랙티브 스팟라이트 코치마크 투어: 화면을 어둡게 딤 처리하고 대상 버튼만 둥근 컷아웃으로 밝게 비추며 5곳의 주요 기능을 큰 글자 카드로 설명
+• ❓ 좌측 메뉴에 [온보딩 & 기능 투어 다시보기] 신설: 기존 사용자도 언제든 마법사와 투어를 다시 볼 수 있습니다
+• ⏭️ 투어 중 [건너뛰기]·[마침]·ESC 어느 쪽으로도 즉시 종료
+v1.3.6 (2026-11-12) — 소급 토글 튐 제로 · TOP 버튼 상향 · 플링 스와이프 · 서브 메뉴 스케일업 · 공제식 교정 (빌드 28)
 • 💰 소급 ON/OFF 미세 튐 제로화: 화면을 다시 그리지 않고 예상 실수령액·세전·공제 금액 텍스트만 핀포인트 갱신 (window.scrollTo 제거)
 • ▲ [▲ TOP] 버튼을 바닥에서 80px 위로 상향: 안드로이드 3버튼 내비게이션 바·iOS 홈 인디케이터에 가려지지 않음
 • 👈👉 드로어 플링 감도 개선: 길게 끌지 않고 40~50px만 살짝 튕겨도 가속도로 끝까지 펼쳐짐
@@ -4671,6 +4785,233 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       }
     }
 
+    /* ══════════════════════════════════════════════════════════════
+       v1.4.0 ① — 3스텝 미니 온보딩 마법사
+       Step 1 근무 형태 → Step 2 급여 기본 설정 → Step 3 준비 완료 & 투어 안내
+       ══════════════════════════════════════════════════════════════ */
+    let obStep = 1;
+    let obShift = "normal";
+
+    function maybeShowOnboarding() {
+      try {
+        if (localStorage.getItem("onboarding_v14_completed") === "1") return;
+        const hasData = ["user_name", "setting_base", "setting_ordinary", "user_shift_type", "user_join"]
+          .some(k => localStorage.getItem(k));
+        if (hasData) { localStorage.setItem("onboarding_v14_completed", "1"); return; }
+        setTimeout(showOnboarding, 900);
+      } catch (e) {}
+    }
+
+    function showOnboarding() {
+      obShift = localStorage.getItem("user_shift_type") || "normal";
+      obStep = 1;
+      renderOnboarding();
+    }
+
+    function obGoStep(step) { obStep = step; renderOnboarding(); }
+
+    function obPickShift(v) {
+      obShift = v;
+      renderOnboarding();
+      vibrate();
+    }
+
+    function obPickShiftDone() {
+      try { localStorage.setItem("user_shift_type", obShift); } catch (e) {}
+      vibrate();
+      obGoStep(2);
+    }
+
+    function obClose() {
+      document.getElementById("obOverlay").classList.remove("show");
+      try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
+      try {
+        renderCalendar();
+        updateFactoryUI();
+        updateDdayAndUserSummary();
+        calculateMonthlyPayroll({ light: true });
+      } catch (e) {}
+    }
+
+    function obSaveStep2() {
+      try {
+        const ord = (document.getElementById("obOrdinary").value || "").replace(/,/g, "").trim();
+        if (ord && parseFloat(ord) > 0) localStorage.setItem("setting_ordinary", String(parseFloat(ord)));
+        const ann = (document.getElementById("obAnnual").value || "").replace(/,/g, "").trim();
+        if (ann && parseFloat(ann) >= 0) localStorage.setItem("user_annual_leave_base", String(parseFloat(ann)));
+        const dep = (document.getElementById("obDependents").value || "").replace(/,/g, "").trim();
+        if (dep && parseInt(dep, 10) >= 1) localStorage.setItem("ded_dependents", String(parseInt(dep, 10)));
+      } catch (e) {}
+      obGoStep(3);
+    }
+
+    function obStartTour() {
+      obClose();
+      setTimeout(() => startSpotTour(), 260);
+    }
+
+    function renderOnboarding() {
+      const overlay = document.getElementById("obOverlay");
+      const card = document.getElementById("obCard");
+      if (!overlay || !card) return;
+      let dots = "";
+      for (let i = 1; i <= 3; i++) dots += `<div class="ob-dot ${i === obStep ? "on" : ""}"></div>`;
+      const prog = `<div class="ob-progress">${dots}<span class="ob-step-num">${obStep} / 3</span></div>`;
+      let body = "";
+
+      if (obStep === 1) {
+        body = `
+          <div class="ob-title">🏢 근무 형태 선택</div>
+          <div class="ob-sub">현대스틸파이프 근무 형태를 선택해 주세요</div>
+          <div class="ob-choice ${obShift === "normal" ? "on" : ""}" onclick="obPickShift('normal')">
+            <div class="ob-choice-title">🏢 상주근무조</div>
+            <div class="ob-choice-desc">주간 8시간 근무 · 상주휴게수당(1시간 유급) 자동 인정</div>
+            <div class="ob-choice-check">${obShift === "normal" ? "✓ 선택됨" : ""}</div>
+          </div>
+          <div class="ob-choice ${obShift === "shift" ? "on" : ""}" onclick="obPickShift('shift')">
+            <div class="ob-choice-title">🔄 교대근무조</div>
+            <div class="ob-choice-desc">주·야 10시간 교대 · 교대수당 20만 원 고정 반영</div>
+            <div class="ob-choice-check">${obShift === "shift" ? "✓ 선택됨" : ""}</div>
+          </div>
+          <div class="ob-actions">
+            <button type="button" class="ob-btn primary full" onclick="obPickShiftDone()">다음 ➜</button>
+          </div>`;
+      } else if (obStep === 2) {
+        const ord = localStorage.getItem("setting_ordinary") || "14939";
+        const ann = localStorage.getItem("user_annual_leave_base") || "15";
+        const dep = localStorage.getItem("ded_dependents") || "1";
+        body = `
+          <div class="ob-title">💰 내 급여 기본 설정</div>
+          <div class="ob-sub">정확한 급여 산출을 위한 기본 정보를 입력해 주세요</div>
+          <div class="ob-label">통상시급 (기본 시급)</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obOrdinary" type="number" inputmode="decimal" value="${ord}"><span class="ob-suffix">원</span></div>
+          <div class="ob-label">발생연차수</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obAnnual" type="number" inputmode="decimal" value="${ann}"><span class="ob-suffix">일</span></div>
+          <div class="ob-label">부양가족 수 (본인 포함)</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obDependents" type="number" inputmode="numeric" value="${dep}"><span class="ob-suffix">명</span></div>
+          <div class="ob-note">• 나중에 [기본정보 및 급여 설정]에서 언제든 바꿀 수 있습니다.</div>
+          <div class="ob-actions">
+            <button type="button" class="ob-skip" onclick="obGoStep(3)">건너뛰기</button>
+            <div style="flex:1"></div>
+            <button type="button" class="ob-btn primary" onclick="obSaveStep2()">다음 ➜</button>
+          </div>`;
+      } else {
+        const shiftName = (localStorage.getItem("user_shift_type") === "shift") ? "교대근무조" : "상주근무조";
+        const ord = parseFloat(localStorage.getItem("setting_ordinary") || "14939") || 0;
+        const ann = localStorage.getItem("user_annual_leave_base") || "15";
+        const dep = localStorage.getItem("ded_dependents") || "1";
+        body = `
+          <div class="ob-emoji">🎉</div>
+          <div class="ob-title ob-center">ShiftPay 준비 완료!</div>
+          <div class="ob-sub ob-center">앱의 주요 기능을 스팟라이트 가이드로 둘러보시겠어요?</div>
+          <div class="ob-summary">선택한 근무 형태: <b>${shiftName}</b><br>통상시급 ${ord.toLocaleString()}원 · 발생연차 ${ann}일 · 부양가족 ${dep}명</div>
+          <button type="button" class="ob-btn primary full" style="margin-bottom:8px;" onclick="obStartTour()">✨ 주요 기능 둘러보기</button>
+          <button type="button" class="ob-btn full" onclick="obClose()">바로 시작하기</button>`;
+      }
+      card.innerHTML = prog + body;
+      overlay.classList.add("show");
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       v1.4.0 ② — 인터랙티브 스팟라이트 코치마크 투어 (5곳)
+       ══════════════════════════════════════════════════════════════ */
+    const SPOT_STEPS = [
+      { sel: "#tourQuickBar", title: "① ⚡ 빠른 근무 3버튼 바",
+        desc: "터치 한 번으로 근무를 기록하거나 출근카드 사진을 찍어 자동 입력합니다." },
+      { sel: ".cal-cell.today", fallback: "#calendarGrid", title: "② 📅 캘린더 날짜 셀",
+        desc: "날짜를 누르면 상주·교대 전용 6대 퀵 버튼과 조퇴·외출 직접 입력창이 열립니다." },
+      { sel: "#tourStatsCard", title: "③ 📇 출근카드 1:1 · 📊 근무 통계",
+        desc: "종이 출근카드와 1시간 오차 없는 환산 집계표와 도넛 통계를 확인합니다." },
+      { sel: "#tourHero", title: "④ 💰 예상 실수령액 · 소급 · 🏆 격려금",
+        desc: "이번 달 세후 실수령액과 소급분 차액을 확인하고 성과격려금을 계산합니다." },
+      { sel: "#tourMenuBtn", title: "⑤ ☰ 좌측 메뉴 드로어",
+        desc: "시급·공제 설정을 변경하고 소중한 근무 데이터를 엑셀로 백업·복원합니다." }
+    ];
+    let spotIndex = 0;
+
+    function startSpotTour() {
+      const ov = document.getElementById("spotOverlay");
+      if (!ov) return;
+      ov.classList.add("show");
+      spotIndex = 0;
+      showSpot(0);
+    }
+
+    function showSpot(i) {
+      if (i >= SPOT_STEPS.length) { endSpotTour(); return; }
+      spotIndex = i;
+      let el = document.querySelector(SPOT_STEPS[i].sel);
+      if (!el && SPOT_STEPS[i].fallback) el = document.querySelector(SPOT_STEPS[i].fallback);
+      if (!el) { showSpot(i + 1); return; }
+
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      let need;
+      if (r.height > vh * 0.6) need = Math.abs(r.top - 70) > 10;
+      else need = (r.top < 70) || (r.bottom > vh - 200);
+      if (need) {
+        el.scrollIntoView({ block: r.height > vh * 0.6 ? "start" : "center", behavior: "auto" });
+        if (r.height > vh * 0.6) window.scrollBy(0, -70);
+      }
+      setTimeout(() => drawSpot(el, i), need ? 130 : 0);
+    }
+
+    function drawSpot(el, i) {
+      const rect = el.getBoundingClientRect();
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const pad = 6;
+      let left = Math.max(6, rect.left - pad);
+      let top = Math.max(6, rect.top - pad);
+      let right = Math.min(vw - 6, rect.right + pad);
+      let bottom = Math.min(vh - 6, rect.bottom + pad);
+      const maxH = vh * 0.54;
+      if (bottom - top > maxH) bottom = top + maxH;
+      if (bottom - top < 44) bottom = Math.min(vh - 6, top + 44);
+      if (right - left < 60) right = Math.min(vw - 6, left + 60);
+
+      const hole = document.getElementById("spotHole");
+      hole.style.left = left + "px";
+      hole.style.top = top + "px";
+      hole.style.width = (right - left) + "px";
+      hole.style.height = (bottom - top) + "px";
+
+      document.getElementById("spotCount").innerText =
+        `✨ 스팟라이트 가이드  ${i + 1} / ${SPOT_STEPS.length}`;
+      document.getElementById("spotTitle").innerText = SPOT_STEPS[i].title;
+      document.getElementById("spotDesc").innerText = SPOT_STEPS[i].desc;
+      document.getElementById("spotNext").innerText =
+        (i === SPOT_STEPS.length - 1) ? "마침" : `다음 (${i + 1}/${SPOT_STEPS.length}) ➜`;
+
+      const card = document.getElementById("spotCard");
+      card.style.top = "0px";
+      const ch = card.offsetHeight;
+      const y = (bottom + 16 + ch <= vh - 8) ? (bottom + 16) : Math.max(8, top - 16 - ch);
+      card.style.top = y + "px";
+    }
+
+    function spotNextStep() {
+      if (spotIndex >= SPOT_STEPS.length - 1) endSpotTour();
+      else showSpot(spotIndex + 1);
+    }
+
+    function endSpotTour() {
+      const ov = document.getElementById("spotOverlay");
+      if (ov) ov.classList.remove("show");
+      try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
+    }
+
+    window.addEventListener("resize", () => {
+      const ov = document.getElementById("spotOverlay");
+      if (ov && ov.classList.contains("show")) showSpot(spotIndex);
+    });
+    window.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const ov = document.getElementById("spotOverlay");
+      if (ov && ov.classList.contains("show")) { endSpotTour(); return; }
+      const ob = document.getElementById("obOverlay");
+      if (ob && ob.classList.contains("show")) obClose();
+    });
+
     // Initialize on page load
     function initApp() {
       migratePositionDutyWeb();
@@ -4688,6 +5029,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       updateDdayAndUserSummary();
       renderCalendar();
       bindCalendarSwipe();
+      maybeShowOnboarding();   // v1.4.0: 최초 방문 시 3스텝 온보딩 마법사
     }
 
     if (document.readyState === "loading") {
@@ -4731,7 +5073,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.3.6 (빌드 28) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.0 (빌드 29) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>

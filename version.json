@@ -1,9 +1,9 @@
 {
-  "versionCode": 28,
-  "versionName": "1.3.6",
-  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.6.apk",
-  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.3.6_source.zip",
+  "versionCode": 29,
+  "versionName": "1.4.0",
+  "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0.apk",
+  "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.0_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "소급 토글 튐 제로 · TOP 버튼 80dp 상향 · 플링 스와이프 · 서브 메뉴 스케일업 · 공제식 교정",
-  "releasedAt": "2026-11-12T12:28:28+09:00"
+  "note": "3스텝 온보딩 마법사 · 스팟라이트 5곳 기능 투어 · 드로어 다시보기 (v1.3.6 무결점 유지)",
+  "releasedAt": "2026-11-12T13:49:01+09:00"
 }
