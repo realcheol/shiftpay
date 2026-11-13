@@ -4,6 +4,6 @@
   "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk",
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "버전 고정(1.4.3) 재빌드 · 급여명세서 PDF 직독(1원 일치) · 새 전신 피코 · 공제 정상화",
-  "releasedAt": "2026-11-13T19:08:02+09:00"
+  "note": "버전 고정(1.4.3) 재빌드 ⑤ · 고정수당 원터치 동기화 · 연말정산 환급 반영 표시 · 마이너스 공제 부호 보존",
+  "releasedAt": "2026-11-13T19:49:43+09:00"
 }

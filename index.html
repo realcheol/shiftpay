@@ -1543,6 +1543,7 @@
           <span>예상 공제총액 (4대보험·소득세·노조회비)</span>
           <span class="receipt-val" style="color:var(--red);" id="valDeduction">-0원</span>
         </div>
+        <div id="dedRefundNote" style="display:none; margin:2px 0 8px; padding:9px 11px; border-radius:10px; border:1px solid #10b981; background:rgba(16,185,129,0.10); color:#065f46; font-size:11.5px; line-height:1.55;"></div>
         <div class="receipt-row total">
           <span>예상 실수령액</span>
           <span class="receipt-val" id="valNetPay">0원</span>
@@ -3292,16 +3293,21 @@
       const dedAuto = localStorage.getItem("ded_auto") !== "0";
       const dedDetail = computeDeduction(grossPay);
       let deductions = dedAuto ? dedDetail.total : userDeduction;
-      if (deductions <= 0) deductions = dedDetail.total;
+      // v1.4.3 재빌드 ④: 연말정산 환급 달은 직접 입력 공제액이 마이너스 — 0처럼 덮지 않는다
+      if (isNaN(deductions) || deductions === 0) deductions = dedDetail.total;
       renderDeductionDetail(dedDetail, dedAuto, userDeduction);
 
       const netPay = Math.max(0, grossPay - deductions);
+      const refundMonth = deductions < 0;
 
       document.getElementById("valBasePay").innerText = basePay.toLocaleString() + "원";
       document.getElementById("valOtPay").innerText = totalOvertimePay.toLocaleString() + "원";
       document.getElementById("valPositionPay").innerText = positionPay.toLocaleString() + "원";
       document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
-      document.getElementById("valDeduction").innerText = "-" + deductions.toLocaleString() + "원";
+      document.getElementById("valDeduction").innerText = refundMonth
+        ? "+" + Math.abs(deductions).toLocaleString() + "원 (환급)"
+        : "-" + deductions.toLocaleString() + "원";
+      document.getElementById("valDeduction").style.color = refundMonth ? "#059669" : "var(--red)";
       document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
 
       // v1.3.5 히어로: 소급 토글 옆에서 실수령액 변화가 바로 보이도록 동시 갱신
@@ -3310,7 +3316,32 @@
       const heroGross = document.getElementById("heroGross");
       if (heroGross) heroGross.innerText = grossPay.toLocaleString() + "원";
       const heroDed = document.getElementById("heroDed");
-      if (heroDed) heroDed.innerText = "-" + deductions.toLocaleString() + "원";
+      if (heroDed) {
+        heroDed.innerText = refundMonth
+          ? "환급 +" + Math.abs(deductions).toLocaleString() + "원"
+          : "-" + deductions.toLocaleString() + "원";
+        heroDed.style.color = refundMonth ? "#059669" : "var(--red)";
+      }
+      renderRefundNote(deductions, curYear, curMonth);
+    }
+
+    /**
+     * v1.4.3 재빌드 ④: 연말정산 환급 안내 — 공제액이 마이너스인 달(또는 그 달 명세서에 환급이 찍힌 달)에만 보인다.
+     */
+    function renderRefundNote(deductions, year, month) {
+      const box = document.getElementById("dedRefundNote");
+      if (!box) return;
+      const slipKey = `payslip_ded_${year}-${String(month).padStart(2, "0")}`;
+      const slipDed = parseFloat(safeStorage.getItem(slipKey) || "0");
+      if (deductions < 0) {
+        box.style.display = "block";
+        box.innerHTML = `<b>🎉 연말정산 환급 반영</b><br>공제액이 ${Math.abs(deductions).toLocaleString()}원(환급)이라 실수령액이 세전보다 ${Math.abs(deductions).toLocaleString()}원 많습니다. 정산소득세·정산지방세를 돌려받은 달이라 공제 합계가 마이너스가 됩니다.`;
+      } else if (slipDed < 0) {
+        box.style.display = "block";
+        box.innerHTML = `<b>🎉 이 달 명세서에는 연말정산 환급이 찍혀 있습니다</b><br>명세서 공제액은 ${Math.abs(slipDed).toLocaleString()}원(환급)이고, 실지급액이 지급총액보다 많습니다. 위 예상 공제액은 앱이 국세청 간이세액표로 계산한 값이라 환급분은 빠져 있습니다.`;
+      } else {
+        box.style.display = "none";
+      }
     }
 
 
@@ -4658,6 +4689,8 @@
 • 🎯 스팟라이트 투어: 투어 중 [▲ TOP] 버튼 숨김 · 16px 큰 글자 · 반투명 다크 글래스 카드 · 하이라이트 구멍이 다음 타깃으로 부드럽게 이동하고 테두리가 은은하게 숨 쉬는 펄스
 • 🖼️ 새 아이콘: HYUNDAI STEELPIPE 피코·강관·시계 아이콘으로 파비콘·홈화면 아이콘 전면 교체
 • 📄 급여명세서 PDF 직접 불러오기: 원본 PDF의 디지털 텍스트를 그대로 읽어 기본급·평일연장·휴일근무·휴일연장·야간근무·직무수당·교대수당·지급액계·공제액계·실지급액을 1원 단위까지 채웁니다 (웹·설치형 동일)
+• ⚡ 고정수당 원터치 동기화: [⚡ 시급·고정수당을 앱 설정에 1초 동기화] 한 번으로 기본시급·통상시급 + 근속·직무·가족수당(교대조는 교대수당·근무형태)까지 설정에 반영 — 가족수당(가족) 30,000원 → 부양가족 4명 자동 매핑
+• 🎉 연말정산 환급 반영 표시: 2월처럼 공제액계가 마이너스인 달은 [🎉 연말정산 환급 반영] 배지와 '환급 N원' 표기로 안내 — 실지급액이 지급총액보다 많아지는 것이 정상임을 바로 알 수 있습니다 (마이너스 부호 보존 포함)
 • 🧾 (설치형) 급여명세서 OCR 검토·수정 표 + 단협 공식 원터치 보정 + 흑백 명암비 자동 보정
 v1.4.2 (2026-11-12) — 국세청 간이세액표 1:1 탑재 · 8~20세 자녀 세액공제 · 공제식 카드 리뉴얼 (빌드 31)
 • 🧾 국세청 근로소득 간이세액표(소득세법 시행령 별표 2, 2026. 2. 27. 개정) 646개 급여구간 × 공제대상가족 1~11명 전 칸 탑재 — 산식 근사가 아니라 원표 그대로 조회합니다
@@ -6478,9 +6511,16 @@ const SP_PDF = (function () {
   }
   function money(raw) {
     if (raw == null) return null;
-    let s = String(raw).replace(/[원₩￦\s]/g, "").trim();
-    if (!s) return null;
-    const n = s.replace(/[^0-9.,]/g, "");
+    let s0 = String(raw).replace(/[원₩￦\s]/g, "").trim();
+    if (!s0) return null;
+    // v1.4.3 재빌드 ④: 앞의 마이너스(-, −, －)는 금액의 부호다 — 연말정산 환급 달의 공제액계/정산소득세
+    let neg = false;
+    if (s0[0] === "-" || s0[0] === "\u2212" || s0[0] === "\uFF0D") {
+      neg = true;
+      s0 = s0.substring(1).trim();
+      if (!s0) return null;
+    }
+    const n = s0.replace(/[^0-9.,]/g, "");
     if (!n) return null;
     const hasComma = n.indexOf(",") >= 0, hasDot = n.indexOf(".") >= 0;
     let t = n;
@@ -6493,13 +6533,14 @@ const SP_PDF = (function () {
     if (hasComma) t = t.replace(/,/g, "");
     if (t.length < 4 || t.length > 9) return null;
     if (t.length === 4 && !hasComma && !hasDot) return null;
-    const v = parseInt(t, 10);
-    return (v >= 1000) ? v : null;
+    let v = parseInt(t, 10);
+    if (neg) v = -v;
+    return (v >= 1000 || v <= -1000) ? v : null;
   }
   function moneyList(text) {
     const out = [];
     if (!text) return out;
-    const re = /[0-9][0-9,.]{2,14}/g;
+    const re = /(?:[-\u2212\uFF0D]\s?)?[0-9][0-9,.]{2,14}/g;
     let m;
     while ((m = re.exec(text)) !== null) {
       const v = money(m[0]);
@@ -6546,7 +6587,7 @@ const SP_PDF = (function () {
         }
         if (end < 0) continue;
         const tail = line.substring(end);
-        const re2 = /[0-9][0-9,.]{2,14}/g;
+        const re2 = /(?:[-\u2212\uFF0D]\s?)?[0-9][0-9,.]{2,14}/g;
         let mm;
         while ((mm = re2.exec(tail)) !== null) {
           if (mm.index > 60) break;
@@ -6631,9 +6672,9 @@ const SP_PDF = (function () {
         }
       }
     }
-    if (best > 0) return best;
+    if (best !== 0) return best;
     const ro = rowOrderAmount(cells, labels);
-    if (ro > 0) return ro;
+    if (ro !== 0) return ro;
     return sameLineAmount(text, labels);
   }
 
@@ -6650,7 +6691,7 @@ const SP_PDF = (function () {
           if (vals.length === n) {
             let p = 0;
             for (const o of order) out[o] = vals[p++];
-            if (out.some((v) => v > 0)) return out;
+            if (out.some((v) => v !== 0)) return out;
           }
           if (vals.length > n) break;
         }
@@ -6677,7 +6718,7 @@ const SP_PDF = (function () {
             const mv = moneyList(row[k].text);
             if (mv.length) out[order[k]] = mv[mv.length - 1];
           }
-          if (out.some((v) => v > 0)) return out;
+          if (out.some((v) => v !== 0)) return out;
         }
         i = Math.max(j, i + 1);
       }
@@ -6696,7 +6737,8 @@ const SP_PDF = (function () {
       const vals = moneyList(seg);
       if (vals.length < 3) continue;
       const [pay, ded, net] = vals;
-      if (pay > ded && pay > net && net > 0) return [pay, ded, net];
+      const sumOk = Math.abs(pay - ded - net) <= 10;
+      if (pay > 0 && net > 0 && (sumOk || (ded >= 0 && pay > ded && pay > net))) return [pay, ded, net];
     }
     return out;
   }
@@ -6771,7 +6813,7 @@ const SP_PDF = (function () {
     const ym = detectYearMonth(text);
     r.year = ym[0]; r.month = ym[1];
 
-    if (!r.netPay && r.totalPay > 0 && r.deduction > 0) r.netPay = r.totalPay - r.deduction;
+    if (!r.netPay && r.totalPay > 0 && r.deduction !== 0) r.netPay = r.totalPay - r.deduction;
     return r;
   }
 
@@ -6788,11 +6830,16 @@ const SP_PDF = (function () {
   let lastParsed = null;   // 최근 인식 결과
 
   function wonText(v) { return (v || 0).toLocaleString("ko-KR"); }
+  /** 공제액 표기 — 연말정산 환급 달(음수)은 "환급 N원"으로 읽히게 한다 */
+  function dedText(v) { v = v || 0; return v < 0 ? "환급 " + wonText(-v) : wonText(v); }
   function parseWonId(id) {
     const el = document.getElementById(id);
     if (!el) return 0;
-    const n = parseInt(String(el.innerText).replace(/[^0-9-]/g, ""), 10);
-    return isNaN(n) ? 0 : n;
+    const raw = String(el.innerText || "");
+    const n = parseInt(raw.replace(/[^0-9]/g, ""), 10);
+    if (isNaN(n)) return 0;
+    // "환급 20,200원" 처럼 환급 표기가 붙은 값은 음수로 읽는다 (v1.4.3 재빌드 ④)
+    return raw.indexOf("환급") >= 0 ? -n : n;
   }
 
   function ensureInput() {
@@ -6900,18 +6947,33 @@ const SP_PDF = (function () {
   function showReview(pr, fileName) {
     const ymText = (pr.year && pr.month) ? `${pr.year}년 ${pr.month}월` : "귀속 연월 미확인";
     const app = (pr.year && pr.month) ? appAmountsFor(pr.year, pr.month) : { gross: 0, ded: 0, net: 0 };
+    // v1.4.3 재빌드 ④: 연말정산 환급 달은 공제액계가 음수 — 실지급액이 지급총액보다 많다
+    const refundMonth = (pr.deduction || 0) < 0;
 
     const rowsHtml = ROWS.map(([key, label]) => {
       const v = pr[key] || 0;
+      const shownLabel = (key === "deduction" && v < 0) ? label + " (환급)" : label;
+      const extra = (key === "deduction" && v < 0)
+        ? `<div style="font-size:11px; font-weight:800; color:#047857; margin-top:3px;">🎉 연말정산 환급 ${wonText(-v)}원 — 공제가 마이너스라 실지급액이 지급총액보다 많습니다.</div>`
+        : "";
       return `<tr>
-        <td style="padding:7px 4px; font-size:13px; color:var(--ink); font-weight:${key === "netPay" ? 800 : 600};">${label}</td>
+        <td style="padding:7px 4px; font-size:13px; color:${key === "deduction" && v < 0 ? "#047857" : "var(--ink)"}; font-weight:${key === "netPay" ? 800 : 600};">${shownLabel}${extra}</td>
         <td style="padding:7px 4px; text-align:right;">
-          <input id="pdfRow_${key}" type="text" inputmode="numeric" value="${v ? v : ""}" placeholder="미인식"
+          <input id="pdfRow_${key}" type="text" inputmode="${key === "deduction" ? "text" : "numeric"}" value="${v ? v : ""}" placeholder="미인식"
             style="width:118px; text-align:right; padding:7px 9px; font-size:13.5px; font-weight:700; border-radius:9px;
-                   border:1px solid var(--border); background:var(--bg); color:${v ? "var(--ink)" : "var(--red)"}; font-family:inherit;">
+                   border:1px solid var(--border); background:var(--bg); color:${key === "deduction" && v < 0 ? "#047857" : (v ? "var(--ink)" : "var(--red)")}; font-family:inherit;">
         </td>
       </tr>`;
     }).join("");
+
+    const refundHtml = refundMonth ? `
+      <div style="margin-top:12px; padding:11px 12px; border-radius:12px; border:1px solid #10b981; background:rgba(16,185,129,0.10);">
+        <div style="font-size:12.5px; font-weight:800; color:#047857; margin-bottom:5px;">🎉 연말정산 환급 반영</div>
+        <div style="font-size:11.5px; color:#065f46; line-height:1.5;">
+          공제총액이 ${wonText(pr.deduction)}원(환급)입니다. 연말정산으로 낸 세금(정산소득세·정산지방세)을 돌려받아 공제액계가 마이너스가 된 달이라,
+          실지급액이 지급총액보다 <b>${wonText(-pr.deduction)}원</b> 더 많습니다. 오류가 아닙니다.
+        </div>
+      </div>` : "";
 
     const diffHtml = (app.gross || app.net) ? `
       <div style="margin-top:14px; padding:11px 12px; border-radius:12px; border:1px solid var(--border); background:var(--bg);">
@@ -6919,12 +6981,12 @@ const SP_PDF = (function () {
         <div style="display:grid; grid-template-columns:1fr auto auto; gap:4px 10px; font-size:12.5px;">
           <span style="color:var(--sub);">구분</span><span style="color:var(--sub); text-align:right;">앱 계산</span><span style="color:var(--sub); text-align:right;">명세서</span>
           <span>세전 총지급</span><span style="text-align:right;">${wonText(app.gross)}</span><span style="text-align:right; font-weight:700;">${wonText(pr.totalPay)}</span>
-          <span>공제액</span><span style="text-align:right;">${wonText(app.ded)}</span><span style="text-align:right; font-weight:700;">${wonText(pr.deduction)}</span>
+          <span>공제액</span><span style="text-align:right;">${dedText(app.ded)}</span><span style="text-align:right; font-weight:700; color:${(pr.deduction || 0) < 0 ? "#047857" : "inherit"};">${dedText(pr.deduction)}</span>
           <span style="font-weight:800;">실수령액</span><span style="text-align:right;">${wonText(app.net)}</span><span style="text-align:right; font-weight:800; color:var(--blue);">${wonText(pr.netPay)}</span>
         </div>
         <div style="font-size:11px; color:var(--sub); margin-top:7px; line-height:1.45;">
           • 기본급은 앱에서 209h 기준으로 산출하므로, 근무일수가 다른 달은 차이가 날 수 있습니다.<br>
-          • 차이의 원인은 달력의 근무 기록(정취·연장·휴일·야간)을 맞추면 좁혀집니다.
+          • 차이의 원인은 달력의 근무 기록(정취·연장·휴일·야간)을 맞추면 좁혀집니다.${(pr.deduction || 0) < 0 ? "<br>• 공제액이 마이너스(환급)인 달은 실수령액이 세전보다 많아지는 것이 정상입니다." : ""}
         </div>
       </div>` : "";
 
@@ -6945,19 +7007,21 @@ const SP_PDF = (function () {
         <tbody>${rowsHtml}</tbody>
       </table>
 
+      ${refundHtml}
+
       ${diffHtml}
 
       <div style="display:flex; gap:8px; margin-top:16px;">
         <button type="button" id="pdfApplyBtn"
           style="flex:1.4; padding:13px 10px; border-radius:13px; border:none; background:var(--blue); color:#fff; font-weight:800; font-size:13.5px; font-family:inherit; cursor:pointer;">
-          ⚡ 시급·수당을 앱 설정에 동기화</button>
+          ⚡ 시급·고정수당을 앱 설정에 1초 동기화</button>
         <button type="button" id="pdfJumpBtn"
           style="flex:1; padding:13px 10px; border-radius:13px; border:1px solid var(--border); background:var(--surface); color:var(--blue); font-weight:800; font-size:13px; font-family:inherit; cursor:pointer;">
           📅 ${pr.year && pr.month ? pr.month + "월" : "해당월"}로 이동</button>
       </div>
       <div style="font-size:11px; color:var(--sub); margin-top:9px; line-height:1.5;">
-        • 동기화하면 기본시급·통상시급·직무수당이 설정에 저장되고, 이번 명세서 값이 기록으로 남습니다.<br>
-        • 공제액은 앱이 국세청 간이세액표로 자동 계산하므로 그대로 둡니다.
+        • 동기화하면 기본시급·통상시급 + 근속·직무·가족수당(교대조는 교대수당·근무형태)이 설정에 한 번에 저장되고, 이번 명세서 값이 기록으로 남습니다.<br>
+        • 공제액은 앱이 국세청 간이세액표로 자동 계산하므로 그대로 둡니다. (연말정산 환급 달은 이 달 카드에 환급 배지로 알려 드립니다)
       </div>
       <div style="font-size:10.5px; color:var(--sub); opacity:0.75; margin-top:8px; word-break:break-all;">파일: ${String(fileName || "").replace(/</g, "&lt;")}</div>
     `);
@@ -6975,6 +7039,19 @@ const SP_PDF = (function () {
       if (pr.ordinaryRate > 0) ed.setting_ordinary = String(pr.ordinaryRate);
       if (pr.dutyPay > 0) ed.setting_duty = String(pr.dutyPay);
       if (pr.positionPay > 0) ed.setting_position = String(pr.positionPay);
+      // ── v1.4.3 재빌드 ④: 근속·가족수당·교대조까지 원터치 동기화 ──
+      if (pr.tenurePay > 0) ed.setting_tenure = String(pr.tenurePay);
+      if (pr.familySelf > 0) ed.setting_familySelf = String(pr.familySelf);
+      if (pr.familyOther > 0) {
+        ed.setting_familyOther = String(pr.familyOther);
+        if (pr.familyOther % 10000 === 0) {
+          const dep = Math.round(pr.familyOther / 10000) + 1;
+          if (dep >= 1 && dep <= 11) ed.ded_dependents = String(dep);
+        }
+        ed.setting_family_link = "true";
+      }
+      if (pr.shiftPay > 0) ed.user_shift_type = "shift";
+      if (pr.deduction) ed[`payslip_ded_${pr.year}-${String(pr.month).padStart(2, "0")}`] = String(pr.deduction);
       Object.keys(ed).forEach((k) => { try { localStorage.setItem(k, ed[k]); } catch (e) {} });
       try {
         localStorage.setItem(`payslip_${pr.year}-${String(pr.month).padStart(2, "0")}`, JSON.stringify({
@@ -6984,7 +7061,7 @@ const SP_PDF = (function () {
       } catch (e) {}
       ov.remove();
       try { if (typeof calculateMonthlyPayroll === "function") calculateMonthlyPayroll(); } catch (e) {}
-      if (typeof showToast === "function") showToast("명세서 값으로 시급·수당을 동기화했습니다.");
+      if (typeof showToast === "function") showToast("기본시급·통상시급 및 근속·직무·가족수당까지 앱 설정에 1초 동기화되었습니다!");
     });
 
     const jumpBtn = ov.querySelector("#pdfJumpBtn");
