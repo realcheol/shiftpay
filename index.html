@@ -10,11 +10,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ShiftPay">
   <meta name="theme-color" content="#142035">
-  <link rel="icon" href="favicon.ico?v=20261111" sizes="any">
-  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=20261111">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=20261111">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=20261111">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261111">
+  <link rel="icon" href="favicon.ico?v=20261113" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=20261113">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=20261113">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=20261113">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261113">
   <link rel="manifest" href="manifest.json?v=20261111">
 
   <style>
@@ -1220,6 +1220,104 @@
     .ob-emoji { font-size: 40px; text-align: center; margin-bottom: 4px; }
     .ob-center { text-align: center; }
 
+    /* v1.4.3 ② 완료 페이지 — 피코 손흔들기 */
+    .ob-pico-stage {
+      position: relative; height: 188px; display: flex; align-items: flex-end; justify-content: center;
+      margin-bottom: 4px;
+    }
+    .ob-pico-glow {
+      position: absolute; left: 50%; top: 50%; width: 172px; height: 172px; border-radius: 50%;
+      transform: translate(-50%, -50%); background: radial-gradient(circle at 50% 45%, rgba(0,91,172,.16), rgba(0,91,172,0) 70%);
+    }
+    .ob-pico-wrap { animation: obBob 1.9s ease-in-out infinite alternate; }
+    .ob-pico {
+      width: 152px; height: auto; display: block; transform-origin: 50% 96%;
+      animation: obWave 1.25s ease-in-out infinite alternate;
+    }
+    @keyframes obWave { from { transform: rotate(-5.5deg); } to { transform: rotate(6deg); } }
+    @keyframes obBob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+    .ob-hand {
+      position: absolute; left: calc(50% - 92px); top: 22px; font-size: 30px;
+      transform-origin: 50% 80%; animation: obHand .78s ease-in-out infinite alternate;
+    }
+    @keyframes obHand { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+    .ob-spark { position: absolute; right: calc(50% - 96px); top: 34px; font-size: 20px; animation: obSpark 1.5s ease-in-out infinite alternate; }
+    @keyframes obSpark { from { opacity: .3; transform: scale(.9); } to { opacity: 1; transform: scale(1.08); } }
+    .ob-safety {
+      margin: 10px 0 12px; padding: 13px 12px; border-radius: 14px; text-align: center;
+      font-size: 17px; font-weight: 800; line-height: 1.35; color: var(--blue);
+      background: rgba(0, 91, 172, .08); border: 1px solid rgba(0, 91, 172, .35);
+    }
+    body.dark .ob-safety { color: #93c5fd; background: rgba(56, 189, 248, .10); border-color: rgba(56, 189, 248, .35); }
+    .ob-greet {
+      margin: 0 0 6px; padding: 12px 14px; border-radius: 14px; font-size: 14.5px; font-weight: 800;
+      line-height: 1.45; color: var(--blue); background: rgba(0, 91, 172, .07); border: 1px solid rgba(0, 91, 172, .3);
+    }
+    body.dark .ob-greet { color: #93c5fd; background: rgba(56, 189, 248, .10); border-color: rgba(56, 189, 248, .3); }
+    .ob-link {
+      display: block; width: 100%; margin-top: 10px; background: none; border: none;
+      color: var(--blue); font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; padding: 6px;
+    }
+    .ob-select {
+      width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--bg); color: var(--text); font-family: inherit; font-size: 15px; font-weight: 700;
+      padding: 11px 12px; outline: none; appearance: none;
+    }
+
+    .spot-overlay { position: fixed; inset: 0; z-index: 100060; display: none; }
+
+    /* ══════════════════════════════════════════════════════════════
+       v1.4.3 ① — 연월 피커: 좌우 스와이프 슬라이드 & 연도 휠
+       ══════════════════════════════════════════════════════════════ */
+    .mp-hint { font-size: 11px; color: var(--sub); margin: -6px 0 10px; line-height: 1.45; }
+    .mp-year-label {
+      font-size: 19px; font-weight: 800; color: var(--text); padding: 6px 12px;
+      border-radius: 10px; cursor: pointer; user-select: none; transition: background .15s ease;
+    }
+    .mp-year-label:active { background: var(--bg); }
+    .mp-swipe { will-change: transform, opacity; }
+    .year-panel {
+      display: none; border: 1px solid var(--border); border-radius: 14px;
+      padding: 10px 12px 12px; background: var(--bg); margin-bottom: 12px;
+    }
+    .year-panel.show { display: block; animation: ypDrop .21s cubic-bezier(.2,.9,.3,1); }
+    @keyframes ypDrop { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+    .yp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .yp-title { font-size: 14px; font-weight: 800; color: var(--blue); }
+    .yp-close {
+      background: none; border: none; color: var(--sub); font-size: 12px; font-weight: 800;
+      font-family: inherit; cursor: pointer; padding: 4px 6px;
+    }
+    .yp-quick-label { font-size: 11px; color: var(--sub); margin: 2px 0 5px; }
+    .yp-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .yp-quick button {
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      border-radius: 10px; padding: 9px 0; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer;
+    }
+    .yp-quick button.on { background: #145399; border-color: #145399; color: #fff; }
+    .yp-wheel-label { font-size: 11px; color: var(--sub); margin: 2px 0 5px; }
+    .yp-wheel-box { position: relative; height: 210px; border-radius: 12px; overflow: hidden; }
+    .yp-band {
+      position: absolute; left: 0; right: 0; top: 84px; height: 42px; border-radius: 10px;
+      border: 1px solid var(--blue); background: rgba(0, 91, 172, 0.10); pointer-events: none;
+    }
+    .yp-wheel {
+      height: 210px; overflow-y: auto; scroll-snap-type: y mandatory;
+      scrollbar-width: none; -ms-overflow-style: none; position: relative; padding: 84px 0;
+      box-sizing: border-box;
+    }
+    .yp-wheel::-webkit-scrollbar { display: none; }
+    .yp-row {
+      height: 42px; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: var(--text); opacity: .55; scroll-snap-align: center; cursor: pointer;
+    }
+    .yp-row.on { font-size: 20px; font-weight: 800; opacity: 1; color: var(--blue); }
+    .yp-go {
+      width: 100%; margin-top: 10px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #005BAC 0%, #0A3D74 100%);
+      color: #fff; font-size: 14px; font-weight: 800; font-family: inherit; padding: 12px; cursor: pointer;
+    }
+
     .spot-overlay { position: fixed; inset: 0; z-index: 100060; display: none; }
     .spot-overlay.show { display: block; }
     .spot-hole {
@@ -1227,8 +1325,24 @@
       box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
                   0 0 0 2.5px #38bdf8,
                   0 0 22px 6px rgba(56, 189, 248, 0.45);
-      transition: top .22s ease, left .22s ease, width .22s ease, height .22s ease;
+      transition: top .34s cubic-bezier(.2,.9,.3,1), left .34s cubic-bezier(.2,.9,.3,1),
+                  width .34s cubic-bezier(.2,.9,.3,1), height .34s cubic-bezier(.2,.9,.3,1);
+      animation: spotPulse 1.6s ease-in-out infinite;
     }
+    @keyframes spotPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+                    0 0 0 2px #38bdf8,
+                    0 0 16px 4px rgba(56, 189, 248, 0.35);
+      }
+      50% {
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
+                    0 0 0 4.5px #7dd3fc,
+                    0 0 30px 10px rgba(56, 189, 248, 0.62);
+      }
+    }
+    /* v1.4.3 ②-3: 스팟라이트 투어 중에는 [▲ TOP] 플로팅 버튼을 숨긴다 */
+    body.spot-on .top-float { display: none !important; }
     .spot-blocker { position: fixed; inset: 0; }
     .spot-card {
       position: fixed; left: 14px; right: 14px; max-width: 460px; margin: 0 auto;
@@ -1241,6 +1355,18 @@
     .spot-title { font-size: 16px; font-weight: 800; color: var(--text); margin: 4px 0 5px; }
     .spot-desc { font-size: 13px; color: var(--sub); line-height: 1.5; }
     .spot-actions { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+
+    /* v1.4.3 ②-4·5 스팟라이트: 반투명 다크 글래스 카드 · 큰 글자 */
+    .spot-card {
+      background: rgba(15, 23, 42, 0.88) !important;
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      border: 1px solid rgba(96, 165, 250, 0.55);
+    }
+    .spot-count { color: #7dd3fc; font-size: 13px; }
+    .spot-title { font-size: 19px; color: #f8fafc; margin: 6px 0 7px; }
+    .spot-desc { font-size: 16px; color: #e2e8f0; line-height: 1.55; }
+    .spot-actions .ob-skip { color: #94a3b8; font-size: 14px; }
+    .spot-actions .ob-btn { font-size: 15px; padding: 11px 18px; }
 </style>
 </head>
 <body>
@@ -1482,7 +1608,7 @@
       <div class="menu-item" onclick="showOnboarding(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ❓ 온보딩 & 기능 투어 다시보기</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.2)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.3)</div>
     </div>
   </div>
 
@@ -1686,16 +1812,33 @@
     </div>
   </div>
 
-  <!-- Year / Month Picker Modal -->
+  <!-- Year / Month Picker Modal (v1.4.3: 좌우 스와이프 + 연도 휠) -->
   <div class="sheet-overlay" id="monthPickerOverlay" onclick="closeMonthPicker(event)">
     <div class="bottom-sheet">
       <div class="sheet-title">캘린더 연·월 빠른 이동</div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <button class="nav-btn" onclick="changePickerYear(-1)">◀</button>
-        <h3 id="pickerYear" style="font-size:18px;">2026년</h3>
-        <button class="nav-btn" onclick="changePickerYear(1)">▶</button>
+      <div class="mp-swipe" id="mpSwipe">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <button class="nav-btn" onclick="changePickerYear(-1)">◀</button>
+          <h3 id="pickerYear" class="mp-year-label" onclick="openYearPanel()">2026년 ▾</h3>
+          <button class="nav-btn" onclick="changePickerYear(1)">▶</button>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px;" id="monthGrid"></div>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;" id="monthGrid"></div>
+      <div class="mp-hint">← → 좌우로 밀면 연도가 넘어갑니다 · 연도 숫자를 누르면 연도 휠이 열립니다</div>
+      <div class="year-panel" id="yearPanel">
+        <div class="yp-head">
+          <span class="yp-title">📅 연도 선택</span>
+          <button type="button" class="yp-close" onclick="closeYearPanel()">✕ 닫기</button>
+        </div>
+        <div class="yp-quick-label">빠른 선택 (한 번 터치로 바로 이동)</div>
+        <div class="yp-quick" id="ypQuick"></div>
+        <div class="yp-wheel-label">위아래로 밀어 연도 선택</div>
+        <div class="yp-wheel-box">
+          <div class="yp-band"></div>
+          <div class="yp-wheel" id="ypWheel"></div>
+        </div>
+        <button type="button" class="yp-go" onclick="applyWheelYear()">이 연도로 이동</button>
+      </div>
       <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
         <button class="sheet-btn" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('join')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>입사 첫 달</button>
         <button class="sheet-btn blue" style="flex:1; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="jumpToPreset('today')"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>이번 달</button>
@@ -1958,12 +2101,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.2.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.3.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.4.2 APK 다운로드
+          최신 ShiftPay v1.4.3 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.1.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.2.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.3.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -3813,25 +3956,95 @@
       }
     }
 
-    // Year / Month Picker
+    // ══════════════════════════════════════════════════════════════
+    // v1.4.3 ① — 연월 피커: 좌우 스와이프 슬라이드 + 연도 휠/미니 그리드
+    // ══════════════════════════════════════════════════════════════
+    let mpMinYear = 2017, mpMaxYear = 2040, mpWheelSel = -1, mpSwipeBound = false, mpScrollTimer = null;
+
+    function mpComputeRange() {
+      const todayY = new Date().getFullYear();
+      let jy = 2017;
+      const j = parseDate(localStorage.getItem("user_join") || "");
+      if (j) jy = j.getFullYear();
+      let ry = todayY + 9;
+      const b = parseDate(localStorage.getItem("user_birth") || "");
+      if (b) ry = b.getFullYear() + 60;
+      mpMinYear = Math.min(jy, todayY - 10);
+      mpMaxYear = Math.max(ry, todayY + 10);
+    }
+
     function openMonthPicker() {
-      pickerYear = curYear;
+      mpComputeRange();
+      pickerYear = Math.max(mpMinYear, Math.min(mpMaxYear, curYear));
+      closeYearPanel(true);
       renderMonthGrid();
-      document.getElementById("monthPickerOverlay").style.display = "flex";
+      const ov = document.getElementById("monthPickerOverlay");
+      ov.style.display = "flex";
+      mpBindSwipe();
       vibrate();
     }
+
     function closeMonthPicker(e) {
       if (!e || e.target.id === "monthPickerOverlay" || (e.target.classList && e.target.classList.contains("sheet-btn") && e.target.innerText.trim() === "닫기")) {
+        closeYearPanel(true);
         document.getElementById("monthPickerOverlay").style.display = "none";
       }
     }
+
+    /** 좌우 스와이프 — 시트 위에서 가로로 46px 이상 밀면 연도가 넘어간다 */
+    function mpBindSwipe() {
+      if (mpSwipeBound) return;
+      const sheet = document.querySelector("#monthPickerOverlay .bottom-sheet");
+      if (!sheet) return;
+      mpSwipeBound = true;
+      let sx = 0, sy = 0, tracking = false;
+      sheet.addEventListener("touchstart", (e) => {
+        if (e.touches.length !== 1) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+      }, { passive: true });
+      sheet.addEventListener("touchend", (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - sx, dy = t.clientY - sy;
+        if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+        if (document.getElementById("yearPanel").classList.contains("show")) return;
+        changePickerYear(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    }
+
+    /** 연도 페이지 넘김 — 지금 페이지가 밀려 나가고 새 연도가 반대편에서 들어온다 */
+    function mpSlidePage(dir) {
+      const area = document.getElementById("mpSwipe");
+      if (!area) return;
+      area.style.transition = "transform .12s ease, opacity .12s ease";
+      area.style.transform = `translateX(${dir * 36}px)`;
+      area.style.opacity = ".2";
+      setTimeout(() => {
+        renderMonthGrid();
+        area.style.transition = "none";
+        area.style.transform = `translateX(${-dir * 36}px)`;
+        requestAnimationFrame(() => {
+          area.style.transition = "transform .23s cubic-bezier(.2,.9,.3,1), opacity .23s ease";
+          area.style.transform = "translateX(0)";
+          area.style.opacity = "1";
+        });
+      }, 120);
+    }
+
     function changePickerYear(delta) {
-      pickerYear += delta;
-      renderMonthGrid();
+      const target = pickerYear + delta;
+      if (target < mpMinYear || target > mpMaxYear) {
+        showToast(`${mpMinYear}년 ~ ${mpMaxYear}년 범위 안에서 선택할 수 있습니다.`);
+        return;
+      }
+      pickerYear = target;
+      mpSlidePage(delta > 0 ? -1 : 1);
       vibrate();
     }
+
     function renderMonthGrid() {
-      document.getElementById("pickerYear").innerText = `${pickerYear}년`;
+      document.getElementById("pickerYear").innerText = `${pickerYear}년 ▾`;
       const grid = document.getElementById("monthGrid");
       grid.innerHTML = "";
       for (let m = 1; m <= 12; m++) {
@@ -3847,6 +4060,100 @@
         };
         grid.appendChild(btn);
       }
+    }
+
+    // ── 연도 미니창 (빠른 그리드 + 수직 휠) ──
+    function buildYearPanel() {
+      const quick = document.getElementById("ypQuick");
+      quick.innerHTML = "";
+      const years = [];
+      for (let y = 2024; y <= 2030; y++) if (y >= mpMinYear && y <= mpMaxYear) years.push(y);
+      if (!years.length) {
+        const t = new Date().getFullYear();
+        for (let y = Math.max(mpMinYear, t - 2); y <= Math.min(mpMaxYear, t + 2); y++) years.push(y);
+      }
+      years.forEach((y) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = y === pickerYear ? `● ${y}` : String(y);
+        if (y === pickerYear) b.classList.add("on");
+        b.onclick = () => applyPickerYear(y);
+        quick.appendChild(b);
+      });
+
+      const wheel = document.getElementById("ypWheel");
+      wheel.innerHTML = "";
+      for (let y = mpMinYear; y <= mpMaxYear; y++) {
+        const row = document.createElement("div");
+        row.className = "yp-row";
+        row.textContent = `${y}년`;
+        row.dataset.year = y;
+        row.onclick = () => applyPickerYear(y);
+        wheel.appendChild(row);
+      }
+      mpWheelSel = Math.max(0, Math.min(mpMaxYear - mpMinYear, pickerYear - mpMinYear));
+      wheel.scrollTop = mpWheelSel * 42;
+      updateYearWheelHighlight();
+      wheel.onscroll = () => {
+        clearTimeout(mpScrollTimer);
+        mpScrollTimer = setTimeout(() => {
+          mpWheelSel = Math.max(0, Math.min(mpMaxYear - mpMinYear, Math.round(wheel.scrollTop / 42)));
+          updateYearWheelHighlight();
+        }, 80);
+      };
+    }
+
+    function updateYearWheelHighlight() {
+      const wheel = document.getElementById("ypWheel");
+      if (!wheel) return;
+      const idx = mpWheelSel;
+      Array.from(wheel.children).forEach((row, i) => {
+        row.classList.toggle("on", i === idx);
+      });
+    }
+
+    function openYearPanel() {
+      if (!document.getElementById("monthPickerOverlay").style.display ||
+          document.getElementById("monthPickerOverlay").style.display === "none") return;
+      mpComputeRange();
+      buildYearPanel();
+      document.getElementById("yearPanel").classList.add("show");
+      document.getElementById("mpSwipe").style.display = "none";
+      document.querySelector(".mp-hint").style.display = "none";
+      vibrate();
+    }
+
+    function closeYearPanel(silent) {
+      const panel = document.getElementById("yearPanel");
+      if (!panel) return;
+      panel.classList.remove("show");
+      const swipe = document.getElementById("mpSwipe");
+      if (swipe) swipe.style.display = "";
+      const hint = document.querySelector(".mp-hint");
+      if (hint) hint.style.display = "";
+      if (!silent) vibrate();
+    }
+
+    function applyWheelYear() {
+      applyPickerYear(mpMinYear + Math.max(0, mpWheelSel));
+    }
+
+    function applyPickerYear(y) {
+      const target = Math.max(mpMinYear, Math.min(mpMaxYear, y));
+      const dir = target >= pickerYear ? -1 : 1;
+      closeYearPanel(true);
+      pickerYear = target;
+      renderMonthGrid();
+      const area = document.getElementById("mpSwipe");
+      area.style.transition = "none";
+      area.style.transform = `translateX(${-dir * 36}px)`;
+      area.style.opacity = ".25";
+      requestAnimationFrame(() => {
+        area.style.transition = "transform .24s cubic-bezier(.2,.9,.3,1), opacity .24s ease";
+        area.style.transform = "translateX(0)";
+        area.style.opacity = "1";
+      });
+      vibrate();
     }
     function jumpToPreset(type) {
       if (type === 'today') {
@@ -4318,8 +4625,15 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.4.2)",
-        body: `v1.4.2 (2026-11-12) — 국세청 간이세액표 1:1 탑재 · 8~20세 자녀 세액공제 · 공제식 카드 리뉴얼 (빌드 31)
+        title: "📋 버전 업데이트 내역 (v1.4.3)",
+        body: `v1.4.3 (2026-11-13) — 연월 스와이프·연도 휠 · 4스텝 대화형 온보딩 · 피코 손흔들기 · 새 아이콘 (빌드 32)
+• 🗓️ 연월 빠른 이동: 연월 창을 좌우로 밀면 전년도/다음 연도가 슬라이드로 넘어가고, 연도 숫자를 누르면 2024~2030 빠른 선택 그리드와 위아래로 굴리는 수직 연도 휠이 열립니다 — 원하는 연도를 바로 골라 이동
+• 🧭 4스텝 대화형 온보딩: ①이름·직급 ②생년월일·입사년월일 ③근무형태·통상시급 ④부양가족·자녀 — 단계마다 "000 사원님의 입력으로 …" 호칭으로 이유를 먼저 설명하고, 정년까지 남은 년·월·일(총 일수)·근속수당·가족수당·자녀 세액공제를 실시간 계산해 안내
+• 👋 완료 페이지: 새 피코가 손을 흔들며 "행복한 가정으로 돌아가기 위해 오늘도 안전근무하세요! 🏠👷‍♂️" 인사 — [시작하기]로 메인 진입
+• 🎯 스팟라이트 투어: 투어 중 [▲ TOP] 버튼 숨김 · 16px 큰 글자 · 반투명 다크 글래스 카드 · 하이라이트 구멍이 다음 타깃으로 부드럽게 이동하고 테두리가 은은하게 숨 쉬는 펄스
+• 🖼️ 새 아이콘: HYUNDAI STEELPIPE 피코·강관·시계 아이콘으로 파비콘·홈화면 아이콘 전면 교체
+• 🧾 (설치형) 급여명세서 OCR 검토·수정 표 + 단협 공식 원터치 보정 + 흑백 명암비 자동 보정
+v1.4.2 (2026-11-12) — 국세청 간이세액표 1:1 탑재 · 8~20세 자녀 세액공제 · 공제식 카드 리뉴얼 (빌드 31)
 • 🧾 국세청 근로소득 간이세액표(소득세법 시행령 별표 2, 2026. 2. 27. 개정) 646개 급여구간 × 공제대상가족 1~11명 전 칸 탑재 — 산식 근사가 아니라 원표 그대로 조회합니다
 • 👶 8세~20세 자녀 세액공제: 1명 20,830원 / 2명 45,830원 / 3명 이상 45,830원 + 2명 초과 1명당 33,330원 (표 세액에서 차감, 음수는 0원)
 • ✅ 실물 명세서 1원 일치: 5,262,924원·부양가족 4명·자녀 2명 → 252,640 − 45,830 = 206,810원 / 5,513,610원·부양가족 2명 → 376,460원
@@ -5017,6 +5331,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
        ══════════════════════════════════════════════════════════════ */
     let obStep = 1;
     let obShift = "normal";
+    let obRank = "사원";
+    const OB_RANKS = ["사원", "주임", "계장", "기장", "G1 매니저", "G2 매니저", "G3 책임매니저", "G4 책임매니저"];
 
     function maybeShowOnboarding() {
       try {
@@ -5030,26 +5346,146 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
     function showOnboarding() {
       obShift = localStorage.getItem("user_shift_type") || "normal";
+      obRank = localStorage.getItem("user_duty") || "사원";
       obStep = 1;
       renderOnboarding();
     }
 
     function obGoStep(step) { obStep = step; renderOnboarding(); }
+    function obPickShift(v) { obShift = v; renderOnboarding(); vibrate(); }
 
-    function obPickShift(v) {
-      obShift = v;
-      renderOnboarding();
-      vibrate();
+    function obCalling(name, rank) {
+      const n = (name || "").trim();
+      if (!n) return "";
+      return rank ? `${n} ${rank}님` : `${n}님`;
     }
 
-    function obPickShiftDone() {
-      try { localStorage.setItem("user_shift_type", obShift); } catch (e) {}
-      vibrate();
+    function obRetireMessage() {
+      const nameEl = document.getElementById("obName");
+      const rankEl = document.getElementById("obRank");
+      const birthEl = document.getElementById("obBirth");
+      const joinEl = document.getElementById("obJoin");
+      const call = obCalling(nameEl ? nameEl.value : "", rankEl ? rankEl.value : "") || "회원";
+      let msg = "생년월일과 입사년월일을 입력하시면 정년까지 남은 날과 근속수당을 계산해 드립니다.";
+      const b = parseDate(birthEl ? birthEl.value : "");
+      if (b) {
+        const sixty = new Date(b.getFullYear() + 60, b.getMonth(), b.getDate());
+        const retire = new Date(b.getFullYear() + 60, 11, 31);   // 단협 제28조: 만 60세 도달 연도 12/31
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const total = Math.round((retire - today) / 86400000);
+        if (total <= 0) {
+          msg = `${call}은 이미 정년을 맞이하셨습니다. 그동안의 노고에 감사드립니다.`;
+        } else {
+          let y = retire.getFullYear() - today.getFullYear();
+          let mo = retire.getMonth() - today.getMonth();
+          let d = retire.getDate() - today.getDate();
+          if (d < 0) { mo--; d += new Date(retire.getFullYear(), retire.getMonth(), 0).getDate(); }
+          if (mo < 0) { y--; mo += 12; }
+          const pad2 = (n) => String(n).padStart(2, "0");
+          msg = `${call}께서는 만 60세 생일(${sixty.getFullYear()}.${pad2(sixty.getMonth() + 1)}.${pad2(sixty.getDate())}) 기준 `
+              + `정년일 ${retire.getFullYear()}.12.31까지 ${y}년 ${mo}개월 ${d}일(총 ${total.toLocaleString()}일) 남으셨네요!`;
+        }
+      }
+      const j = parseDate(joinEl ? joinEl.value : "");
+      if (j) {
+        const days = Math.floor((new Date() - j) / 86400000);
+        if (days >= 0) {
+          const serviceYear = Math.floor(days / 365.25) + 1;
+          const amt = calcTenureAllowance((joinEl ? joinEl.value : "").replace(/[^0-9]/g, ""));
+          msg += `\n입사 ${serviceYear}년차 근속수당(${amt.toLocaleString()}원)이 자동 연동되었습니다.`;
+        }
+      }
+      return msg;
+    }
+
+    function obFamilyMessage() {
+      const depEl = document.getElementById("obDependents");
+      const kidEl = document.getElementById("obChildren");
+      const dep = Math.max(1, Math.min(20, parseInt(depEl ? depEl.value : "1", 10) || 1));
+      const kid = Math.max(0, Math.min(10, parseInt(kidEl ? kidEl.value : "0", 10) || 0));
+      const famSelf = parseFloat(localStorage.getItem("setting_familySelf") || "20000") || 20000;
+      const fam = Math.max(0, dep - 1) * 10000;
+      let credit = 0;
+      if (kid === 1) credit = 20830;
+      else if (kid === 2) credit = 45830;
+      else if (kid >= 3) credit = 45830 + (kid - 2) * 33330;
+      return `부양가족 ${dep}명(본인 포함) 기준으로\n`
+          + `• 가족수당: 본인 ${famSelf.toLocaleString()}원 + 가족 ${Math.max(0, dep - 1)}명 × 10,000원 = ${fam.toLocaleString()}원이 자동 세팅됩니다.\n`
+          + `• 8~20세 자녀 ${kid}명 → 자녀 세액공제 ${credit > 0 ? "−" + credit.toLocaleString() + "원" : "해당 없음"}이 소득세에서 빠집니다.`;
+    }
+
+    function obGreet() {
+      const el = document.getElementById("obGreet");
+      if (!el) return;
+      const name = (document.getElementById("obName") || {}).value || "";
+      const rank = (document.getElementById("obRank") || {}).value || "";
+      const call = obCalling(name, rank);
+      el.textContent = call ? `${call}의 입력으로 맞춤 급여 계산을 시작합니다!`
+                            : "이름과 직급을 입력하시면 맞춤 급여 계산이 시작됩니다 🙂";
+    }
+
+    function obRefreshRetire() {
+      const el = document.getElementById("obRetireMsg");
+      if (el) el.textContent = obRetireMessage();
+    }
+
+    function obRefreshFamily() {
+      const el = document.getElementById("obFamilyMsg");
+      if (el) el.textContent = obFamilyMessage();
+    }
+
+    function obSaveStep1() {
+      const name = (document.getElementById("obName").value || "").trim();
+      if (!name) { showToast("이름을 입력해 주세요."); return; }
+      const rank = document.getElementById("obRank").value || "사원";
+      localStorage.setItem("user_name", name);
+      localStorage.setItem("user_duty", rank);
+      try {
+        const pos = RANK_POSITION_MAP[rank] !== undefined ? RANK_POSITION_MAP[rank] : 0;
+        localStorage.setItem("setting_position", String(pos));
+      } catch (e) {}
       obGoStep(2);
     }
 
+    function obSaveStep2() {
+      const b = (document.getElementById("obBirth").value || "").replace(/[^0-9]/g, "");
+      const j = (document.getElementById("obJoin").value || "").replace(/[^0-9]/g, "");
+      if (b.length !== 8) { showToast("생년월일을 8자리로 입력해 주세요."); return; }
+      if (j.length !== 8) { showToast("입사년월일을 8자리로 입력해 주세요."); return; }
+      const fmt = (t) => `${t.substring(0, 4)}-${t.substring(4, 6)}-${t.substring(6, 8)}`;
+      localStorage.setItem("user_birth", fmt(b));
+      localStorage.setItem("user_join", fmt(j));
+      obGoStep(3);
+    }
+
+    function obSaveStep3() {
+      localStorage.setItem("user_shift_type", obShift);
+      const ord = (document.getElementById("obOrdinary").value || "").replace(/,/g, "").trim();
+      if (ord && parseFloat(ord) > 0) localStorage.setItem("setting_ordinary", String(parseFloat(ord)));
+      obGoStep(4);
+    }
+
+    function obSaveStep4() {
+      const dep = parseInt((document.getElementById("obDependents").value || "1").replace(/[^0-9]/g, ""), 10) || 1;
+      const kid = parseInt((document.getElementById("obChildren").value || "0").replace(/[^0-9]/g, ""), 10) || 0;
+      localStorage.setItem("ded_dependents", String(Math.max(1, Math.min(20, dep))));
+      localStorage.setItem("ded_children", String(Math.max(0, Math.min(10, kid))));
+      obGoStep(5);
+    }
+
+    function obFinish() {
+      obClose();
+      vibrate();
+    }
+
+    function obStartTour() {
+      obClose();
+      setTimeout(() => startSpotTour(), 280);
+    }
+
     function obClose() {
-      document.getElementById("obOverlay").classList.remove("show");
+      const ov = document.getElementById("obOverlay");
+      if (ov) ov.classList.remove("show");
       try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
       try {
         renderCalendar();
@@ -5059,41 +5495,56 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       } catch (e) {}
     }
 
-    function obSaveStep2() {
-      try {
-        const ord = (document.getElementById("obOrdinary").value || "").replace(/,/g, "").trim();
-        if (ord && parseFloat(ord) > 0) localStorage.setItem("setting_ordinary", String(parseFloat(ord)));
-        const ann = (document.getElementById("obAnnual").value || "").replace(/,/g, "").trim();
-        if (ann && parseFloat(ann) >= 0) localStorage.setItem("user_annual_leave_base", String(parseFloat(ann)));
-        const dep = (document.getElementById("obDependents").value || "").replace(/,/g, "").trim();
-        if (dep && parseInt(dep, 10) >= 1) localStorage.setItem("ded_dependents", String(parseInt(dep, 10)));
-        const kidEl = document.getElementById("obChildren");
-        if (kidEl) {
-          const kid = (kidEl.value || "").replace(/,/g, "").trim();
-          if (kid && parseInt(kid, 10) >= 0) localStorage.setItem("ded_children", String(Math.min(10, parseInt(kid, 10))));
-        }
-      } catch (e) {}
-      obGoStep(3);
-    }
-
-    function obStartTour() {
-      obClose();
-      setTimeout(() => startSpotTour(), 260);
-    }
-
     function renderOnboarding() {
       const overlay = document.getElementById("obOverlay");
       const card = document.getElementById("obCard");
       if (!overlay || !card) return;
       let dots = "";
-      for (let i = 1; i <= 3; i++) dots += `<div class="ob-dot ${i === obStep ? "on" : ""}"></div>`;
-      const prog = `<div class="ob-progress">${dots}<span class="ob-step-num">${obStep} / 3</span></div>`;
+      for (let i = 1; i <= 4; i++) dots += `<div class="ob-dot ${i === Math.min(obStep, 4) || i < obStep ? "on" : ""}"></div>`;
+      const stepLabel = obStep > 4 ? "완료" : `${obStep} / 4`;
+      const prog = `<div class="ob-progress">${dots}<span class="ob-step-num">${stepLabel}</span></div>`;
       let body = "";
 
       if (obStep === 1) {
+        const savedName = localStorage.getItem("user_name") || "";
+        const savedRank = localStorage.getItem("user_duty") || obRank;
+        const opts = OB_RANKS.map(r => `<option value="${r}" ${r === savedRank ? "selected" : ""}>${r}</option>`).join("");
+        const call = obCalling(savedName, savedRank);
         body = `
-          <div class="ob-title">🏢 근무 형태 선택</div>
-          <div class="ob-sub">현대스틸파이프 근무 형태를 선택해 주세요</div>
+          <div class="ob-title">👤 1단계 · 이름과 직급</div>
+          <div class="ob-sub">급여 계산의 첫걸음이에요. 딱 두 가지만 알려 주세요.</div>
+          <div class="ob-greet" id="obGreet">${call ? `${call}의 입력으로 맞춤 급여 계산을 시작합니다!` : "이름과 직급을 입력하시면 맞춤 급여 계산이 시작됩니다 🙂"}</div>
+          <div class="ob-label">이름</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obName" type="text" value="${savedName}" placeholder="예: 홍길동" oninput="obGreet()"></div>
+          <div class="ob-label">직급 (직책수당 자동 연동)</div>
+          <select class="ob-select" id="obRank" onchange="obGreet()">${opts}</select>
+          <div class="ob-actions">
+            <button type="button" class="ob-btn primary full" onclick="obSaveStep1()">다음 ➜</button>
+          </div>`;
+      } else if (obStep === 2) {
+        const birth = (localStorage.getItem("user_birth") || "").replace(/[^0-9]/g, "");
+        const join = (localStorage.getItem("user_join") || "").replace(/[^0-9]/g, "");
+        body = `
+          <div class="ob-title">🎂 2단계 · 생년월일과 입사년월일</div>
+          <div class="ob-sub">정년 D-Day와 근속수당·연차를 정확히 계산하기 위해 필요해요.</div>
+          <div class="ob-greet" id="obRetireMsg">생년월일과 입사년월일을 입력하시면 정년까지 남은 날과 근속수당을 계산해 드립니다.</div>
+          <div class="ob-label">생년월일 (8자리)</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obBirth" type="tel" maxlength="10" value="${birth}" placeholder="예: 19750830" oninput="obRefreshRetire()"></div>
+          <div class="ob-label">입사년월일 (8자리)</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obJoin" type="tel" maxlength="10" value="${join}" placeholder="예: 20170401" oninput="obRefreshRetire()"></div>
+          <div class="ob-actions">
+            <button type="button" class="ob-skip" onclick="obGoStep(1)">◀ 이전</button>
+            <div style="flex:1"></div>
+            <button type="button" class="ob-btn primary" onclick="obSaveStep2()">다음 ➜</button>
+          </div>`;
+      } else if (obStep === 3) {
+        const name = localStorage.getItem("user_name") || "";
+        const call = obCalling(name, localStorage.getItem("user_duty") || "") || "회원";
+        const ord = localStorage.getItem("setting_ordinary") || "14939";
+        body = `
+          <div class="ob-title">🏢 3단계 · 근무형태와 통상시급</div>
+          <div class="ob-sub">근무형태에 따라 수당 계산식이 달라집니다. 통상시급은 모든 수당의 기준이에요.</div>
+          <div class="ob-greet">${call}의 근무형태에 맞춰 수당 자동 계산을 준비합니다.</div>
           <div class="ob-choice ${obShift === "normal" ? "on" : ""}" onclick="obPickShift('normal')">
             <div class="ob-choice-title">🏢 상주근무조</div>
             <div class="ob-choice-desc">주간 8시간 근무 · 상주휴게수당(1시간 유급) 자동 인정</div>
@@ -5104,52 +5555,54 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
             <div class="ob-choice-desc">주·야 10시간 교대 · 교대수당 20만 원 고정 반영</div>
             <div class="ob-choice-check">${obShift === "shift" ? "✓ 선택됨" : ""}</div>
           </div>
+          <div class="ob-label">통상시급 (기본 시급)</div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obOrdinary" type="number" inputmode="decimal" value="${ord}"><span class="ob-suffix">원</span></div>
+          <div class="ob-note">• 나중에 [기본정보 및 급여 설정]에서 언제든 바꿀 수 있습니다.</div>
           <div class="ob-actions">
-            <button type="button" class="ob-btn primary full" onclick="obPickShiftDone()">다음 ➜</button>
+            <button type="button" class="ob-skip" onclick="obGoStep(2)">◀ 이전</button>
+            <div style="flex:1"></div>
+            <button type="button" class="ob-btn primary" onclick="obSaveStep3()">다음 ➜</button>
           </div>`;
-      } else if (obStep === 2) {
-        const ord = localStorage.getItem("setting_ordinary") || "14939";
-        const ann = localStorage.getItem("user_annual_leave_base") || "15";
+      } else if (obStep === 4) {
         const dep = localStorage.getItem("ded_dependents") || "1";
         const kid = localStorage.getItem("ded_children") || "0";
         body = `
-          <div class="ob-title">💰 내 급여 기본 설정</div>
-          <div class="ob-sub">정확한 급여 산출을 위한 기본 정보를 입력해 주세요</div>
-          <div class="ob-label">통상시급 (기본 시급)</div>
-          <div class="ob-input-wrap"><input class="ob-input" id="obOrdinary" type="number" inputmode="decimal" value="${ord}"><span class="ob-suffix">원</span></div>
-          <div class="ob-label">발생연차수</div>
-          <div class="ob-input-wrap"><input class="ob-input" id="obAnnual" type="number" inputmode="decimal" value="${ann}"><span class="ob-suffix">일</span></div>
+          <div class="ob-title">👨‍👩‍👧 4단계 · 부양가족과 자녀</div>
+          <div class="ob-sub">가족수당과 자녀 세액공제가 자동으로 계산됩니다.</div>
+          <div class="ob-greet" id="obFamilyMsg">${obFamilyMessage()}</div>
           <div class="ob-label">부양가족 수 (본인 포함)</div>
-          <div class="ob-input-wrap"><input class="ob-input" id="obDependents" type="number" inputmode="numeric" value="${dep}"><span class="ob-suffix">명</span></div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obDependents" type="number" inputmode="numeric" value="${dep}" oninput="obRefreshFamily()"><span class="ob-suffix">명</span></div>
           <div class="ob-label">8세~20세 자녀 수 <span style="font-weight:600; color:var(--sub); font-size:11px;">(자녀세액공제용)</span></div>
-          <div class="ob-input-wrap"><input class="ob-input" id="obChildren" type="number" inputmode="numeric" value="${kid}"><span class="ob-suffix">명</span></div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obChildren" type="number" inputmode="numeric" value="${kid}" oninput="obRefreshFamily()"><span class="ob-suffix">명</span></div>
           <div class="ob-note">• 나중에 [기본정보 및 급여 설정]에서 언제든 바꿀 수 있습니다.</div>
           <div class="ob-actions">
-            <button type="button" class="ob-skip" onclick="obGoStep(3)">건너뛰기</button>
+            <button type="button" class="ob-skip" onclick="obGoStep(3)">◀ 이전</button>
             <div style="flex:1"></div>
-            <button type="button" class="ob-btn primary" onclick="obSaveStep2()">다음 ➜</button>
+            <button type="button" class="ob-btn primary" onclick="obSaveStep4()">거의 다 왔어요 ➜</button>
           </div>`;
       } else {
         const shiftName = (localStorage.getItem("user_shift_type") === "shift") ? "교대근무조" : "상주근무조";
         const ord = parseFloat(localStorage.getItem("setting_ordinary") || "14939") || 0;
-        const ann = localStorage.getItem("user_annual_leave_base") || "15";
         const dep = localStorage.getItem("ded_dependents") || "1";
         const kidNum = parseInt(localStorage.getItem("ded_children") || "0", 10) || 0;
+        const call = obCalling(localStorage.getItem("user_name") || "", localStorage.getItem("user_duty") || "");
         body = `
-          <div class="ob-emoji">🎉</div>
-          <div class="ob-title ob-center">ShiftPay 준비 완료!</div>
-          <div class="ob-sub ob-center">앱의 주요 기능을 스팟라이트 가이드로 둘러보시겠어요?</div>
-          <div class="ob-summary">선택한 근무 형태: <b>${shiftName}</b><br>통상시급 ${ord.toLocaleString()}원 · 발생연차 ${ann}일 · 부양가족 ${dep}명${kidNum > 0 ? " · 자녀 " + kidNum + "명" : ""}</div>
-          <button type="button" class="ob-btn primary full" style="margin-bottom:8px;" onclick="obStartTour()">✨ 주요 기능 둘러보기</button>
-          <button type="button" class="ob-btn full" onclick="obClose()">바로 시작하기</button>`;
+          <div class="ob-pico-stage">
+            <div class="ob-pico-glow"></div>
+            <span class="ob-hand">👋</span>
+            <div class="ob-pico-wrap"><img class="ob-pico" src="pico/pico_wave.png?v=20261113" alt="현대스틸파이프 피코"></div>
+            <span class="ob-spark">✨</span>
+          </div>
+          <div class="ob-title ob-center">${call ? call + ", 준비 완료입니다! 🎉" : "준비 완료입니다! 🎉"}</div>
+          <div class="ob-safety">행복한 가정으로 돌아가기 위해<br>오늘도 안전근무하세요! 🏠👷‍♂️</div>
+          <div class="ob-summary">${shiftName} · 통상시급 ${ord.toLocaleString()}원 · 부양가족 ${dep}명${kidNum > 0 ? " · 자녀 " + kidNum + "명" : ""}</div>
+          <button type="button" class="ob-btn primary full" onclick="obFinish()">시작하기</button>
+          <button type="button" class="ob-link" onclick="obStartTour()">✨ 주요 기능 둘러보기</button>`;
       }
       card.innerHTML = prog + body;
       overlay.classList.add("show");
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       v1.4.0 ② — 인터랙티브 스팟라이트 코치마크 투어 (5곳)
-       ══════════════════════════════════════════════════════════════ */
     const SPOT_STEPS = [
       { sel: "#tourQuickBar", title: "① ⚡ 빠른 근무 입력 바",
         desc: "터치 한 번으로 근무를 기록합니다. 설치형 앱에서는 출근카드 사진 한 장으로 자동 입력됩니다." },
@@ -5167,6 +5620,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function startSpotTour() {
       const ov = document.getElementById("spotOverlay");
       if (!ov) return;
+      document.body.classList.add("spot-on");   // v1.4.3 ②-3: 투어 중 [▲ TOP] 숨김
       ov.classList.add("show");
       spotIndex = 0;
       showSpot(0);
@@ -5232,6 +5686,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function endSpotTour() {
       const ov = document.getElementById("spotOverlay");
       if (ov) ov.classList.remove("show");
+      document.body.classList.remove("spot-on");
       try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
     }
 
@@ -5308,7 +5763,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.2 (빌드 31) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.3 (빌드 32) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
