@@ -539,7 +539,7 @@
     body.dark .card-cell.hl { background: #0f2a29; }
     .card-cell .k { font-size: 10px; color: var(--co-sub); font-weight: 600; white-space: nowrap; }
     .card-cell .v { font-size: 14px; font-weight: 800; margin-top: 2px; color: var(--co-ink); white-space: nowrap; }
-    .card-cell.hl .v { font-size: 16px; color: #059669; }
+    .card-cell.hl .v { font-size: 16px; color: var(--emerald); }
     body.dark .card-cell.hl .v { color: #34d399; }
     .card-cell .s { font-size: 8px; color: var(--co-sub); margin-top: 1px; white-space: nowrap; }
     .card-cell.hl .s { color: #047857; }
@@ -1007,7 +1007,7 @@
     .time-card.amber .time-card-title { color: #d97706; }
     .time-card.rose .time-card-title { color: #dc2626; }
     .time-card.purple .time-card-title { color: #7c3aed; }
-    .time-card.emerald .time-card-title { color: #059669; }
+    .time-card.emerald .time-card-title { color: var(--emerald); }
 
     .time-card-badge {
       font-size: 10px;
@@ -1543,7 +1543,7 @@
           <span>예상 공제총액 (4대보험·소득세·노조회비)</span>
           <span class="receipt-val" style="color:var(--red);" id="valDeduction">-0원</span>
         </div>
-        <div id="dedRefundNote" style="display:none; margin:2px 0 8px; padding:9px 11px; border-radius:10px; border:1px solid #10b981; background:rgba(16,185,129,0.10); color:#065f46; font-size:11.5px; line-height:1.55;"></div>
+        <div id="dedRefundNote" style="display:none; margin:2px 0 8px; padding:9px 11px; border-radius:10px; border:1px solid var(--emerald); background:rgba(16,185,129,0.10); color:var(--emerald); font-size:11.5px; line-height:1.55;"></div>
         <div class="receipt-row total">
           <span>예상 실수령액</span>
           <span class="receipt-val" id="valNetPay">0원</span>
@@ -1772,7 +1772,7 @@
       <div class="time-card emerald">
         <div class="time-card-header">
           <div class="time-card-title">
-            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             5. 가급 & 특이사항 메모
           </div>
           <span class="time-card-badge">상주휴게 가급</span>
@@ -2091,10 +2091,10 @@
     <div class="bottom-sheet" style="max-height:88vh;">
       <div class="sheet-title" id="docTitle">문서 제목</div>
       <div id="docHwpActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" id="docHwpCba" href="downloads/cba_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid #10b981;">
+        <a class="sheet-btn" id="docHwpCba" href="downloads/cba_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid var(--emerald);">
           💾 단체협약서 전문 HWP 다운로드 (cba_2026.hwp)
         </a>
-        <a class="sheet-btn" id="docHwpSupport" href="downloads/support_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid #10b981;">
+        <a class="sheet-btn" id="docHwpSupport" href="downloads/support_2026.hwp" download style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:13.5px; font-weight:800; padding:14px 10px; margin-bottom:8px; border-radius:12px; background:rgba(16,185,129,0.12); color:#0f766e; border:1px solid var(--emerald);">
           💾 지원제도 원본 HWP 다운로드 (support_2026.hwp)
         </a>
       </div>
@@ -3307,7 +3307,7 @@
       document.getElementById("valDeduction").innerText = refundMonth
         ? "+" + Math.abs(deductions).toLocaleString() + "원 (환급)"
         : "-" + deductions.toLocaleString() + "원";
-      document.getElementById("valDeduction").style.color = refundMonth ? "#059669" : "var(--red)";
+      document.getElementById("valDeduction").style.color = refundMonth ? "var(--emerald)" : "var(--red)";
       document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
 
       // v1.3.5 히어로: 소급 토글 옆에서 실수령액 변화가 바로 보이도록 동시 갱신
@@ -3320,7 +3320,7 @@
         heroDed.innerText = refundMonth
           ? "환급 +" + Math.abs(deductions).toLocaleString() + "원"
           : "-" + deductions.toLocaleString() + "원";
-        heroDed.style.color = refundMonth ? "#059669" : "var(--red)";
+        heroDed.style.color = refundMonth ? "var(--emerald)" : "var(--red)";
       }
       renderRefundNote(deductions, curYear, curMonth);
     }
@@ -5277,7 +5277,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
                 <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#10b981;"></span>가급</span>
-                <span style="font-weight:800; color:#059669;">${totalGageub.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(gageubRatio*100).toFixed(0)}%)</span></span>
+                <span style="font-weight:800; color:var(--emerald);">${totalGageub.toFixed(1)}h <span style="font-size:10.5px; color:var(--subtext); font-weight:normal;">(${(gageubRatio*100).toFixed(0)}%)</span></span>
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
                 <span style="display:flex; align-items:center; gap:6px; color:var(--text); font-weight:700;"><span style="width:10px; height:10px; border-radius:3px; background:#8b5cf6;"></span>유급·주휴</span>
@@ -5293,8 +5293,8 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         `;
         donutSvgHtml += `
           <div style="font-size:10.5px; color:var(--subtext); line-height:1.55; margin:-6px 0 12px 2px;">
-            ※ <b style="color:#2563eb;">실제 근로 ${actualWorked.toFixed(1)}h</b>는 출근해 일한 시간(정취+연장+휴일특근), <b style="color:#059669;">급여 인정 ${totalWorked.toFixed(1)}h</b>는 유급·주차·연차 ${totalPaid.toFixed(1)}h와 가급 ${totalGageub.toFixed(1)}h까지 더한 시간입니다.<br>
-            ※ 출근카드 환산시간: <b style="color:#059669;">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함)<br>
+            ※ <b style="color:#2563eb;">실제 근로 ${actualWorked.toFixed(1)}h</b>는 출근해 일한 시간(정취+연장+휴일특근), <b style="color:var(--emerald);">급여 인정 ${totalWorked.toFixed(1)}h</b>는 유급·주차·연차 ${totalPaid.toFixed(1)}h와 가급 ${totalGageub.toFixed(1)}h까지 더한 시간입니다.<br>
+            ※ 출근카드 환산시간: <b style="color:var(--emerald);">${cardTotal.toFixed(1)}h</b> (휴일가급 ${totalHoliPremium.toFixed(1)}h 할증 포함)<br>
             &nbsp;&nbsp;= 급여 인정 ${totalWorked.toFixed(1)}h${(totalGageub - totalGageubWeekday) > 0 ? ` − 특근일 가급 ${(totalGageub - totalGageubWeekday).toFixed(1)}h` : ""} + 휴일가급 ${totalHoliPremium.toFixed(1)}h${isShift && totalNight > 0 ? ` + 심야 ${totalNight.toFixed(1)}h` : ""} · 실물 출근카드 합계와 같은 기준
           </div>`;
       }
@@ -5343,7 +5343,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           </div>
           <div style="background:var(--surface); border:1px solid rgba(16,185,129,0.45); border-radius:10px; padding:10px 12px;">
             <div style="font-size:11px; color:var(--subtext); font-weight:600;">출근카드 환산</div>
-            <div style="font-size:17px; font-weight:800; color:#059669; margin-top:2px;">${cardTotal.toFixed(1)} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">시간</span></div>
+            <div style="font-size:17px; font-weight:800; color:var(--emerald); margin-top:2px;">${cardTotal.toFixed(1)} <span style="font-size:12px; font-weight:normal; color:var(--subtext);">시간</span></div>
           </div>
           <div style="grid-column:1 / -1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between;">
             <span style="font-size:11px; color:var(--subtext); font-weight:600;">근무 일수</span>
@@ -6954,7 +6954,7 @@ const SP_PDF = (function () {
       const v = pr[key] || 0;
       const shownLabel = (key === "deduction" && v < 0) ? label + " (환급)" : label;
       const extra = (key === "deduction" && v < 0)
-        ? `<div style="font-size:11px; font-weight:800; color:#047857; margin-top:3px;">🎉 연말정산 환급 ${wonText(-v)}원 — 공제가 마이너스라 실지급액이 지급총액보다 많습니다.</div>`
+        ? `<div style="font-size:11px; font-weight:800; color:var(--emerald); margin-top:3px;">🎉 연말정산 환급 ${wonText(-v)}원 — 공제가 마이너스라 실지급액이 지급총액보다 많습니다.</div>`
         : "";
       return `<tr>
         <td style="padding:7px 4px; font-size:13px; color:${key === "deduction" && v < 0 ? "#047857" : "var(--ink)"}; font-weight:${key === "netPay" ? 800 : 600};">${shownLabel}${extra}</td>
@@ -6967,9 +6967,9 @@ const SP_PDF = (function () {
     }).join("");
 
     const refundHtml = refundMonth ? `
-      <div style="margin-top:12px; padding:11px 12px; border-radius:12px; border:1px solid #10b981; background:rgba(16,185,129,0.10);">
-        <div style="font-size:12.5px; font-weight:800; color:#047857; margin-bottom:5px;">🎉 연말정산 환급 반영</div>
-        <div style="font-size:11.5px; color:#065f46; line-height:1.5;">
+      <div style="margin-top:12px; padding:11px 12px; border-radius:12px; border:1px solid var(--emerald); background:rgba(16,185,129,0.10);">
+        <div style="font-size:12.5px; font-weight:800; color:var(--emerald); margin-bottom:5px;">🎉 연말정산 환급 반영</div>
+        <div style="font-size:11.5px; color:var(--emerald); line-height:1.5;">
           공제총액이 ${wonText(pr.deduction)}원(환급)입니다. 연말정산으로 낸 세금(정산소득세·정산지방세)을 돌려받아 공제액계가 마이너스가 된 달이라,
           실지급액이 지급총액보다 <b>${wonText(-pr.deduction)}원</b> 더 많습니다. 오류가 아닙니다.
         </div>
