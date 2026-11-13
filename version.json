@@ -4,6 +4,6 @@
   "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk",
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "연월 스와이프·연도 휠 · 4스텝 대화형 온보딩(피코 손흔들기) · 새 아이콘 · 명세서 인식 검토·교정 (v1.4.2 무결점 유지)",
-  "releasedAt": "2026-11-13T14:10:38+09:00"
+  "note": "버전 고정(1.4.3) 재빌드 · 공제 정상화(간이세액표·법정 요율) · 온보딩 뒤로가기 가드 · 정적 피코 · 새 아이콘",
+  "releasedAt": "2026-11-13T16:47:26+09:00"
 }

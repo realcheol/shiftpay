@@ -1220,7 +1220,7 @@
     .ob-emoji { font-size: 40px; text-align: center; margin-bottom: 4px; }
     .ob-center { text-align: center; }
 
-    /* v1.4.3 ② 완료 페이지 — 피코 손흔들기 */
+    /* v1.4.3 ② 완료 페이지 — 정적인 피코 이미지 */
     .ob-pico-stage {
       position: relative; height: 206px; display: flex; align-items: flex-end; justify-content: center;
       margin-bottom: 4px;
@@ -1229,20 +1229,11 @@
       position: absolute; left: 50%; top: 50%; width: 172px; height: 172px; border-radius: 50%;
       transform: translate(-50%, -50%); background: radial-gradient(circle at 50% 45%, rgba(0,91,172,.16), rgba(0,91,172,0) 70%);
     }
-    .ob-pico-wrap { animation: obBob 1.9s ease-in-out infinite alternate; }
+    /* v1.4.3 재빌드: 완료 페이지는 정적인 피코 이미지로만 표시한다(손흔들기/바운스 애니메이션 제거) */
+    .ob-pico-wrap { }
     .ob-pico {
       width: 182px; height: auto; display: block; transform-origin: 50% 96%;
-      animation: obWave 1.25s ease-in-out infinite alternate;
     }
-    @keyframes obWave { from { transform: rotate(-5.5deg); } to { transform: rotate(6deg); } }
-    @keyframes obBob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
-    .ob-hand {
-      position: absolute; left: calc(50% - 92px); top: 22px; font-size: 30px;
-      transform-origin: 50% 80%; animation: obHand .78s ease-in-out infinite alternate;
-    }
-    @keyframes obHand { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
-    .ob-spark { position: absolute; right: calc(50% - 96px); top: 34px; font-size: 20px; animation: obSpark 1.5s ease-in-out infinite alternate; }
-    @keyframes obSpark { from { opacity: .3; transform: scale(.9); } to { opacity: 1; transform: scale(1.08); } }
     .ob-safety {
       margin: 10px 0 12px; padding: 13px 12px; border-radius: 14px; text-align: center;
       font-size: 17px; font-weight: 800; line-height: 1.35; color: var(--blue);
@@ -4646,7 +4637,7 @@
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.4.3)",
-        body: `v1.4.3 (2026-11-13) — 연월 스와이프·연도 휠 · 4스텝 대화형 온보딩 · 피코 손흔들기 · 새 아이콘 (빌드 32)
+        body: `v1.4.3 (2026-11-13) — 버전 고정 재빌드 · 공제 정상화 · 온보딩 뒤로가기 가드 · 정적 피코 · 새 아이콘 (빌드 32)
 • 🗓️ 연월 빠른 이동: 연월 창을 좌우로 밀면 전년도/다음 연도가 슬라이드로 넘어가고, 연도 숫자를 누르면 2024~2030 빠른 선택 그리드와 위아래로 굴리는 수직 연도 휠이 열립니다 — 원하는 연도를 바로 골라 이동
 • 🧭 4스텝 대화형 온보딩: ①이름·직급 ②생년월일·입사년월일 ③근무형태·통상시급 ④부양가족·자녀 — 단계마다 "000 사원님의 입력으로 …" 호칭으로 이유를 먼저 설명하고, 정년까지 남은 년·월·일(총 일수)·근속수당·가족수당·자녀 세액공제를 실시간 계산해 안내
 • 👋 완료 페이지: 새 피코가 손을 흔들며 "행복한 가정으로 돌아가기 위해 오늘도 안전근무하세요! 🏠👷‍♂️" 인사 — [시작하기]로 메인 진입
@@ -5498,19 +5489,23 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
 
     function obFinish() {
-      obClose();
+      obClose(true);
       vibrate();
     }
 
     function obStartTour() {
-      obClose();
+      obClose(true);
       setTimeout(() => startSpotTour(), 280);
     }
 
-    function obClose() {
+    // v1.4.3: 완료 처리는 마지막 [시작하기]·[주요 기능 둘러보기]에서만 한다.
+    //  도중에 뒤로가기(Escape)로 닫으면 완료로 기록하지 않는다.
+    function obClose(markDone) {
       const ov = document.getElementById("obOverlay");
       if (ov) ov.classList.remove("show");
-      try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
+      if (markDone !== false) {
+        try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
+      }
       try {
         renderCalendar();
         updateFactoryUI();
@@ -5555,7 +5550,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
           <div class="ob-label">생년월일 (8자리)</div>
           <div class="ob-input-wrap"><input class="ob-input" id="obBirth" type="tel" maxlength="10" value="${birth}" placeholder="예: 19750830" oninput="obRefreshRetire()"></div>
           <div class="ob-label">입사년월일 (8자리)</div>
-          <div class="ob-input-wrap"><input class="ob-input" id="obJoin" type="tel" maxlength="10" value="${join}" placeholder="예: 20170401" oninput="obRefreshRetire()"></div>
+          <div class="ob-input-wrap"><input class="ob-input" id="obJoin" type="tel" maxlength="10" value="${join}" placeholder="예: 20200101" oninput="obRefreshRetire()"></div>
           <div class="ob-actions">
             <button type="button" class="ob-skip" onclick="obGoStep(1)">◀ 이전</button>
             <div style="flex:1"></div>
@@ -5613,9 +5608,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         body = `
           <div class="ob-pico-stage">
             <div class="ob-pico-glow"></div>
-            <span class="ob-hand">👋</span>
             <div class="ob-pico-wrap"><img class="ob-pico" src="pico/pico_wave.png?v=20261113" alt="현대스틸파이프 피코"></div>
-            <span class="ob-spark">✨</span>
           </div>
           <div class="ob-title ob-center">${call ? call + ", 준비 완료입니다! 🎉" : "준비 완료입니다! 🎉"}</div>
           <div class="ob-safety">행복한 가정으로 돌아가기 위해<br>오늘도 안전근무하세요! 🏠👷‍♂️</div>
@@ -5723,7 +5716,10 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       const ov = document.getElementById("spotOverlay");
       if (ov && ov.classList.contains("show")) { endSpotTour(); return; }
       const ob = document.getElementById("obOverlay");
-      if (ob && ob.classList.contains("show")) obClose();
+      if (ob && ob.classList.contains("show")) {
+        if (obStep > 1) { obGoStep(obStep - 1); }
+        else { obClose(false); }
+      }
     });
 
     // Initialize on page load
