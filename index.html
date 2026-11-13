@@ -1543,7 +1543,7 @@
           <span>예상 공제총액 (4대보험·소득세·노조회비)</span>
           <span class="receipt-val" style="color:var(--red);" id="valDeduction">-0원</span>
         </div>
-        <div id="dedRefundNote" style="display:none; margin:2px 0 8px; padding:9px 11px; border-radius:10px; border:1px solid var(--emerald); background:rgba(16,185,129,0.10); color:var(--emerald); font-size:11.5px; line-height:1.55;"></div>
+        <div id="dedRefundNote" style="display:none; margin:2px 0 8px; padding:9px 11px; border-radius:10px; border:1px solid var(--emerald); background:rgba(16,185,129,0.10); color:var(--text); font-size:12px; line-height:1.6;"></div>
         <div class="receipt-row total">
           <span>예상 실수령액</span>
           <span class="receipt-val" id="valNetPay">0원</span>
@@ -6969,7 +6969,7 @@ const SP_PDF = (function () {
     const refundHtml = refundMonth ? `
       <div style="margin-top:12px; padding:11px 12px; border-radius:12px; border:1px solid var(--emerald); background:rgba(16,185,129,0.10);">
         <div style="font-size:12.5px; font-weight:800; color:var(--emerald); margin-bottom:5px;">🎉 연말정산 환급 반영</div>
-        <div style="font-size:11.5px; color:var(--emerald); line-height:1.5;">
+        <div style="font-size:12px; color:var(--text); line-height:1.55;">
           공제총액이 ${wonText(pr.deduction)}원(환급)입니다. 연말정산으로 낸 세금(정산소득세·정산지방세)을 돌려받아 공제액계가 마이너스가 된 달이라,
           실지급액이 지급총액보다 <b>${wonText(-pr.deduction)}원</b> 더 많습니다. 오류가 아닙니다.
         </div>
