@@ -4,6 +4,6 @@
   "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk",
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "버전 고정(1.4.3) 재빌드 ⑤ · 고정수당 원터치 동기화 · 연말정산 환급 반영 표시 · 마이너스 공제 부호 보존",
-  "releasedAt": "2026-11-13T20:07:57+09:00"
+  "note": "버전 고정(1.4.3) 재빌드 ⑥ · 피코 머리 확대 신규 아이콘 적용 · Gradle 테스트 소스셋 연결 · 레거시 정리",
+  "releasedAt": "2026-11-14T02:15:31+09:00"
 }
