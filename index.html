@@ -1424,6 +1424,15 @@
         <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:5px; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
         <button class="btn-quick" id="btnToggleMulti" onclick="toggleMultiSelectMode()" style="flex:1.0; background:var(--surface); border:1px solid var(--border); color:var(--blue); display:flex; align-items:center; justify-content:center; gap:5px; font-weight:700; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 선택 모드</button>
       </div>
+
+      <!-- v1.4.3 ④-PDF: 급여명세서 원본 PDF 직접 불러오기 (웹에서도 1원 오차 없이) -->
+      <button type="button" id="btnPayslipPdf" onclick="openPayslipPdfPicker()"
+        style="width:100%; margin-top:8px; padding:11px 10px; border-radius:12px; border:1px dashed var(--blue);
+               background:var(--surface); color:var(--blue); font-weight:800; font-size:13px; font-family:inherit;
+               display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+        📄 급여명세서 PDF 불러오기
+        <span style="font-weight:600; font-size:11px; color:var(--sub);">· 원본 그대로 인식</span>
+      </button>
     </div>
 
     <!-- Payroll & Work Hours Summary Card -->
@@ -1598,6 +1607,7 @@
       <div class="menu-item" onclick="showDoc('apk'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> 안드로이드 전용 앱(APK) 안내</div>
       <div class="menu-item" onclick="showOnboarding(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ❓ 온보딩 & 기능 투어 다시보기</div>
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
+      <div class="menu-item" onclick="openPayslipPdfPicker(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg> 📄 급여명세서 PDF 불러오기</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
       <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.3)</div>
     </div>
@@ -4632,17 +4642,22 @@
 • 캘린더 날짜를 누르고 [주간 정상], [평일 연장], [휴일 특근], [연차]를 원터치로 저장하세요.
 • 하단 급여 카드가 단체협약 수당과 예상 실수령액을 즉시 계산해 줍니다.
 
-3단계: 엑셀 내보내기 & 100% 안심 백업
+3단계(선택): 급여명세서 PDF로 1원 대조
+• 캘린더 아래 [📄 급여명세서 PDF 불러오기]를 누르고 회사가 준 원본 PDF를 고르세요.
+• 기본급·연장·휴일·야간·직무·교대수당과 지급/공제/실지급액이 1원 단위까지 채워지고, [시작하기] 대신 [⚡ 설정 동기화]로 시급을 바로 맞출 수 있습니다.
+
+4단계: 엑셀 내보내기 & 100% 안심 백업
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
         title: "📋 버전 업데이트 내역 (v1.4.3)",
-        body: `v1.4.3 (2026-11-13) — 버전 고정 재빌드 · 공제 정상화 · 온보딩 뒤로가기 가드 · 정적 피코 · 새 아이콘 (빌드 32)
+        body: `v1.4.3 (2026-11-13) — 버전 고정 재빌드 · PDF 명세서 직독 · 새 피코 · 공제 정상화 (빌드 32)
 • 🗓️ 연월 빠른 이동: 연월 창을 좌우로 밀면 전년도/다음 연도가 슬라이드로 넘어가고, 연도 숫자를 누르면 2024~2030 빠른 선택 그리드와 위아래로 굴리는 수직 연도 휠이 열립니다 — 원하는 연도를 바로 골라 이동
 • 🧭 4스텝 대화형 온보딩: ①이름·직급 ②생년월일·입사년월일 ③근무형태·통상시급 ④부양가족·자녀 — 단계마다 "000 사원님의 입력으로 …" 호칭으로 이유를 먼저 설명하고, 정년까지 남은 년·월·일(총 일수)·근속수당·가족수당·자녀 세액공제를 실시간 계산해 안내
-• 👋 완료 페이지: 새 피코가 손을 흔들며 "행복한 가정으로 돌아가기 위해 오늘도 안전근무하세요! 🏠👷‍♂️" 인사 — [시작하기]로 메인 진입
+• 👋 완료 페이지: 새 전신 피코를 흰 카드에 앉히고 "행복한 가정으로 돌아가기 위해 오늘도 안전근무하세요! 🏠👷‍♂️" 인사 — [시작하기]로 메인 진입
 • 🎯 스팟라이트 투어: 투어 중 [▲ TOP] 버튼 숨김 · 16px 큰 글자 · 반투명 다크 글래스 카드 · 하이라이트 구멍이 다음 타깃으로 부드럽게 이동하고 테두리가 은은하게 숨 쉬는 펄스
 • 🖼️ 새 아이콘: HYUNDAI STEELPIPE 피코·강관·시계 아이콘으로 파비콘·홈화면 아이콘 전면 교체
+• 📄 급여명세서 PDF 직접 불러오기: 원본 PDF의 디지털 텍스트를 그대로 읽어 기본급·평일연장·휴일근무·휴일연장·야간근무·직무수당·교대수당·지급액계·공제액계·실지급액을 1원 단위까지 채웁니다 (웹·설치형 동일)
 • 🧾 (설치형) 급여명세서 OCR 검토·수정 표 + 단협 공식 원터치 보정 + 흑백 명암비 자동 보정
 v1.4.2 (2026-11-12) — 국세청 간이세액표 1:1 탑재 · 8~20세 자녀 세액공제 · 공제식 카드 리뉴얼 (빌드 31)
 • 🧾 국세청 근로소득 간이세액표(소득세법 시행령 별표 2, 2026. 2. 27. 개정) 646개 급여구간 × 공제대상가족 1~11명 전 칸 탑재 — 산식 근사가 아니라 원표 그대로 조회합니다
@@ -5608,7 +5623,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         body = `
           <div class="ob-pico-stage">
             <div class="ob-pico-glow"></div>
-            <div class="ob-pico-wrap"><img class="ob-pico" src="pico/pico_wave.png?v=20261113" alt="현대스틸파이프 피코"></div>
+            <div class="ob-pico-wrap" style="background:#fff; border-radius:20px; padding:6px; box-shadow:0 8px 24px rgba(15,40,80,0.16);"><img class="ob-pico" src="pico/pico_safety_full.png?v=20261113b" alt="현대스틸파이프 피코" style="height:192px; width:auto; display:block; border-radius:14px;"></div>
           </div>
           <div class="ob-title ob-center">${call ? call + ", 준비 완료입니다! 🎉" : "준비 완료입니다! 🎉"}</div>
           <div class="ob-safety">행복한 가정으로 돌아가기 위해<br>오늘도 안전근무하세요! 🏠👷‍♂️</div>
@@ -5807,6 +5822,1194 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       setTimeout(hide, 2100);
       sp.addEventListener("click", hide);
     })();
+  </script>
+
+  <script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   v1.4.3 ④-PDF — 급여명세서 원본 PDF 직접 읽기 (웹 버전)
+   회사가 발급한 PDF 안에는 100% 디지털 문자열이 들어 있다. 사진 OCR 처럼
+   조명·기울기·압축 노이즈로 글자를 '짐작'할 필요가 없어 1원 단위까지 그대로 읽는다.
+   · 외부 라이브러리·서버·API 키 없음 (브라우저 안에서만 동작)
+   · FlateDecode 해제: 브라우저 내장 DecompressionStream → 없으면 내장 inflate
+   · 폰트 /ToUnicode CMap 으로 2바이트 코드 → 한글 변환
+   · Tj/TJ/Tm 좌표를 따라가 표의 칸 위치를 복원 → 2차원 파서가 그대로 읽는다
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SP_PDF = (function () {
+  "use strict";
+
+  // ── 바이트 ↔ 문자열 ──────────────────────────────────────────
+  function latin1(u8) {
+    let s = "";
+    const CH = 8192;
+    for (let i = 0; i < u8.length; i += CH) {
+      s += String.fromCharCode.apply(null, u8.subarray(i, Math.min(i + CH, u8.length)));
+    }
+    return s;
+  }
+  function bytesOf(str) {
+    const out = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) out[i] = str.charCodeAt(i) & 0xff;
+    return out;
+  }
+
+  // ── inflate (raw deflate) — DecompressionStream 이 없을 때 쓰는 자체 구현 ──
+  function spInflateRaw(data) {
+    let pos = 0, bitbuf = 0, bitcnt = 0;
+    const out = [];
+    function getbit() {
+      if (bitcnt === 0) {
+        if (pos >= data.length) throw new Error("eof");
+        bitbuf = data[pos++]; bitcnt = 8;
+      }
+      const b = bitbuf & 1; bitbuf >>= 1; bitcnt--;
+      return b;
+    }
+    function getbits(n) {
+      let v = 0;
+      for (let i = 0; i < n; i++) v |= getbit() << i;
+      return v;
+    }
+    function build(lengths) {
+      const count = new Array(16).fill(0);
+      for (let i = 0; i < lengths.length; i++) count[lengths[i]]++;
+      let left = 1;
+      for (let len = 1; len <= 15; len++) {
+        left <<= 1; left -= count[len];
+        if (left < 0) throw new Error("over-subscribed");
+      }
+      const offs = new Array(16).fill(0);
+      for (let i = 1; i < 15; i++) offs[i + 1] = offs[i] + count[i];
+      const symbol = new Array(lengths.length).fill(0);
+      for (let s = 0; s < lengths.length; s++) if (lengths[s] !== 0) symbol[offs[lengths[s]]++] = s;
+      return { count, symbol };
+    }
+    function decodeSym(tree) {
+      let code = 0, first = 0, index = 0;
+      for (let len = 1; len <= 15; len++) {
+        code |= getbit();
+        const cnt = tree.count[len];
+        if (code - first < cnt) return tree.symbol[index + (code - first)];
+        index += cnt; first = (first + cnt) << 1; code <<= 1;
+      }
+      throw new Error("bad code");
+    }
+    const LBASE = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+    const LEXT  = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+    const DBASE = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+    const DEXT  = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+    let fixedLit = null, fixedDist = null;
+    let last = 0;
+    while (!last) {
+      last = getbit();
+      const type = getbits(2);
+      if (type === 0) {
+        if (bitcnt > 0) { bitbuf = 0; bitcnt = 0; }
+        const len = data[pos] | (data[pos + 1] << 8);
+        pos += 4;
+        for (let i = 0; i < len; i++) out.push(data[pos++]);
+        continue;
+      }
+      let lit, dist;
+      if (type === 1) {
+        if (!fixedLit) {
+          const l = new Array(288);
+          for (let i = 0; i < 144; i++) l[i] = 8;
+          for (let i = 144; i < 256; i++) l[i] = 9;
+          for (let i = 256; i < 280; i++) l[i] = 7;
+          for (let i = 280; i < 288; i++) l[i] = 8;
+          fixedLit = build(l);
+          fixedDist = build(new Array(30).fill(5));
+        }
+        lit = fixedLit; dist = fixedDist;
+      } else if (type === 2) {
+        const hlit = getbits(5) + 257, hdist = getbits(5) + 1, hclen = getbits(4) + 4;
+        const order = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+        const clen = new Array(19).fill(0);
+        for (let i = 0; i < hclen; i++) clen[order[i]] = getbits(3);
+        const clTree = build(clen);
+        const lens = [];
+        while (lens.length < hlit + hdist) {
+          const sym = decodeSym(clTree);
+          if (sym < 16) lens.push(sym);
+          else if (sym === 16) {
+            const rep = 3 + getbits(2); const prev = lens[lens.length - 1];
+            for (let i = 0; i < rep; i++) lens.push(prev);
+          } else if (sym === 17) {
+            const rep = 3 + getbits(3);
+            for (let i = 0; i < rep; i++) lens.push(0);
+          } else {
+            const rep = 11 + getbits(7);
+            for (let i = 0; i < rep; i++) lens.push(0);
+          }
+        }
+        lit = build(lens.slice(0, hlit));
+        dist = build(lens.slice(hlit));
+      } else {
+        throw new Error("bad block type");
+      }
+      for (;;) {
+        const sym = decodeSym(lit);
+        if (sym === 256) break;
+        if (sym < 256) { out.push(sym); continue; }
+        const li = sym - 257;
+        const len = LBASE[li] + getbits(LEXT[li]);
+        const ds = decodeSym(dist);
+        const d = DBASE[ds] + getbits(DEXT[ds]);
+        const start = out.length - d;
+        if (start < 0) throw new Error("bad distance");
+        for (let i = 0; i < len; i++) out.push(out[start + i]);
+      }
+    }
+    return new Uint8Array(out);
+  }
+
+  // ── zlib/FlateDecode 스트림 해제 ─────────────────────────────
+  async function inflate(raw) {
+    const u8 = (raw instanceof Uint8Array) ? raw : new Uint8Array(raw);
+    if (typeof DecompressionStream !== "undefined") {
+      for (const fmt of ["deflate", "deflate-raw"]) {
+        try {
+          const stream = new Blob([u8]).stream().pipeThrough(new DecompressionStream(fmt));
+          const buf = await new Response(stream).arrayBuffer();
+          if (buf.byteLength > 0) return new Uint8Array(buf);
+        } catch (e) { /* 다음 형식 시도 */ }
+      }
+    }
+    try { return spInflateRaw(u8.subarray(2)); } catch (e) { /* raw 로도 */ }
+    try { return spInflateRaw(u8); } catch (e) { return null; }
+  }
+
+  // ── 오브젝트 스캔 ────────────────────────────────────────────
+  function scanObjects(str) {
+    const objs = new Map();
+    const re = /(?<![0-9])(\d{1,6})\s+(\d{1,3})\s+obj\b/g;
+    let m;
+    const heads = [];
+    while ((m = re.exec(str)) !== null) heads.push([parseInt(m[1], 10), m.index + m[0].length]);
+    for (const [num, dictStart] of heads) {
+      let endObj = str.indexOf("endobj", dictStart);
+      if (endObj < 0) endObj = str.length;
+      let st = -1;
+      let i = dictStart;
+      while (i < endObj) {
+        const k = str.indexOf("stream", i);
+        if (k < 0 || k >= endObj) break;
+        if (k > 0 && str.charAt(k - 1) === "d") { i = k + 6; continue; }
+        st = k; break;
+      }
+      const o = { num, dict: "", start: -1, end: -1 };
+      if (st >= 0) {
+        o.dict = str.substring(dictStart, st);
+        let p = st + 6;
+        while (p < endObj && (str.charAt(p) === "\r" || str.charAt(p) === "\n")) p++;
+        const lm = /\/Length\s+(\d{1,9})(?!\s+\d+\s+R)/.exec(o.dict);
+        if (lm) {
+          const len = parseInt(lm[1], 10);
+          let probe = p + len;
+          while (probe < str.length && (str.charAt(probe) === "\r" || str.charAt(probe) === "\n")) probe++;
+          if (str.startsWith("endstream", probe)) { o.start = p; o.end = p + len; }
+        }
+        if (o.start < 0) {
+          const es = str.indexOf("endstream", p);
+          if (es > p) {
+            let e = es;
+            while (e > p && (str.charAt(e - 1) === "\r" || str.charAt(e - 1) === "\n")) e--;
+            o.start = p; o.end = e;
+          }
+        }
+      } else {
+        o.dict = str.substring(dictStart, endObj);
+      }
+      objs.set(num, o);
+    }
+    return objs;
+  }
+
+  async function streamBytes(o, u8) {
+    if (!o || o.start < 0 || o.end <= o.start) return null;
+    const raw = u8.subarray(o.start, o.end);
+    if (o.dict.indexOf("FlateDecode") >= 0) {
+      const z = await inflate(raw);
+      return z || raw;
+    }
+    return raw;
+  }
+
+  // ── ToUnicode CMap ──────────────────────────────────────────
+  function parseCMap(s) {
+    const map = new Map();
+    let m;
+    const bc = /beginbfchar([\s\S]*?)endbfchar/g;
+    while ((m = bc.exec(s)) !== null) {
+      const body = m[1];
+      const pr = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g;
+      let p;
+      while ((p = pr.exec(body)) !== null) map.set(parseInt(p[1], 16), utf16be(p[2]));
+    }
+    const br = /beginbfrange([\s\S]*?)endbfrange/g;
+    while ((m = br.exec(s)) !== null) {
+      let body = m[1];
+      const ar = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*\[([\s\S]*?)\]/g;
+      let a;
+      while ((a = ar.exec(body)) !== null) {
+        const lo = parseInt(a[1], 16);
+        const dr = /<([0-9A-Fa-f]+)>/g;
+        let d, i = 0;
+        while ((d = dr.exec(a[3])) !== null) map.set(lo + (i++), utf16be(d[1]));
+      }
+      body = body.replace(/<[0-9A-Fa-f]+>\s*<[0-9A-Fa-f]+>\s*\[[\s\S]*?\]/g, " ");
+      const one = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g;
+      let o;
+      while ((o = one.exec(body)) !== null) {
+        const lo = parseInt(o[1], 16), hi = parseInt(o[2], 16);
+        if (hi < lo || hi - lo > 4000) continue;
+        const base = utf16be(o[3]);
+        for (let k = 0; k <= hi - lo; k++) map.set(lo + k, incrLast(base, k));
+      }
+    }
+    return map.size ? map : null;
+  }
+  function utf16be(hex) {
+    let h = String(hex).trim();
+    if (h.length % 4 !== 0) h = ("0000" + h).slice(-4) + h.slice(4);
+    if (h.length % 2) h = "0" + h;
+    let out = "";
+    for (let i = 0; i + 3 < h.length; i += 4) out += String.fromCharCode(parseInt(h.substr(i, 4), 16));
+    return out;
+  }
+  function incrLast(base, by) {
+    if (!base || !by) return base;
+    return base.slice(0, -1) + String.fromCharCode(base.charCodeAt(base.length - 1) + by);
+  }
+
+  // ── 글자 폭 추정 ────────────────────────────────────────────
+  function charWidth(ch, size) {
+    const c = ch.charCodeAt(0);
+    if (c >= 0xAC00 && c <= 0xD7A3) return size;
+    if (c >= 0x3130 && c <= 0x318F) return size;
+    if (c >= 0x4E00 && c <= 0x9FFF) return size;
+    if (c >= 0xFF00 && c <= 0xFF60) return size;
+    if (ch >= "0" && ch <= "9") return size * 0.556;
+    if (ch === " ") return size * 0.25;
+    if (".:;,'".indexOf(ch) >= 0) return size * 0.28;
+    if (ch === "(" || ch === ")") return size * 0.33;
+    if (ch === "-" || ch === "/" || ch === "%") return size * 0.4;
+    return size * 0.52;
+  }
+
+  // ── 콘텐츠 스트림 해석 ──────────────────────────────────────
+  function interpret(content, pageH, pageIndex, fonts) {
+    const runs = [];
+    let tm = [1, 0, 0, 1, 0, 0], tlm = [1, 0, 0, 1, 0, 0], ctm = [1, 0, 0, 1, 0, 0];
+    const gstack = [];
+    let fontSize = 12, cmap = null, twoByte = true;
+    const stack = [];
+    let i = 0;
+    const n = content.length;
+
+    const mul = (a, b) => [
+      a[0] * b[0] + a[1] * b[2], a[0] * b[1] + a[1] * b[3],
+      a[2] * b[0] + a[3] * b[2], a[2] * b[1] + a[3] * b[3],
+      a[4] * b[0] + a[5] * b[2] + b[4], a[4] * b[1] + a[5] * b[3] + b[5]
+    ];
+    const decode = (raw) => {
+      if (!raw) return "";
+      if (cmap) {
+        let s = "";
+        for (let k = 0; k + 1 < raw.length; k += 2) {
+          const code = ((raw.charCodeAt(k) & 0xff) << 8) | (raw.charCodeAt(k + 1) & 0xff);
+          const u = cmap.get(code);
+          if (u) s += u;
+        }
+        return s;
+      }
+      if (twoByte) {
+        let s = "";
+        for (let k = 0; k + 1 < raw.length; k += 2) {
+          s += String.fromCharCode(((raw.charCodeAt(k) & 0xff) << 8) | (raw.charCodeAt(k + 1) & 0xff));
+        }
+        return s;
+      }
+      let s = "";
+      for (let k = 0; k < raw.length; k++) {
+        const c = raw.charCodeAt(k);
+        if (c >= 32 && c < 127) s += raw.charAt(k);
+        else if (c === 10 || c === 13) s += " ";
+      }
+      return s;
+    };
+    const measure = (raw) => {
+      let w = 0;
+      if (cmap) {
+        for (let k = 0; k + 1 < raw.length; k += 2) {
+          const code = ((raw.charCodeAt(k) & 0xff) << 8) | (raw.charCodeAt(k + 1) & 0xff);
+          const u = cmap.get(code);
+          if (!u) { w += fontSize * 0.5; continue; }
+          for (let q = 0; q < u.length; q++) w += charWidth(u.charAt(q), fontSize);
+        }
+      } else if (twoByte) {
+        w = (raw.length / 2) * fontSize;
+      } else {
+        for (let k = 0; k < raw.length; k++) w += charWidth(raw.charAt(k), fontSize);
+      }
+      return w;
+    };
+
+    while (i < n) {
+      const c = content.charAt(i);
+      if (c === " " || c === "\t" || c === "\r" || c === "\n" || c === "\f" || c === "\0") { i++; continue; }
+      if (c === "%") { while (i < n && content.charAt(i) !== "\r" && content.charAt(i) !== "\n") i++; continue; }
+      if (c === "(") {
+        let s = "", depth = 1;
+        i++;
+        while (i < n) {
+          const ch = content.charAt(i);
+          if (ch === "\\") {
+            i++;
+            if (i >= n) break;
+            const e = content.charAt(i);
+            if (e === "n") { s += "\n"; i++; }
+            else if (e === "r") { s += "\r"; i++; }
+            else if (e === "t") { s += "\t"; i++; }
+            else if (e === "b") { s += "\b"; i++; }
+            else if (e === "f") { s += "\f"; i++; }
+            else if (e === "(") { s += "("; i++; }
+            else if (e === ")") { s += ")"; i++; }
+            else if (e === "\\") { s += "\\"; i++; }
+            else if (e === "\r") { i++; if (i < n && content.charAt(i) === "\n") i++; }
+            else if (e === "\n") { i++; }
+            else if (e >= "0" && e <= "7") {
+              let v = 0, cnt = 0;
+              while (i < n && cnt < 3 && content.charAt(i) >= "0" && content.charAt(i) <= "7") {
+                v = v * 8 + (content.charCodeAt(i) - 48); i++; cnt++;
+              }
+              s += String.fromCharCode(v & 0xff);
+            } else { s += e; i++; }
+            continue;
+          }
+          if (ch === "(") { depth++; s += ch; i++; continue; }
+          if (ch === ")") { depth--; i++; if (depth === 0) break; s += ch; continue; }
+          s += ch; i++;
+        }
+        stack.push(s);
+        continue;
+      }
+      if (c === "<") {
+        if (content.charAt(i + 1) === "<") { i += 2; continue; }
+        const j = content.indexOf(">", i);
+        if (j < 0) break;
+        let hex = content.substring(i + 1, j).replace(/\s/g, "");
+        if (hex.length % 2) hex += "0";
+        let s = "";
+        for (let k = 0; k + 1 < hex.length; k += 2) s += String.fromCharCode(parseInt(hex.substr(k, 2), 16));
+        stack.push(s);
+        i = j + 1;
+        continue;
+      }
+      if (c === ">") { i += (content.charAt(i + 1) === ">") ? 2 : 1; continue; }
+      if (c === "[") { stack.push({ arr: [] }); i++; continue; }
+      if (c === "]") { i++; continue; }
+      if (c === "/") {
+        let j = i + 1;
+        while (j < n && " \t\r\n\f/[]<>()%{}".indexOf(content.charAt(j)) < 0) j++;
+        stack.push("/" + content.substring(i + 1, j));
+        i = j;
+        continue;
+      }
+      let j = i;
+      while (j < n && " \t\r\n\f/[]<>()%{}".indexOf(content.charAt(j)) < 0) j++;
+      const word = content.substring(i, j);
+      i = (j > i) ? j : i + 1;
+      const num = (word !== "" && /^[-+.\d]/.test(word)) ? parseFloat(word) : NaN;
+      if (!isNaN(num)) {
+        const last = stack[stack.length - 1];
+        if (last && last.arr) last.arr.push(num); else stack.push(num);
+        continue;
+      }
+
+      switch (word) {
+        case "q": gstack.push(ctm.slice()); break;
+        case "Q": if (gstack.length) ctm = gstack.pop(); break;
+        case "cm":
+          if (stack.length >= 6) {
+            const s = stack.slice(-6).map(Number);
+            ctm = mul(s, ctm);
+          }
+          break;
+        case "BT": tm = [1, 0, 0, 1, 0, 0]; tlm = tm.slice(); break;
+        case "Tf":
+          if (stack.length >= 2) {
+            fontSize = Number(stack[stack.length - 1]) || 12;
+            const fn = String(stack[stack.length - 2] || "");
+            cmap = fonts[fn.replace(/^\//, "")] || null;
+            twoByte = !!cmap;
+          }
+          break;
+        case "Tm":
+          if (stack.length >= 6) {
+            const s = stack.slice(-6).map(Number);
+            tm = s.slice(); tlm = s.slice();
+          }
+          break;
+        case "Td":
+          if (stack.length >= 2) {
+            tlm[4] += Number(stack[stack.length - 2]);
+            tlm[5] += Number(stack[stack.length - 1]);
+            tm = tlm.slice();
+          }
+          break;
+        case "TD":
+          if (stack.length >= 2) {
+            tlm[4] += Number(stack[stack.length - 2]);
+            tlm[5] += Number(stack[stack.length - 1]);
+            tm = tlm.slice();
+          }
+          break;
+        case "T*": tlm[5] -= fontSize; tm = tlm.slice(); break;
+        case "Tj": case "TJ": case "'": case "\"": {
+          let txt = "", adv = 0;
+          for (const o of stack) {
+            if (typeof o === "string") {
+              txt += decode(o);
+              adv += measure(o);
+            } else if (o && o.arr) {
+              for (const el of o.arr) {
+                if (typeof el === "string") {
+                  txt += decode(el);
+                  adv += measure(el);
+                } else if (typeof el === "number") {
+                  adv -= el / 1000 * fontSize;
+                }
+              }
+            }
+          }
+          if (txt.length) {
+            const x = tm[4] * ctm[0] + tm[5] * ctm[2] + ctm[4];
+            const y = tm[4] * ctm[1] + tm[5] * ctm[3] + ctm[5];
+            runs.push({ text: txt, x, yTop: pageH - y - fontSize * 0.82, w: Math.max(1, adv), h: fontSize * 1.05, page: pageIndex });
+          }
+          tm[4] += adv * tm[0];
+          tm[5] += adv * tm[1];
+          break;
+        }
+        default: break;
+      }
+      stack.length = 0;
+    }
+    return runs;
+  }
+
+  /** 한 셀을 조각내 그린 경우("248." + "0")를 잇는다 */
+  function mergeTouching(runs) {
+    if (runs.length < 2) return runs;
+    const sorted = runs.slice().sort((a, b) => {
+      const ca = a.yTop + a.h * 0.5, cb = b.yTop + b.h * 0.5;
+      return ca !== cb ? ca - cb : a.x - b.x;
+    });
+    const out = [];
+    for (const r of sorted) {
+      const prev = out.length ? out[out.length - 1] : null;
+      if (prev) {
+        const ca = prev.yTop + prev.h * 0.5, cb = r.yTop + r.h * 0.5;
+        const size = Math.max(prev.h, r.h);
+        const gap = r.x - (prev.x + prev.w);
+        if (Math.abs(ca - cb) <= size * 0.75 && gap <= size * 0.22 && gap >= -size * 0.9
+            && !/\s$/.test(prev.text) && !/^\s/.test(r.text)) {
+          prev.text += r.text;
+          prev.w = Math.max(prev.x + prev.w, r.x + r.w) - prev.x;
+          prev.yTop = Math.min(prev.yTop, r.yTop);
+          prev.h = Math.max(prev.h, r.h);
+          continue;
+        }
+      }
+      out.push(Object.assign({}, r));
+    }
+    return out;
+  }
+
+  /** 페이지에서 텍스트 + 좌표 토큰 추출 */
+  async function extract(buffer) {
+    const u8 = new Uint8Array(buffer);
+    const str = latin1(u8);
+    if (str.indexOf("%PDF") < 0) throw new Error("PDF 형식이 아닙니다.");
+    const objs = scanObjects(str);
+
+    const pages = [];
+    objs.forEach((o) => { if (/\/Type\s*\/Page(?![sA-Za-z])/.test(o.dict)) pages.push(o); });
+    pages.sort((a, b) => a.num - b.num);
+
+    const res = { text: "", toks: [], pages: pages.length, chars: 0 };
+
+    for (let pi = 0; pi < pages.length; pi++) {
+      const page = pages[pi];
+      let pageH = 842;
+      const mb = /\/MediaBox\s*\[([^\]]*)\]/.exec(page.dict);
+      if (mb) {
+        const nums = mb[1].trim().split(/\s+/).map(Number);
+        if (nums.length >= 4) pageH = Math.abs(nums[3] - nums[1]);
+      }
+
+      // 폰트 이름 → ToUnicode
+      const fonts = {};
+      let fontDict = null;
+      const fd = /\/Font\s*<<([\s\S]*?)>>/.exec(page.dict);
+      if (fd) fontDict = fd[1];
+      else {
+        const rm = /\/Resources\s+(\d+)\s+0\s+R/.exec(page.dict);
+        if (rm) {
+          const resObj = objs.get(parseInt(rm[1], 10));
+          if (resObj) {
+            const fd2 = /\/Font\s*<<([\s\S]*?)>>/.exec(resObj.dict);
+            if (fd2) fontDict = fd2[1];
+          }
+        }
+      }
+      if (fontDict) {
+        const fr = /\/([A-Za-z0-9#_.\-]+)\s+(\d+)\s+0\s+R/g;
+        let fm;
+        const pending = [];
+        while ((fm = fr.exec(fontDict)) !== null) pending.push([fm[1], parseInt(fm[2], 10)]);
+        for (const [name, ref] of pending) {
+          const fobj = objs.get(ref);
+          if (!fobj) continue;
+          const tm = /\/ToUnicode\s+(\d+)\s+0\s+R/.exec(fobj.dict);
+          if (!tm) continue;
+          const cb = await streamBytes(objs.get(parseInt(tm[1], 10)), u8);
+          if (!cb) continue;
+          fonts[name] = parseCMap(latin1(cb));
+        }
+      }
+
+      // 콘텐츠 스트림
+      const refs = [];
+      const one = /\/Contents\s+(\d+)\s+0\s+R/.exec(page.dict);
+      if (one) refs.push(parseInt(one[1], 10));
+      else {
+        const arr = /\/Contents\s*\[([^\]]*)\]/.exec(page.dict);
+        if (arr) {
+          const rr = /(\d+)\s+0\s+R/g;
+          let x;
+          while ((x = rr.exec(arr[1])) !== null) refs.push(parseInt(x[1], 10));
+        }
+      }
+      let content = "";
+      for (const ref of refs) {
+        const cb = await streamBytes(objs.get(ref), u8);
+        if (cb) content += latin1(cb) + "\n";
+      }
+      if (!content) continue;
+
+      const runs = mergeTouching(interpret(content, pageH, pi, fonts));
+
+      // 줄 묶기 → 평문
+      const sorted = runs.slice().sort((a, b) => {
+        const ca = a.yTop + a.h * 0.5, cb = b.yTop + b.h * 0.5;
+        return ca !== cb ? ca - cb : a.x - b.x;
+      });
+      const lines = [];
+      let cur = [], curY = NaN, curH = 0;
+      for (const r of sorted) {
+        const cy = r.yTop + r.h * 0.5;
+        if (!cur.length || Math.abs(cy - curY) <= Math.max(1.6, curH * 0.55)) {
+          cur.push(r);
+          if (cur.length === 1) curY = cy;
+          curH = Math.max(curH, r.h);
+        } else {
+          lines.push(cur); cur = [r]; curY = cy; curH = r.h;
+        }
+      }
+      if (cur.length) lines.push(cur);
+      for (const line of lines) {
+        line.sort((a, b) => a.x - b.x);
+        let s = "", prevEnd = NaN, size = 0;
+        for (const r of line) {
+          if (!isNaN(prevEnd) && r.x - prevEnd > Math.max(2, size * 0.30)) s += " ";
+          s += r.text;
+          prevEnd = r.x + r.w;
+          size = Math.max(size, r.h);
+        }
+        s = s.trim();
+        if (s) { res.text += s + "\n"; res.chars += s.length; }
+      }
+      res.text += "\n";
+
+      // 좌표 토큰 (포인트 → 정수)
+      for (const r of runs) {
+        if (!r.text || !r.text.trim()) continue;
+        const top = r.yTop + pi * 100000;
+        res.toks.push({
+          text: r.text,
+          l: Math.round(r.x * 2), t: Math.round(top * 2),
+          r: Math.round((r.x + r.w) * 2), b: Math.round((top + r.h) * 2)
+        });
+      }
+    }
+    return res;
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // 표 파서 (설치형 PayslipParser 와 같은 규칙)
+  // ══════════════════════════════════════════════════════════════
+  const SUM_LABELS = ["지급액계","지급총액","지급액합계","총지급액","급여총액","지급합계","지급계"];
+  const DED_LABELS = ["공제액계","공제총액","공제액합계","총공제액","공제합계","공제계"];
+  const NET_LABELS = ["실지급액","차인지급액","실수령액","실지급"];
+  const ALL_ITEM = ["기본급","평일연장","시간외수당","휴일근무","휴일근로수당","휴일특근","휴일연장","특근연장",
+    "야간근무","야간근로","야간수당","직책수당","직무수당","소득세","지방소득세","주민세","건강보험","국민연금",
+    "고용보험","노조회비","교대수당","교대근무수당","상주휴게수당","근속수당","소급분","기본시급","통상시급",
+    "가족(본인)","가족(가족)","가족수당(본인)","가족수당(가족)"];
+
+  const norm = (s) => String(s || "").replace(/[\s()\[\]{}:,.·\-]/g, "");
+  function containsAny(key, labels) {
+    if (!key) return false;
+    for (const l of labels) if (key.indexOf(norm(l)) >= 0) return true;
+    return false;
+  }
+  function matchRank(key, labels) {
+    if (!key) return 3;
+    let best = 3;
+    for (const l of labels) {
+      const n = norm(l);
+      if (!n) continue;
+      if (key === n) return 0;
+      if (key.indexOf(n) === 0) best = Math.min(best, 1);
+      else if (key.indexOf(n) >= 0) best = Math.min(best, 2);
+    }
+    return best;
+  }
+  function money(raw) {
+    if (raw == null) return null;
+    let s = String(raw).replace(/[원₩￦\s]/g, "").trim();
+    if (!s) return null;
+    const n = s.replace(/[^0-9.,]/g, "");
+    if (!n) return null;
+    const hasComma = n.indexOf(",") >= 0, hasDot = n.indexOf(".") >= 0;
+    let t = n;
+    if (hasDot) {
+      const last = t.substring(t.lastIndexOf(".") + 1);
+      if (last.length !== 3) return null;
+      if (hasComma && t.lastIndexOf(",") > t.lastIndexOf(".")) return null;
+      t = t.replace(/\./g, "");
+    }
+    if (hasComma) t = t.replace(/,/g, "");
+    if (t.length < 4 || t.length > 9) return null;
+    if (t.length === 4 && !hasComma && !hasDot) return null;
+    const v = parseInt(t, 10);
+    return (v >= 1000) ? v : null;
+  }
+  function moneyList(text) {
+    const out = [];
+    if (!text) return out;
+    const re = /[0-9][0-9,.]{2,14}/g;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const v = money(m[0]);
+      if (v != null) out.push(v);
+    }
+    return out;
+  }
+  const isFormula = (s) => !!s && (s.indexOf("×") >= 0 || s.indexOf("=") >= 0 || s.indexOf("✕") >= 0);
+  const vOverlap = (a, b) => Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
+  const hOverlapRatio = (label, amount) => {
+    const ov = Math.max(0, Math.min(label.r, amount.r) - Math.max(label.l, amount.l));
+    return ov / Math.max(1, amount.r - amount.l);
+  };
+  const cx = (t) => (t.l + t.r) / 2;
+  const cy = (t) => (t.t + t.b) / 2;
+  const th = (t) => Math.max(1, t.b - t.t);
+
+  function labelOrder(line) {
+    const s = String(line || "").replace(/\s+/g, "");
+    const hits = [];
+    const collect = (labels, idx) => {
+      for (const l of labels) {
+        const p = s.indexOf(l);
+        if (p >= 0) { hits.push([p, idx]); return; }
+      }
+    };
+    collect(SUM_LABELS, 0); collect(DED_LABELS, 1); collect(NET_LABELS, 2);
+    hits.sort((a, b) => a[0] - b[0]);
+    return hits.map((h) => h[1]);
+  }
+
+  function sameLineAmount(text, labels) {
+    if (!text) return 0;
+    const lines = String(text).split("\n");
+    for (const line of lines) {
+      for (const lab of labels) {
+        let end = -1;
+        let idx = line.indexOf(lab);
+        if (idx >= 0) end = idx + lab.length;
+        else {
+          const re = new RegExp(lab.split("").map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s*"));
+          const m = re.exec(line);
+          if (m) end = m.index + m[0].length;
+        }
+        if (end < 0) continue;
+        const tail = line.substring(end);
+        const re2 = /[0-9][0-9,.]{2,14}/g;
+        let mm;
+        while ((mm = re2.exec(tail)) !== null) {
+          if (mm.index > 60) break;
+          const v = money(mm[0]);
+          if (v != null) return v;
+        }
+      }
+    }
+    return 0;
+  }
+
+  function rowOrderAmount(cells, labels) {
+    for (const L of cells) {
+      if (!containsAny(norm(L.text), labels)) continue;
+      if (isFormula(L.text)) continue;
+      if (moneyList(L.text).length) continue;
+      if (labelOrder(L.text).length >= 2) continue;
+
+      const rowLabels = [];
+      for (const C of cells) {
+        if (vOverlap(L, C) * 2 < Math.min(th(L), th(C))) continue;
+        if (moneyList(C.text).length) continue;
+        if (isFormula(C.text)) continue;
+        if (matchRank(norm(C.text), ALL_ITEM) > 2 && C !== L) continue;
+        const k = norm(C.text);
+        if (!k || k.length > 14) continue;
+        if (rowLabels.some((e) => Math.abs(cx(e) - cx(C)) < Math.max(2, (C.r - C.l) / 2))) continue;
+        rowLabels.push(C);
+      }
+      if (!rowLabels.includes(L)) rowLabels.push(L);
+      if (rowLabels.length < 2 || rowLabels.length > 8) continue;
+      rowLabels.sort((a, b) => cx(a) - cx(b));
+      const idx = rowLabels.indexOf(L);
+
+      for (const M of cells) {
+        if (M.t < L.b - th(L) * 0.25) continue;
+        if (M.t > L.b + th(L) * 2.9) continue;
+        if (moneyList(M.text).length !== 1) continue;
+        const amountRow = cells.filter((C) => moneyList(C.text).length === 1
+          && Math.abs(cy(C) - cy(M)) <= Math.max(2, th(M) * 0.55));
+        if (amountRow.length !== rowLabels.length) continue;
+        amountRow.sort((a, b) => a.l - b.l);
+        const v = money(amountRow[idx].text);
+        if (v != null) return v;
+      }
+    }
+    return 0;
+  }
+
+  function amountNear(cells, text, labels) {
+    // (a) 한 칸에 라벨 + 금액
+    for (let pass = 0; pass < 2; pass++) {
+      for (const c of cells) {
+        const rank = matchRank(norm(c.text), labels);
+        if (rank > 2) continue;
+        if (pass === 0 && rank !== 0) continue;
+        if (isFormula(c.text)) continue;
+        const ml = moneyList(c.text);
+        if (ml.length) return ml[ml.length - 1];
+      }
+    }
+    // (b) 좌표
+    let best = 0, bestRank = 3, bestScore = Infinity;
+    for (const L of cells) {
+      const rank = matchRank(norm(L.text), labels);
+      if (rank > 2) continue;
+      if (labelOrder(L.text).length >= 2) continue;
+      for (const A of cells) {
+        if (A === L || isFormula(A.text)) continue;
+        if (moneyList(A.text).length !== 1) continue;
+        const v = money(A.text);
+        if (v == null) continue;
+        let score = Infinity;
+        if (vOverlap(L, A) * 2 >= Math.min(th(L), th(A)) && A.l >= L.r - (L.r - L.l) / 3) {
+          score = (A.l - L.r) / th(L) * 0.3;
+        } else if (A.t >= L.b - th(L) * 0.35 && A.t <= L.b + th(L) * 2.6 && hOverlapRatio(L, A) >= 0.20) {
+          score = 2.0 + (A.t - L.b) / th(L);
+        }
+        if (score === Infinity) continue;
+        if (rank < bestRank || (rank === bestRank && score < bestScore)) {
+          bestRank = rank; bestScore = score; best = v;
+        }
+      }
+    }
+    if (best > 0) return best;
+    const ro = rowOrderAmount(cells, labels);
+    if (ro > 0) return ro;
+    return sameLineAmount(text, labels);
+  }
+
+  function summaryFromRows(cells, text) {
+    const out = [0, 0, 0];
+    if (text) {
+      const ls = String(text).split("\n");
+      for (let i = 0; i < ls.length; i++) {
+        const order = labelOrder(ls[i]);
+        const n = order.length;
+        if (n < 2) continue;
+        for (let j = i + 1; j <= Math.min(i + 3, ls.length - 1); j++) {
+          const vals = moneyList(ls[j]);
+          if (vals.length === n) {
+            let p = 0;
+            for (const o of order) out[o] = vals[p++];
+            if (out.some((v) => v > 0)) return out;
+          }
+          if (vals.length > n) break;
+        }
+      }
+    }
+    for (const H of cells) {
+      const order = labelOrder(H.text);
+      if (order.length < 2) continue;
+      const band = cells.filter((A) => A !== H
+        && A.t >= H.b - th(H) * 0.35 && A.t <= H.b + th(H) * 3.2
+        && cx(A) >= H.l - (H.r - H.l) * 0.15 && cx(A) <= H.r + (H.r - H.l) * 0.15
+        && moneyList(A.text).length);
+      if (!band.length) continue;
+      band.sort((a, b) => (a.t !== b.t ? a.t - b.t : a.l - b.l));
+      let i = 0;
+      while (i < band.length) {
+        const row = [band[i]];
+        const y = band[i].t;
+        let j = i + 1;
+        while (j < band.length && Math.abs(band[j].t - y) <= th(band[i])) { row.push(band[j]); j++; }
+        if (row.length === order.length) {
+          row.sort((a, b) => a.l - b.l);
+          for (let k = 0; k < row.length; k++) {
+            const mv = moneyList(row[k].text);
+            if (mv.length) out[order[k]] = mv[mv.length - 1];
+          }
+          if (out.some((v) => v > 0)) return out;
+        }
+        i = Math.max(j, i + 1);
+      }
+    }
+    return out;
+  }
+
+  function summaryFromRegex(text) {
+    const out = [0, 0, 0];
+    if (!text) return out;
+    const s = String(text).replace(/[ \t\u00a0]+/g, " ");
+    const re = /(?:지급\s*액?\s*계|지급\s*총\s*액|총\s*지급\s*액)[\s\S]{0,80}?(?:공제\s*액?\s*계|공제\s*총\s*액|총\s*공제\s*액)[\s\S]{0,80}?(?:실\s*지급\s*액|차\s*인\s*지급\s*액|실\s*수\s*령\s*액)[\s\S]{0,240}/g;
+    let m;
+    while ((m = re.exec(s)) !== null) {
+      const seg = s.substring(m.index, Math.min(s.length, m.index + m[0].length + 240));
+      const vals = moneyList(seg);
+      if (vals.length < 3) continue;
+      const [pay, ded, net] = vals;
+      if (pay > ded && pay > net && net > 0) return [pay, ded, net];
+    }
+    return out;
+  }
+
+  function detectYearMonth(text) {
+    let best = [0, 0], bestScore = -1;
+    const patterns = [/(20[2-3][0-9])\s*년\s*(1[0-2]|0?[1-9])\s*월?/g, /(20[2-3][0-9])\s*[.\-/]\s*(1[0-2]|0?[1-9])(?![0-9])/g];
+    patterns.forEach((re, pi) => {
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const y = parseInt(m[1], 10), mo = parseInt(m[2], 10);
+        if (mo < 1 || mo > 12) continue;
+        let score = pi === 0 ? 2 : 1;
+        const around = text.substring(Math.max(0, m.index - 30), Math.min(text.length, m.index + m[0].length + 30));
+        if (/급여|명세서|귀속|임금|지급/.test(around)) score += 3;
+        if (score > bestScore) { bestScore = score; best = [y, mo]; }
+      }
+    });
+    return best;
+  }
+
+  function parse(toks, text) {
+    const cells = toks.filter((t) => t.text && t.text.trim());
+    const r = {
+      basePay: 0, otPay: 0, holidayPay: 0, holidayOtPay: 0, nightPay: 0,
+      dutyPay: 0, positionPay: 0, shiftPay: 0, tenurePay: 0, breakPay: 0,
+      familySelf: 0, familyOther: 0, retroPay: 0, baseRate: 0, ordinaryRate: 0,
+      totalPay: 0, deduction: 0, netPay: 0,
+      incomeTax: 0, residentTax: 0, healthIns: 0, pension: 0, employIns: 0, unionFee: 0,
+      year: 0, month: 0
+    };
+    r.totalPay = amountNear(cells, text, SUM_LABELS);
+    r.deduction = amountNear(cells, text, DED_LABELS);
+    r.netPay = amountNear(cells, text, NET_LABELS);
+
+    if (!r.totalPay || !r.deduction || !r.netPay) {
+      const rows = summaryFromRows(cells, text);
+      if (!r.totalPay && rows[0]) r.totalPay = rows[0];
+      if (!r.deduction && rows[1]) r.deduction = rows[1];
+      if (!r.netPay && rows[2]) r.netPay = rows[2];
+    }
+    if (!r.totalPay || !r.deduction) {
+      const rx = summaryFromRegex(text);
+      if (!r.totalPay && rx[0]) r.totalPay = rx[0];
+      if (!r.deduction && rx[1]) r.deduction = rx[1];
+      if (!r.netPay && rx[2]) r.netPay = rx[2];
+    }
+
+    r.basePay      = amountNear(cells, text, ["기본급", "기본급여"]);
+    r.otPay        = amountNear(cells, text, ["평일연장", "평일연장수당", "시간외수당"]);
+    r.holidayPay   = amountNear(cells, text, ["휴일근무", "휴일근로수당", "휴일특근", "휴일수당"]);
+    r.holidayOtPay = amountNear(cells, text, ["휴일연장", "휴일연장수당", "특근연장"]);
+    r.nightPay     = amountNear(cells, text, ["야간근무", "야간근로", "야간수당", "심야수당"]);
+    r.positionPay  = amountNear(cells, text, ["직책수당", "직책", "직위수당"]);
+    r.dutyPay      = amountNear(cells, text, ["직무수당", "직무"]);
+    r.shiftPay     = amountNear(cells, text, ["교대수당", "교대근무수당", "교대조수당"]);
+    r.retroPay     = amountNear(cells, text, ["소급분", "소급액", "소급"]);
+    r.tenurePay    = amountNear(cells, text, ["근속수당", "근속"]);
+    r.familySelf   = amountNear(cells, text, ["가족(본인)", "가족수당(본인)", "가족본인"]);
+    r.familyOther  = amountNear(cells, text, ["가족(가족)", "가족수당(가족)", "가족부양"]);
+    r.breakPay     = amountNear(cells, text, ["상주휴게수당", "상주휴게"]);
+    r.baseRate     = amountNear(cells, text, ["기본시급", "기본급시급"]);
+    r.ordinaryRate = amountNear(cells, text, ["통상시급", "통상임금시급"]);
+
+    r.incomeTax   = amountNear(cells, text, ["소득세", "갑근세"]);
+    r.residentTax = amountNear(cells, text, ["주민세", "지방소득세", "소득세할주민세"]);
+    r.healthIns   = amountNear(cells, text, ["건강보험", "건강보험료", "국민건강보험"]);
+    r.pension     = amountNear(cells, text, ["국민연금", "국민연금보험료", "연금보험료"]);
+    r.employIns   = amountNear(cells, text, ["고용보험", "고용보험료"]);
+    r.unionFee    = amountNear(cells, text, ["노조회비", "노동조합비", "조합비"]);
+
+    const ym = detectYearMonth(text);
+    r.year = ym[0]; r.month = ym[1];
+
+    if (!r.netPay && r.totalPay > 0 && r.deduction > 0) r.netPay = r.totalPay - r.deduction;
+    return r;
+  }
+
+  return { extract, parse, inflate: spInflateRaw, money, moneyList };
+})();
+
+  </script>
+  <script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   v1.4.3 ④-PDF — 웹 화면 연결: 파일 선택 → 검토창 → 설정 동기화
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+  let lastParsed = null;   // 최근 인식 결과
+
+  function wonText(v) { return (v || 0).toLocaleString("ko-KR"); }
+  function parseWonId(id) {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    const n = parseInt(String(el.innerText).replace(/[^0-9-]/g, ""), 10);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function ensureInput() {
+    let inp = document.getElementById("payslipPdfInput");
+    if (!inp) {
+      inp = document.createElement("input");
+      inp.type = "file";
+      inp.id = "payslipPdfInput";
+      inp.accept = ".pdf,application/pdf";
+      inp.style.display = "none";
+      inp.addEventListener("change", (e) => {
+        const f = e.target.files && e.target.files[0];
+        e.target.value = "";
+        if (f) handleFile(f);
+      });
+      document.body.appendChild(inp);
+    }
+    return inp;
+  }
+
+  window.openPayslipPdfPicker = function () {
+    ensureInput().click();
+  };
+
+  async function handleFile(file) {
+    const overlay = showOverlay(
+      `<div style="text-align:center; padding:26px 8px;">
+         <div style="font-size:34px; margin-bottom:10px;">📄</div>
+         <div style="font-weight:800; font-size:16px; color:var(--ink);">명세서 PDF 읽는 중...</div>
+         <div style="font-size:12.5px; color:var(--sub); margin-top:6px;">PDF 안의 디지털 텍스트를 그대로 추출합니다 (0.1초)</div>
+       </div>`);
+    try {
+      const buf = await file.arrayBuffer();
+      const head = new TextDecoder("latin1").decode(new Uint8Array(buf.slice(0, 5)));
+      if (head.indexOf("%PDF") < 0) throw new Error("PDF 파일이 아닙니다. 다운로드 폴더의 명세서 PDF 를 선택해 주세요.");
+      const out = await SP_PDF.extract(buf);
+      if (!out || out.chars < 20) {
+        throw new Error("PDF 에서 글자를 찾지 못했습니다. 사진으로 찍힌(스캔) PDF 는 설치형 앱의 [급여명세서 카메라 촬영]을 이용해 주세요.");
+      }
+      const pr = SP_PDF.parse(out.toks, out.text);
+      if (!pr.basePay && !pr.totalPay && !pr.netPay) {
+        throw new Error("명세서 항목(기본급·지급액계 등)을 찾지 못했습니다. 회사에서 발급한 원본 PDF 인지 확인해 주세요.");
+      }
+      lastParsed = pr;
+      overlay.remove();
+      showReview(pr, file.name);
+    } catch (err) {
+      overlay.remove();
+      showOverlay(
+        `<div style="text-align:center; padding:22px 6px;">
+           <div style="font-size:30px; margin-bottom:8px;">⚠️</div>
+           <div style="font-weight:800; font-size:15.5px; color:var(--ink); margin-bottom:8px;">PDF 를 읽지 못했습니다</div>
+           <div style="font-size:13px; color:var(--sub); line-height:1.5; margin-bottom:16px;">${String(err && err.message || err)}</div>
+           <button type="button" onclick="this.closest('.sp-pdf-ov').remove()"
+             style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--blue); color:#fff; font-weight:800; font-size:14px; font-family:inherit; cursor:pointer;">확인</button>
+         </div>`, true);
+    }
+  }
+
+  function showOverlay(inner, keepOpen) {
+    const ov = document.createElement("div");
+    ov.className = "sp-pdf-ov";
+    ov.style.cssText = "position:fixed; inset:0; z-index:99998; background:rgba(8,15,28,0.62); display:flex; align-items:center; justify-content:center; padding:16px;";
+    const card = document.createElement("div");
+    card.style.cssText = "background:var(--surface); color:var(--ink); border:1px solid var(--border); border-radius:20px; width:100%; max-width:480px; max-height:88vh; overflow-y:auto; padding:18px; box-shadow:0 18px 60px rgba(0,0,0,0.45);";
+    card.innerHTML = inner;
+    ov.appendChild(card);
+    if (!keepOpen) {
+      ov.addEventListener("click", (e) => { if (e.target === ov) ov.remove(); });
+    }
+    document.body.appendChild(ov);
+    return ov;
+  }
+
+  const ROWS = [
+    ["basePay", "기본급"],
+    ["otPay", "평일연장(시간외)"],
+    ["holidayPay", "휴일근무"],
+    ["holidayOtPay", "휴일연장"],
+    ["nightPay", "야간근무"],
+    ["dutyPay", "직무수당"],
+    ["shiftPay", "교대수당"],
+    ["totalPay", "지급총액"],
+    ["deduction", "공제총액"],
+    ["netPay", "실지급액"]
+  ];
+
+  function appAmountsFor(year, month) {
+    const prevY = curYear, prevM = curMonth;
+    const out = { gross: 0, ded: 0, net: 0 };
+    try {
+      curYear = year; curMonth = month;
+      if (typeof calculateMonthlyPayroll === "function") calculateMonthlyPayroll();
+      out.gross = parseWonId("heroGross");
+      out.ded = parseWonId("heroDed");
+      out.net = parseWonId("heroNetPay");
+    } catch (e) { /* 무시 */ }
+    finally {
+      curYear = prevY; curMonth = prevM;
+      try { if (typeof calculateMonthlyPayroll === "function") calculateMonthlyPayroll(); } catch (e) {}
+    }
+    return out;
+  }
+
+  function showReview(pr, fileName) {
+    const ymText = (pr.year && pr.month) ? `${pr.year}년 ${pr.month}월` : "귀속 연월 미확인";
+    const app = (pr.year && pr.month) ? appAmountsFor(pr.year, pr.month) : { gross: 0, ded: 0, net: 0 };
+
+    const rowsHtml = ROWS.map(([key, label]) => {
+      const v = pr[key] || 0;
+      return `<tr>
+        <td style="padding:7px 4px; font-size:13px; color:var(--ink); font-weight:${key === "netPay" ? 800 : 600};">${label}</td>
+        <td style="padding:7px 4px; text-align:right;">
+          <input id="pdfRow_${key}" type="text" inputmode="numeric" value="${v ? v : ""}" placeholder="미인식"
+            style="width:118px; text-align:right; padding:7px 9px; font-size:13.5px; font-weight:700; border-radius:9px;
+                   border:1px solid var(--border); background:var(--bg); color:${v ? "var(--ink)" : "var(--red)"}; font-family:inherit;">
+        </td>
+      </tr>`;
+    }).join("");
+
+    const diffHtml = (app.gross || app.net) ? `
+      <div style="margin-top:14px; padding:11px 12px; border-radius:12px; border:1px solid var(--border); background:var(--bg);">
+        <div style="font-size:11.5px; font-weight:800; color:var(--blue); margin-bottom:7px;">📊 앱 계산(${ymText})과 비교</div>
+        <div style="display:grid; grid-template-columns:1fr auto auto; gap:4px 10px; font-size:12.5px;">
+          <span style="color:var(--sub);">구분</span><span style="color:var(--sub); text-align:right;">앱 계산</span><span style="color:var(--sub); text-align:right;">명세서</span>
+          <span>세전 총지급</span><span style="text-align:right;">${wonText(app.gross)}</span><span style="text-align:right; font-weight:700;">${wonText(pr.totalPay)}</span>
+          <span>공제액</span><span style="text-align:right;">${wonText(app.ded)}</span><span style="text-align:right; font-weight:700;">${wonText(pr.deduction)}</span>
+          <span style="font-weight:800;">실수령액</span><span style="text-align:right;">${wonText(app.net)}</span><span style="text-align:right; font-weight:800; color:var(--blue);">${wonText(pr.netPay)}</span>
+        </div>
+        <div style="font-size:11px; color:var(--sub); margin-top:7px; line-height:1.45;">
+          • 기본급은 앱에서 209h 기준으로 산출하므로, 근무일수가 다른 달은 차이가 날 수 있습니다.<br>
+          • 차이의 원인은 달력의 근무 기록(정취·연장·휴일·야간)을 맞추면 좁혀집니다.
+        </div>
+      </div>` : "";
+
+    const ov = showOverlay(`
+      <div style="display:flex; align-items:flex-start; gap:8px; margin-bottom:4px;">
+        <div style="flex:1;">
+          <div style="font-size:17px; font-weight:800; color:var(--blue);">🧾 명세서 PDF 인식 결과</div>
+          <div style="font-size:12px; color:var(--sub); margin-top:4px; line-height:1.5;">
+            PDF 원본의 디지털 텍스트를 그대로 읽었습니다 · ${ymText}<br>
+            숫자를 눌러 바로 고칠 수 있어요.
+          </div>
+        </div>
+        <button type="button" onclick="this.closest('.sp-pdf-ov').remove()"
+          style="border:none; background:transparent; color:var(--sub); font-size:19px; cursor:pointer; padding:2px 6px;">✕</button>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <tbody>${rowsHtml}</tbody>
+      </table>
+
+      ${diffHtml}
+
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button type="button" id="pdfApplyBtn"
+          style="flex:1.4; padding:13px 10px; border-radius:13px; border:none; background:var(--blue); color:#fff; font-weight:800; font-size:13.5px; font-family:inherit; cursor:pointer;">
+          ⚡ 시급·수당을 앱 설정에 동기화</button>
+        <button type="button" id="pdfJumpBtn"
+          style="flex:1; padding:13px 10px; border-radius:13px; border:1px solid var(--border); background:var(--surface); color:var(--blue); font-weight:800; font-size:13px; font-family:inherit; cursor:pointer;">
+          📅 ${pr.year && pr.month ? pr.month + "월" : "해당월"}로 이동</button>
+      </div>
+      <div style="font-size:11px; color:var(--sub); margin-top:9px; line-height:1.5;">
+        • 동기화하면 기본시급·통상시급·직무수당이 설정에 저장되고, 이번 명세서 값이 기록으로 남습니다.<br>
+        • 공제액은 앱이 국세청 간이세액표로 자동 계산하므로 그대로 둡니다.
+      </div>
+      <div style="font-size:10.5px; color:var(--sub); opacity:0.75; margin-top:8px; word-break:break-all;">파일: ${String(fileName || "").replace(/</g, "&lt;")}</div>
+    `);
+
+    const applyBtn = ov.querySelector("#pdfApplyBtn");
+    applyBtn.addEventListener("click", () => {
+      const v = {};
+      for (const [key] of ROWS) {
+        const el = ov.querySelector(`#pdfRow_${key}`);
+        const n = parseInt(String(el.value || "").replace(/[^0-9-]/g, ""), 10);
+        v[key] = isNaN(n) ? 0 : n;
+      }
+      const ed = {};
+      if (pr.baseRate > 0) ed.setting_base = String(pr.baseRate);
+      if (pr.ordinaryRate > 0) ed.setting_ordinary = String(pr.ordinaryRate);
+      if (pr.dutyPay > 0) ed.setting_duty = String(pr.dutyPay);
+      if (pr.positionPay > 0) ed.setting_position = String(pr.positionPay);
+      Object.keys(ed).forEach((k) => { try { localStorage.setItem(k, ed[k]); } catch (e) {} });
+      try {
+        localStorage.setItem(`payslip_${pr.year}-${String(pr.month).padStart(2, "0")}`, JSON.stringify({
+          savedAt: new Date().toISOString(), values: v,
+          baseRate: pr.baseRate, ordinaryRate: pr.ordinaryRate
+        }));
+      } catch (e) {}
+      ov.remove();
+      try { if (typeof calculateMonthlyPayroll === "function") calculateMonthlyPayroll(); } catch (e) {}
+      if (typeof showToast === "function") showToast("명세서 값으로 시급·수당을 동기화했습니다.");
+    });
+
+    const jumpBtn = ov.querySelector("#pdfJumpBtn");
+    jumpBtn.addEventListener("click", () => {
+      ov.remove();
+      if (!pr.year || !pr.month) {
+        if (typeof showToast === "function") showToast("명세서에서 귀속 연월을 찾지 못했습니다.");
+        return;
+      }
+      curYear = pr.year; curMonth = pr.month;
+      chosenDayWeb = 1;
+      try { if (typeof renderCalendar === "function") renderCalendar(); } catch (e) {}
+      try { if (typeof calculateMonthlyPayroll === "function") calculateMonthlyPayroll(); } catch (e) {}
+      if (typeof showToast === "function") showToast(`${pr.year}년 ${pr.month}월 명세서의 달로 이동했습니다.`);
+    });
+  }
+
+  // 개발용 확인 창 (콘솔에서 SP_PDF 로직 점검)
+  window.spPdfDebug = { parseFile: async (file) => {
+    const buf = await file.arrayBuffer();
+    const out = await SP_PDF.extract(buf);
+    return { chars: out.chars, pages: out.pages, toks: out.toks.length, text: out.text, parsed: SP_PDF.parse(out.toks, out.text) };
+  } };
+})();
+
   </script>
 </body>
 </html>
