@@ -1222,7 +1222,7 @@
 
     /* v1.4.3 ② 완료 페이지 — 피코 손흔들기 */
     .ob-pico-stage {
-      position: relative; height: 188px; display: flex; align-items: flex-end; justify-content: center;
+      position: relative; height: 206px; display: flex; align-items: flex-end; justify-content: center;
       margin-bottom: 4px;
     }
     .ob-pico-glow {
@@ -1231,7 +1231,7 @@
     }
     .ob-pico-wrap { animation: obBob 1.9s ease-in-out infinite alternate; }
     .ob-pico {
-      width: 152px; height: auto; display: block; transform-origin: 50% 96%;
+      width: 182px; height: auto; display: block; transform-origin: 50% 96%;
       animation: obWave 1.25s ease-in-out infinite alternate;
     }
     @keyframes obWave { from { transform: rotate(-5.5deg); } to { transform: rotate(6deg); } }
@@ -4121,6 +4121,13 @@
       document.getElementById("mpSwipe").style.display = "none";
       document.querySelector(".mp-hint").style.display = "none";
       vibrate();
+      // display:none → block 된 뒤에야 scrollHeight 가 잡히므로 다음 프레임에 선택 연도로 맞춘다
+      requestAnimationFrame(() => {
+        const wheel = document.getElementById("ypWheel");
+        if (!wheel) return;
+        wheel.scrollTop = mpWheelSel * 42;
+        updateYearWheelHighlight();
+      });
     }
 
     function closeYearPanel(silent) {
@@ -5365,9 +5372,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       const rankEl = document.getElementById("obRank");
       const birthEl = document.getElementById("obBirth");
       const joinEl = document.getElementById("obJoin");
-      const call = obCalling(nameEl ? nameEl.value : "", rankEl ? rankEl.value : "") || "회원";
+      const liveName = nameEl ? nameEl.value : (localStorage.getItem("user_name") || "");
+      const liveRank = rankEl ? rankEl.value : (localStorage.getItem("user_duty") || "");
+      const call = obCalling(liveName, liveRank) || "회원님";
       let msg = "생년월일과 입사년월일을 입력하시면 정년까지 남은 날과 근속수당을 계산해 드립니다.";
-      const b = parseDate(birthEl ? birthEl.value : "");
+      const b = parseDate(birthEl ? birthEl.value : (localStorage.getItem("user_birth") || ""));
       if (b) {
         const sixty = new Date(b.getFullYear() + 60, b.getMonth(), b.getDate());
         const retire = new Date(b.getFullYear() + 60, 11, 31);   // 단협 제28조: 만 60세 도달 연도 12/31
@@ -5386,12 +5395,12 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
               + `정년일 ${retire.getFullYear()}.12.31까지 ${y}년 ${mo}개월 ${d}일(총 ${total.toLocaleString()}일) 남으셨네요!`;
         }
       }
-      const j = parseDate(joinEl ? joinEl.value : "");
+      const j = parseDate(joinEl ? joinEl.value : (localStorage.getItem("user_join") || ""));
       if (j) {
         const days = Math.floor((new Date() - j) / 86400000);
         if (days >= 0) {
           const serviceYear = Math.floor(days / 365.25) + 1;
-          const amt = calcTenureAllowance((joinEl ? joinEl.value : "").replace(/[^0-9]/g, ""));
+          const amt = calcTenureAllowance((joinEl ? joinEl.value : (localStorage.getItem("user_join") || "")).replace(/[^0-9]/g, ""));
           msg += `\n입사 ${serviceYear}년차 근속수당(${amt.toLocaleString()}원)이 자동 연동되었습니다.`;
         }
       }
@@ -5401,8 +5410,10 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function obFamilyMessage() {
       const depEl = document.getElementById("obDependents");
       const kidEl = document.getElementById("obChildren");
-      const dep = Math.max(1, Math.min(20, parseInt(depEl ? depEl.value : "1", 10) || 1));
-      const kid = Math.max(0, Math.min(10, parseInt(kidEl ? kidEl.value : "0", 10) || 0));
+      const depRaw = depEl ? depEl.value : (localStorage.getItem("ded_dependents") || "1");
+      const kidRaw = kidEl ? kidEl.value : (localStorage.getItem("ded_children") || "0");
+      const dep = Math.max(1, Math.min(20, parseInt(depRaw, 10) || 1));
+      const kid = Math.max(0, Math.min(10, parseInt(kidRaw, 10) || 0));
       const famSelf = parseFloat(localStorage.getItem("setting_familySelf") || "20000") || 20000;
       const fam = Math.max(0, dep - 1) * 10000;
       let credit = 0;
@@ -5527,7 +5538,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         body = `
           <div class="ob-title">🎂 2단계 · 생년월일과 입사년월일</div>
           <div class="ob-sub">정년 D-Day와 근속수당·연차를 정확히 계산하기 위해 필요해요.</div>
-          <div class="ob-greet" id="obRetireMsg">생년월일과 입사년월일을 입력하시면 정년까지 남은 날과 근속수당을 계산해 드립니다.</div>
+          <div class="ob-greet" id="obRetireMsg">${obRetireMessage()}</div>
           <div class="ob-label">생년월일 (8자리)</div>
           <div class="ob-input-wrap"><input class="ob-input" id="obBirth" type="tel" maxlength="10" value="${birth}" placeholder="예: 19750830" oninput="obRefreshRetire()"></div>
           <div class="ob-label">입사년월일 (8자리)</div>
