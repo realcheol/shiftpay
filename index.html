@@ -5328,7 +5328,7 @@
       history: {
         title: "📋 버전 업데이트 내역 (v1.6.0)",
         body: `v1.6.0 (2026-11-15) — 2단계 월간 패턴 자동 채우기 · 3단계 연간 누적·연말정산 (빌드 34)
-• ⚡ 패턴 자동 채우기: 달력 아래 [⚡ 이번 달 패턴 자동 채우기] 한 번으로 상주 평일(8+2h 또는 8h)이나 교대 순환(4조 3교대 주주야야비비 · 4조 2교대 주5·비2·야5·비2 · 사용자 정의)을 한 달치 채웁니다
+• ⚡ 패턴 자동 채우기: 달력 아래 [⚡ 이번 달 패턴 자동 채우기] 한 번으로 상주 평일(8+2h 또는 8h)이나 교대 순환(2조 2교대 주야 맞교대 주5·비2·야5·비2 14일 · 같은 패턴의 8시간 변형 정5·비2·심5·비2 · 사용자 정의)을 한 달치 채웁니다
 • 🛡️ 기존 입력 보존: 연차·특근·조합설명회처럼 이미 찍어 둔 날은 기본적으로 건너뛰고 [이번 달 총 OO일 적용 (기존 입력 X일 유지)]를 미리 보여 줍니다 — 체크를 풀면 덮어쓰기
 • 🔥 휴일 자동 구분: 교대 순환에서 주말·공휴일에 근무하는 날은 휴일특근(150%) 프리셋으로 넣어 정상근무와 섞이지 않습니다 (끄면 주간/야간 그대로)
 • 📈 연간 누적·연말정산: 1~12월 세전 총지급액·기납부 세금·4대보험·실수령액과 급여 인정시간·연장·휴일특근·심야·출근일수를 한 화면에서 보고, 월별 막대로 어느 달이 비었는지 확인합니다
@@ -6255,18 +6255,16 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         desc: "월~금(공휴일·대체휴무 제외)에 8시간 + 연장 2시간", weekday: "ot" },
       { id: "resident_norm", label: "상주조 정취 · 평일 8h",
         desc: "월~금(공휴일·대체휴무 제외)에 정상 8시간", weekday: "norm" },
-      { id: "shift_222", label: "4조 3교대 · 주주야야비비 (6일)",
-        desc: "주간 8+2h 2일 → 야간 10h 2일 → 휴무 2일",
-        slots: ["ot", "ot", "night10", "night10", null, null] },
-      { id: "shift_222_norm", label: "4조 3교대 · 주주야야비비 8h (6일)",
-        desc: "주간 8h 2일 → 야간 8h 2일 → 휴무 2일",
-        slots: ["norm", "norm", "night8", "night8", null, null] },
-      { id: "shift_5_2_5_2", label: "4조 2교대 · 주5·비2·야5·비2 (14일)",
-        desc: "주간 8+2h 5일 → 휴무 2일 → 야간 10h 5일 → 휴무 2일",
+      { id: "shift_5_2_5_2", label: "2조 2교대 · 주야 맞교대 (주5·비2·야5·비2)",
+        desc: "14일 주기 · 주간 8+2h 5일 → 휴무 2일 → 야간 10h 5일 → 휴무 2일",
         slots: ["ot", "ot", "ot", "ot", "ot", null, null,
                 "night10", "night10", "night10", "night10", "night10", null, null] },
-      { id: "custom", label: "사용자 정의 (주/야/정/비)",
-        desc: "예: 주주야야비비 → 6일 주기. 주=8+2h · 야=야간 10h · 정=8h · 심=야간 8h · 비=휴무",
+      { id: "shift_5_2_5_2_norm", label: "2조 2교대 · 주야 맞교대 8h (정5·비2·심5·비2)",
+        desc: "14일 주기 · 주간 8h 5일 → 휴무 2일 → 야간 8h 5일 → 휴무 2일",
+        slots: ["norm", "norm", "norm", "norm", "norm", null, null,
+                "night8", "night8", "night8", "night8", "night8", null, null] },
+      { id: "custom", label: "사용자 정의 (주/야/정/심/비)",
+        desc: "예: 주주비비야야비비 → 8일 주기. 주=8+2h · 야=야간 10h · 정=8h · 심=야간 8h · 비=휴무",
         custom: true }
     ];
     let pfSel = "resident_ot";
@@ -6394,9 +6392,9 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function openPatternFillModal() {
       pfYear = curYear;
       pfMonth = curMonth;
-      pfSel = (localStorage.getItem("user_shift_type") || "normal") === "shift" ? "shift_222" : "resident_ot";
+      pfSel = (localStorage.getItem("user_shift_type") || "normal") === "shift" ? "shift_5_2_5_2" : "resident_ot";
       pfAnchor = pfYear + "-" + pad(pfMonth) + "-01";
-      pfCustom = "주주야야비비";
+      pfCustom = "주주비비야야비비";
       document.getElementById("patternSubTitle").innerText =
         pfYear + "년 " + pfMonth + "월 · 상주 평일 근무나 교대 순환을 한 달치 한 번에 채웁니다";
       document.getElementById("patternOverlay").style.display = "flex";
@@ -6446,7 +6444,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (pat.custom) {
         html += '<div style="display:flex; align-items:center; gap:8px; margin-top:4px;">'
           + '<div style="font-size:12px; font-weight:700; color:var(--text); flex:1;">패턴 글자</div>'
-          + '<input id="pfCustom" type="text" placeholder="주주야야비비" value="' + pfCustom + '"'
+          + '<input id="pfCustom" type="text" placeholder="주주비비야야비비" value="' + pfCustom + '"'
           + ' oninput="pfUpdatePreview()" onclick="event.stopPropagation()"'
           + ' style="width:150px; padding:7px 8px; border-radius:9px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; text-align:right;">'
           + "</div>";
@@ -6471,7 +6469,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       let anchor = (pfAnchor || "").trim();
       if (cycle && !anchor) anchor = pfYear + "-" + pad(pfMonth) + "-01";
       let custom = (pfCustom || "").trim();
-      if (pat.custom && !custom) custom = "주주야야비비";
+      if (pat.custom && !custom) custom = "주주비비야야비비";
       const skipEl = document.getElementById("pfSkip");
       const holEl = document.getElementById("pfHol");
       const skip = skipEl ? skipEl.checked : true;

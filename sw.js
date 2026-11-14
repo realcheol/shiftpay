@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   ShiftPay 웹 — PWA 오프라인 Service Worker (v1.6.0)
+   ShiftPay 웹 — PWA 오프라인 Service Worker (v1.6.0 · 2조 2교대 패턴 정정)
    ──────────────────────────────────────────────────────────────────────
    · 정적 에셋(앱 화면·아이콘·피코 이미지)은 install 단계에서 미리 캐시
    · index.html / version.json 은 Network-First
@@ -8,7 +8,7 @@
    · activate 에서 이전 버전 캐시 자동 삭제 + clients.claim()
    ══════════════════════════════════════════════════════════════════════ */
 const CACHE_PREFIX = 'shiftpay';
-const CACHE_VERSION = 'v1.6.0-20261115';   // 화면/에셋을 바꿔 배포할 때 이 문자열을 올린다
+const CACHE_VERSION = 'v1.6.0-20261115b';   // 화면/에셋을 바꿔 배포할 때 이 문자열을 올린다
 const STATIC_CACHE = `${CACHE_PREFIX}-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
 const KEEP_CACHES = [STATIC_CACHE, RUNTIME_CACHE];
