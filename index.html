@@ -575,6 +575,8 @@
     .att-pill { font-size:10px; font-weight:800; padding:1px 3px; border-radius:4px; margin-top:2px;
                 text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
                 letter-spacing:-0.4px; max-width:100%; }
+    .att-pill.att-small { font-size:9px; letter-spacing:-0.55px; padding:1px 2px; }
+    .att-pill.att-tiny  { font-size:8px; letter-spacing:-0.65px; padding:1px 1px; }
     .att-green  { color:#047857; background:#d1fae5; }
     .att-indigo { color:#4338ca; background:#e0e7ff; }
     .att-orange { color:#c2410c; background:#ffedd5; }
@@ -3059,8 +3061,10 @@
         if (_attCode) {
           // 🏷️ 사내 공식 근태 뱃지 (그린·인디고·오렌지·그레이 4색)
           const pill = document.createElement("div");
-          pill.className = "att-pill att-" + attMetaOf(_attCode).tone;
-          pill.innerText = attBadgeOf(_attCode, dateKey);
+          const _attTxt = attBadgeOf(_attCode, dateKey);
+          const _attSize = _attTxt.length >= 9 ? " att-tiny" : (_attTxt.length >= 7 ? " att-small" : "");
+          pill.className = "att-pill" + _attSize + " att-" + attMetaOf(_attCode).tone;
+          pill.innerText = _attTxt;
           cell.appendChild(pill);
         } else if (_autoPaidDay) {
           const pill = document.createElement("div");
