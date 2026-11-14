@@ -571,6 +571,42 @@
     .pcard.tint-mint   .pt { color: #047857; }
     .pcard.tint-delete .pt { color: #ef4444; }
     .pcard.tint-plain  .pt { color: #64748b; }
+    /* v1.4.3 ⑦ 사내 공식 근태 뱃지(4색) · 칩 · 시간 선택 패널 */
+    .att-pill { font-size:10px; font-weight:800; padding:1px 3px; border-radius:4px; margin-top:2px;
+                text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+                letter-spacing:-0.4px; max-width:100%; }
+    .att-green  { color:#047857; background:#d1fae5; }
+    .att-indigo { color:#4338ca; background:#e0e7ff; }
+    .att-orange { color:#c2410c; background:#ffedd5; }
+    .att-slate  { color:#475569; background:#f1f5f9; }
+    body.dark .att-green  { color:#a7f3d0; background:#064e3b; }
+    body.dark .att-indigo { color:#c7d2fe; background:#232054; }
+    body.dark .att-orange { color:#fdba74; background:#422006; }
+    body.dark .att-slate  { color:#cbd5e1; background:#1e293b; }
+    .att-chip-row { display:flex; gap:6px; overflow-x:auto; padding:2px 0 8px; -webkit-overflow-scrolling:touch; }
+    .att-chip { flex:0 0 auto; font-size:12px; font-weight:800; padding:7px 11px; border-radius:10px;
+                border:1px solid; white-space:nowrap; cursor:pointer; font-family:inherit; }
+    .att-chip.green  { color:#047857; background:#d1fae5; border-color:#6ee7b7; }
+    .att-chip.indigo { color:#4338ca; background:#e0e7ff; border-color:#a5b4fc; }
+    .att-chip.orange { color:#c2410c; background:#ffedd5; border-color:#fdba74; }
+    .att-chip.slate  { color:#475569; background:#f1f5f9; border-color:#cbd5e1; }
+    .att-chip.more   { color:#64748b; background:#f8fafc; border-color:#e2e8f0; }
+    body.dark .att-chip.green  { color:#a7f3d0; background:#064e3b; border-color:#047857; }
+    body.dark .att-chip.indigo { color:#c7d2fe; background:#232054; border-color:#4338ca; }
+    body.dark .att-chip.orange { color:#fdba74; background:#422006; border-color:#c2410c; }
+    body.dark .att-chip.slate  { color:#cbd5e1; background:#1e293b; border-color:#475569; }
+    body.dark .att-chip.more   { color:#94a3b8; background:#182230; border-color:#334155; }
+    .att-hour-panel { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:8px; margin-bottom:8px; }
+    body.dark .att-hour-panel { background:#121c2c; border-color:#334155; }
+    .att-hour-head { font-size:11px; font-weight:800; color:#64748b; margin-bottom:2px; }
+    .pcard.tint-amber { background:#fff7ed; border-color:#fdba74; }
+    .pcard.tint-amber .pt { color:#c2410c; }
+    .pcard.tint-slate { background:#f8fafc; border-color:#cbd5e1; }
+    .pcard.tint-slate .pt { color:#475569; }
+    body.dark .pcard.tint-amber { background:#422006; border-color:#c2410c; }
+    body.dark .pcard.tint-slate { background:#1e293b; border-color:#475569; }
+    body.dark .pcard.tint-amber .pt { color:#fdba74; }
+    body.dark .pcard.tint-slate .pt { color:#cbd5e1; }
     body.dark .pcard.tint-blue   { background: #112642; border-color: #1d4ed8; }
     body.dark .pcard.tint-purple { background: #261638; border-color: #6b21a8; }
     body.dark .pcard.tint-red    { background: #301619; border-color: #991b1b; }
@@ -1639,6 +1675,8 @@
   <div class="sheet-overlay" id="shiftSheetOverlay" onclick="closeShiftSheet(event)">
     <div class="bottom-sheet">
       <div class="sheet-title" id="sheetDateTitle">2026년 11월 3일 근무 입력</div>
+      <div style="font-size:12px; font-weight:800; color:var(--sub); margin:0 0 4px;">🏷️ 사내 공식 근태 (출근카드·명세서 연동)</div>
+      <div id="attSheetWrap"></div>
       <div class="preset-stack" id="shiftSheetGrid"></div>
       <button class="sheet-btn" style="width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openCustomTimeModal()"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> 직접 시간 입력 및 메모</button>
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeShiftSheet()">닫기</button>
@@ -2565,7 +2603,7 @@
       vibrate();
       const cnt = selectedDays.size;
       if (confirm(`선택한 ${cnt}개 날짜의 근무 및 메모 기록을 모두 삭제하시겠습니까?`)) {
-        const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+        const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
         selectedDays.forEach(d => {
           const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
           subKeys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
@@ -2671,6 +2709,236 @@
       showToast(preset === 'delete'
         ? `선택하신 ${count}개 날짜의 근무 기록이 삭제되었습니다.`
         : `선택하신 ${count}개 날짜에 근무가 일괄 입력되었습니다.`);
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // 🏷️ v1.4.3 ⑦ — 사내 공식 근태(근태계) 연동 · 달력 4색 뱃지
+    //   설치형 AttendanceCore.java 와 1:1 로 같은 표를 쓴다.
+    //   출근카드·급여명세서 근태내역(연차·하기·교육·출장·조합설명회·조퇴·지각·외출·
+    //   유결·무결·병가·휴직 등)을 달력 날짜 칸 뱃지로 표시하고 정상·유급·조합 시간을 급여에 매핑한다.
+    //   내부 코드번호와 부서·성명은 일절 쓰지 않고 한글 명칭만 표기한다.
+    // ══════════════════════════════════════════════════════════════════
+    const ATT_META = {
+      annual:    { label: "연차",      tone: "green",  def: 8, hours: false },
+      summer:    { label: "휴가",      tone: "green",  def: 8, hours: false },
+      half:      { label: "반차",      tone: "green",  def: 4, hours: false },
+      congrat:   { label: "축하",      tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      condol:    { label: "기복",      tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      commend:   { label: "공무/포상",  tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      union:     { label: "설명회",    tone: "indigo", def: 2, hours: true, opts: [1, 2, 3] },
+      health:    { label: "건강검진",  tone: "indigo", def: 4, hours: true, opts: [2, 4, 8] },
+      training:  { label: "교육",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      trip:      { label: "출장",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      reserve:   { label: "예비군",    tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      early:     { label: "조퇴",      tone: "orange", def: 4, hours: true, opts: [4, 6] },
+      late:      { label: "지각",      tone: "orange", def: 8, hours: false },
+      outing:    { label: "외출",      tone: "orange", def: 8, hours: false },
+      sick:      { label: "병가",      tone: "slate",  def: 0, hours: false },
+      absent:    { label: "결근",      tone: "slate",  def: 0, hours: true, opts: [0, 8] },
+      leavework: { label: "휴직",      tone: "slate",  def: 0, hours: false }
+    };
+    let attPanelCode = "";
+    let attMorePage = false;
+
+    function attMetaOf(code) { return ATT_META[code] || null; }
+
+    function attCodeOf(k) {
+      const c = localStorage.getItem(`${k}-att`) || "";
+      return ATT_META[c] ? c : "";
+    }
+
+    function attH(v) {
+      return (Math.round(v * 100) / 100).toString().replace(/\.0+$/, "");
+    }
+
+    /** 근태 코드 + 시간 → 저장할 mode·정상·유급·조합 시간 (설치형 AttendanceCore.spec 과 동일) */
+    function attSpecOf(code, hours) {
+      const h = Math.max(0, parseFloat(hours) || 0);
+      switch (code) {
+        case "annual":   return { mode: "annual",  normal: 8, paid: 0, union: 0 };
+        case "summer":   return { mode: "summer",  normal: 8, paid: 0, union: 0 };
+        case "half":     return { mode: "half_am", normal: 4, paid: 4, union: 0 };
+        case "congrat":
+        case "condol":
+        case "commend":  return { mode: "custom",  normal: 0, paid: 8, union: 0 };
+        case "health":
+        case "training":
+        case "trip":
+        case "reserve":  return { mode: "custom",  normal: 0, paid: h, union: 0 };
+        case "union":    return { mode: "custom",  normal: 8, paid: 0, union: h };
+        case "early":    return { mode: "custom",  normal: h, paid: 0, union: 0 };
+        case "late":
+        case "outing":   return { mode: "custom",  normal: 8, paid: 0, union: 0 };
+        case "sick":
+        case "leavework": return { mode: "none",   normal: 0, paid: 0, union: 0 };
+        case "absent":   return h > 0
+          ? { mode: "custom", normal: 0, paid: h, union: 0 }
+          : { mode: "none",   normal: 0, paid: 0, union: 0 };
+        default:         return { mode: "auto",   normal: 0, paid: 0, union: 0 };
+      }
+    }
+
+    /** 달력 날짜 칸 뱃지 문구 (저장된 실제 시간값 기준) */
+    function attBadgeText(code, normal, paid, unionH) {
+      const n = normal || 0, p = paid || 0, u = unionH || 0;
+      switch (code) {
+        case "union":    return u <= 0 ? "설명회" : (n > 0 ? `${attH(n)}h+설명회${attH(u)}h` : `설명회 ${attH(u)}h`);
+        case "early":    return n > 0 ? `${attH(n)}h 조퇴` : "조퇴";
+        case "late":     return n > 0 ? `${attH(n)}h 지각` : "지각";
+        case "outing":   return n > 0 ? `${attH(n)}h 외출` : "외출";
+        case "annual":   return `연차 ${attH(n > 0 ? n : 8)}h`;
+        case "summer":   return `휴가 ${attH(n > 0 ? n : 8)}h`;
+        case "half":     return `반차 ${attH(p > 0 ? p : 4)}h`;
+        case "absent":   return p > 0 ? `유결 ${attH(p)}h` : "무결";
+        case "sick":     return "병가";
+        case "leavework": return "휴직";
+        case "congrat":  return `축하 ${attH(p > 0 ? p : 8)}h`;
+        case "condol":   return `기복 ${attH(p > 0 ? p : 8)}h`;
+        case "commend":  return `공무/포상 ${attH(p > 0 ? p : 8)}h`;
+        case "health":   return `건강검진 ${attH(p > 0 ? p : 4)}h`;
+        case "training": return `교육 ${attH(p > 0 ? p : 8)}h`;
+        case "trip":     return `출장 ${attH(p > 0 ? p : 8)}h`;
+        case "reserve":  return `예비군 ${attH(p > 0 ? p : 8)}h`;
+        default:         return "";
+      }
+    }
+
+    function attBadgeOf(code, k) {
+      const n = parseFloat(localStorage.getItem(`${k}-norm`) || "0") || 0;
+      const p = parseFloat(localStorage.getItem(`${k}-paid`) || "0") || 0;
+      const u = parseFloat(localStorage.getItem(`${k}-union`) || "0") || 0;
+      return attBadgeText(code, n, p, u);
+    }
+
+    function attHourLabel(code, h) {
+      if (code === "union") return `8h+설명회${attH(h)}h`;
+      if (code === "early") return `${attH(h)}h 조퇴`;
+      if (code === "absent") return h > 0 ? "유결 8h" : "무결(무급)";
+      return `${attH(h)}h`;
+    }
+
+    function attTint(code) {
+      const m = attMetaOf(code);
+      if (!m) return "plain";
+      return m.tone === "green" ? "mint" : (m.tone === "indigo" ? "blue" : (m.tone === "orange" ? "amber" : "slate"));
+    }
+
+    function attChipHtml(code, label, cur) {
+      const m = attMetaOf(code);
+      const on = code === cur;
+      return `<button class="att-chip ${m.tone}"${on ? ' style="box-shadow:0 0 0 2px rgba(37,99,235,.35);"' : ''}`
+           + ` onclick="attPick('${code}')">${label}</button>`;
+    }
+
+    function renderAttSheet() {
+      const wrap = document.getElementById("attSheetWrap");
+      if (!wrap || !selectedDateStr) { if (wrap) wrap.innerHTML = ""; return; }
+      const cur = attCodeOf(selectedDateStr);
+      let html = "";
+      if (!attMorePage) {
+        html += '<div class="att-chip-row">'
+             + attChipHtml("annual", "🌴 연차", cur)
+             + attChipHtml("half", "🌗 반차", cur)
+             + attChipHtml("early", "⏰ 조퇴", cur)
+             + attChipHtml("union", "📣 설명회", cur)
+             + attChipHtml("health", "🩺 건강검진", cur)
+             + '<button class="att-chip more" onclick="attOpenMore()">＋ 기타 근태</button></div>';
+        if (attPanelCode) html += attHourPanelHtml(attPanelCode);
+      } else {
+        html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+             + '<button class="att-chip more" onclick="attCloseMore()">← 공식 근태</button>'
+             + '<span style="font-size:11px;font-weight:700;color:var(--sub);">기타 사내 근태</span></div>'
+             + '<div class="preset-grid-3" style="margin-bottom:6px;">';
+        const more = [["trip", "🚗 출장"], ["training", "🎓 교육"], ["reserve", "🎖️ 예비군"],
+                      ["congrat", "🎉 경조(축하)"], ["condol", "🕯️ 경조(기복)"], ["late", "⏱️ 지각"],
+                      ["outing", "🚶 외출"], ["commend", "🏅 공무/포상"], ["sick", "🤒 병가"],
+                      ["absent", "🚫 결근(유결/무결)"], ["leavework", "📄 휴직"], ["summer", "🏖️ 휴가(하계)"]];
+        more.forEach(([c, lbl]) => {
+          const m = attMetaOf(c);
+          const sub = (m.tone === "slate") ? `${m.label} · 인정시간 없음` : `${m.label} · 유급 인정`;
+          html += `<button class="pcard tint-${attTint(c)}" onclick="attPick('${c}')">`
+               + `<span class="pt">${lbl}</span><span class="ps">${sub}</span></button>`;
+        });
+        html += '</div>';
+        if (attPanelCode) html += attHourPanelHtml(attPanelCode);
+      }
+      wrap.innerHTML = html;
+    }
+
+    function attHourPanelHtml(code) {
+      const m = attMetaOf(code);
+      if (!m) return "";
+      let html = '<div class="att-hour-panel"><div class="att-hour-head">' + m.label + ' 시간 선택</div>'
+               + '<div class="att-chip-row" style="padding-bottom:0;">';
+      (m.opts || []).forEach(h => {
+        html += `<button class="att-chip ${m.tone}" onclick="attApply('${code}', ${h})">${attHourLabel(code, h)}</button>`;
+      });
+      if (code === "union") {
+        html += `<button class="att-chip indigo" onclick="attApply('union', 2, 0)">설명회만 2h</button>`;
+      }
+      html += `<button class="att-chip more" onclick="attManual('${code}')">✎ 직접</button>`;
+      html += '</div></div>';
+      return html;
+    }
+
+    function attOpenMore() { attMorePage = true; attPanelCode = ""; renderAttSheet(); vibrate(); }
+    function attCloseMore() { attMorePage = false; attPanelCode = ""; renderAttSheet(); vibrate(); }
+
+    function attPick(code) {
+      const m = attMetaOf(code);
+      if (!m) return;
+      vibrate();
+      if (m.hours) {
+        attPanelCode = (attPanelCode === code) ? "" : code;
+        renderAttSheet();
+      } else {
+        applyAttWeb(code, m.def);
+      }
+    }
+
+    function attApply(code, hours, normalOverride) {
+      vibrate();
+      applyAttWeb(code, hours, normalOverride);
+    }
+
+    function attManual(code) {
+      const m = attMetaOf(code);
+      const v = window.prompt(`${m.label} 시간을 입력하세요 (시간 단위)`, String(m.def));
+      if (v === null) return;
+      const num = parseFloat(v);
+      if (isNaN(num) || num < 0) { showToast("숫자로 입력해 주세요."); return; }
+      applyAttWeb(code, num);
+    }
+
+    /**
+     * 공식 근태 적용 — 정상·유급·조합 시간을 다시 세팅한다.
+     *  · 조합설명회: 정상 8h 유지 + 설명회 시간은 조합(기본급 100%) 칸 → 실근무 8h 이므로 가급 1h 유지
+     *  · 조퇴: 정상 = 실근무 시간 → 8h 미만이면 가급 자동 제외
+     *  · 건강검진·교육·출장·예비군·경조·공무: 유급 100% / 병가·휴직·무급결근: 인정시간 0
+     */
+    function applyAttWeb(code, hours, normalOverride) {
+      const k = selectedDateStr;
+      if (!k) return;
+      const sp = attSpecOf(code, hours);
+      const normal = (normalOverride !== undefined && normalOverride !== null && normalOverride >= 0)
+        ? normalOverride : sp.normal;
+      ["norm", "paid", "weekly", "union", "ot", "hol", "holot", "night", "extra"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+      localStorage.setItem(`${k}-att`, code);
+      localStorage.setItem(`${k}-atth`, String(hours));
+      localStorage.setItem(`${k}-mode`, sp.mode);
+      if (normal > 0) localStorage.setItem(`${k}-norm`, String(normal));
+      if (sp.paid > 0) localStorage.setItem(`${k}-paid`, String(sp.paid));
+      if (sp.union > 0) localStorage.setItem(`${k}-union`, String(sp.union));
+      attPanelCode = "";
+      attMorePage = false;
+      closeShiftSheet();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      const badge = attBadgeText(code, normal, sp.paid, sp.union);
+      showToast((badge || "근태") + " 로 저장했습니다.");
+      vibrate();
     }
 
     function renderCalendar() {
@@ -2788,7 +3056,14 @@
         const _leaveMode = ["annual", "summer", "half_am", "half_pm"].includes(mode);
         const _autoPaidDay = !_hasWork && !_leaveMode && mode !== "none"
           && (dayOfWeek === 0 || dayOfWeek === 6 || !!holName);
-        if (_autoPaidDay) {
+        const _attCode = attCodeOf(dateKey);
+        if (_attCode) {
+          // 🏷️ 사내 공식 근태 뱃지 (그린·인디고·오렌지·그레이 4색)
+          const pill = document.createElement("div");
+          pill.className = "att-pill att-" + attMetaOf(_attCode).tone;
+          pill.innerText = attBadgeOf(_attCode, dateKey);
+          cell.appendChild(pill);
+        } else if (_autoPaidDay) {
           const pill = document.createElement("div");
           pill.className = "shift-pill " + (dayOfWeek === 0 ? "shift-sun-auto" : "shift-sat-auto");
           pill.style.cssText = dayOfWeek === 0
@@ -2974,7 +3249,7 @@
         const isHalf = (mode === "half_am" || mode === "half_pm");
         const isNone = (mode === "none");   // 무급 — 토·일·공휴일 자동 유급/주차도 인정하지 않는다
 
-        let n = 0, p = 0, o = 0, h = 0, ho = 0, nt = 0;
+        let n = 0, p = 0, o = 0, h = 0, ho = 0, nt = 0, nu = 0;
         if (mode === "norm") { n = 8; }
         else if (mode === "ot") { n = 8; o = 2; }
         else if (mode === "night_10") { n = 8; o = 2; nt = 7.5; }
@@ -2994,6 +3269,7 @@
           h = parseFloat(localStorage.getItem(`${dateKey}-hol`) || "0") || 0;
           ho = parseFloat(localStorage.getItem(`${dateKey}-holot`) || "0") || 0;
           nt = parseFloat(localStorage.getItem(`${dateKey}-night`) || "0") || 0;
+          nu = parseFloat(localStorage.getItem(`${dateKey}-union`) || "0") || 0;   // 조합설명회(유급 100%)
         }
         // ① 휴일근로 8시간 초과분은 휴일연장(200%)으로 자동 분리
         if (h > 8) { ho += h - 8; h = 8; }
@@ -3029,6 +3305,7 @@
         r.hol += h;
         r.holot += ho;
         r.night += nt;
+        r.union += nu;
         r.gageub += ex;
         if (n >= 8) r.gageubWeekday += ex;
         r.holPremium += h * 0.5 + ho;
@@ -3729,6 +4006,13 @@
       grid.innerHTML = presetCardsHtml();
     }
 
+    // v1.4.3 ⑦ — 시트를 열 때마다 공식 근태 칩을 1단(핵심 5개)으로 초기화
+    function resetAttSheet() {
+      attPanelCode = "";
+      attMorePage = false;
+      renderAttSheet();
+    }
+
     function openShiftSheet(dateKey, d) {
       renderShiftSheetPresets();
       selectedDateStr = dateKey;
@@ -3739,6 +4023,7 @@
         btnQuick.innerHTML = `<svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력 (${d}일)`;
       }
       document.getElementById("shiftSheetOverlay").style.display = "flex";
+      resetAttSheet();
       vibrate();
     }
     function closeShiftSheet(e) {
@@ -3755,6 +4040,8 @@
         localStorage.setItem(`${k}-mode`, "half_am");
         localStorage.setItem(`${k}-norm`, "4");
         localStorage.setItem(`${k}-paid`, "4");
+        localStorage.setItem(`${k}-att`, "half");     // 달력에 [반차 4h] 뱃지
+        localStorage.setItem(`${k}-atth`, "4");
         closeShiftSheet();
         renderCalendar();
         updateDdayAndUserSummary();
@@ -3764,7 +4051,7 @@
       }
       if (mode === "night_8") {                    // 🌙 야간 정상: 8h + 심야 6.0h
         const k = selectedDateStr;
-        ["paid", "ot", "hol", "holot", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["paid", "ot", "hol", "holot", "extra", "memo", "att", "atth", "union"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "night_8");
         localStorage.setItem(`${k}-norm`, "8");
         localStorage.setItem(`${k}-night`, "6");
@@ -3777,7 +4064,7 @@
       }
       if (mode === "holiday_night_8") {            // v1.4.1 ③ 🔥🌙 야간특근 (8h): 휴일근로 8h + 심야 6.0h
         const k = selectedDateStr;
-        ["norm", "paid", "ot", "holot", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["norm", "paid", "ot", "holot", "extra", "memo", "att", "atth", "union"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "holiday_night_8");
         localStorage.setItem(`${k}-hol`, "8");
         localStorage.setItem(`${k}-night`, "6");
@@ -3801,9 +4088,12 @@
       }
       if (mode === "auto" || mode === "none") {
         // 자동인정/무급은 남아 있는 직접입력 시간값을 지워야 화면·집계가 어긋나지 않는다
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "union"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       }
       localStorage.setItem(`${selectedDateStr}-mode`, mode);
+      // 일반 근무 프리셋을 고르면 공식 근태 표시는 해제된다
+      localStorage.removeItem(`${selectedDateStr}-att`);
+      localStorage.removeItem(`${selectedDateStr}-atth`);
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
@@ -3812,7 +4102,7 @@
     }
     function deleteSelectedDay() {
       if (!selectedDateStr) return;
-      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
       subKeys.forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       localStorage.removeItem(selectedDateStr);
       closeShiftSheet();
@@ -4983,7 +5273,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function clearCurrentMonth() {
       if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
       const totalDays = new Date(curYear, curMonth, 0).getDate();
-      const subKeys = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"];
+      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
       for (let d = 1; d <= totalDays; d++) {
         const k = `${curYear}-${pad(curMonth)}-${pad(d)}`;
         subKeys.forEach(s => localStorage.removeItem(`${k}-${s}`));
