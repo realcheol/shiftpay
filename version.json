@@ -4,6 +4,6 @@
   "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk",
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "버전 고정(1.4.3) 재빌드 ⑦ · 사내 공식 근태 뱃지(4색) · 조합설명회 2h/3h · 조퇴 실근무 시간 연동 (Android·웹 대칭)",
-  "releasedAt": "2026-11-14T12:40:42+09:00"
+  "note": "버전 고정(1.4.3) 재빌드 ⑧ · 3사 검증 5대 결함 수정(근태·주차·가급 초기화, 경조 4h, 토·공휴일 설명회 중복) · 소스 ZIP에 web/ 동봉",
+  "releasedAt": "2026-11-14T13:58:23+09:00"
 }

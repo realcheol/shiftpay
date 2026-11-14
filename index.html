@@ -2706,8 +2706,8 @@
       days.forEach(day => {
         const k = `${year}-${month}-${pad(day)}`;
 
-        // 이전 입력 흔적을 모두 지운 뒤 선택한 프리셋만 남긴다 (메모 포함)
-        const keysToClear = ['mode', 'norm', 'ot', 'hol', 'holot', 'night', 'paid', 'extra', 'memo'];
+        // 이전 입력 흔적을 모두 지운 뒤 선택한 프리셋만 남긴다 (근태·메모·수동 주차·가급 포함)
+        const keysToClear = ['mode', 'norm', 'ot', 'hol', 'holot', 'night', 'paid', 'union', 'weekly', 'gageub', 'extra', 'memo', 'att', 'atth'];
         keysToClear.forEach(suffix => localStorage.removeItem(`${k}-${suffix}`));
 
         if (preset === 'delete') return;             // 🗑️ 선택 날짜 기록 삭제
@@ -2769,8 +2769,25 @@
       return (Math.round(v * 100) / 100).toString().replace(/\.0+$/, "");
     }
 
+    /** 경조·공무 유급 인정시간 — 사용자가 고른 시간(0.5~8h)을 그대로 쓴다 (없으면 8h) */
+    function attPaidHours(h) {
+      if (!(h > 0)) return 8;
+      if (h < 0.5) return 0.5;
+      if (h > 8) return 8;
+      return h;
+    }
+
+    /** 토·일·공휴일(유급휴일) 판정 — 이 날은 자동 유급(토·공휴일 8h)·주차(일 8h)가 이미 인정된다 */
+    function attIsPaidHoliday(k) {
+      const parts = (k || "").split("-").map(Number);
+      if (parts.length < 3 || !parts[0]) return false;
+      const dow = new Date(parts[0], parts[1] - 1, parts[2]).getDay();
+      const isHol = !!(officialHolidays[k] || localStorage.getItem(`holiday_${k.replace(/-/g, "")}`));
+      return dow === 0 || dow === 6 || isHol;
+    }
+
     /** 근태 코드 + 시간 → 저장할 mode·정상·유급·조합 시간 (설치형 AttendanceCore.spec 과 동일) */
-    function attSpecOf(code, hours) {
+    function attSpecOf(code, hours, paidHoliday) {
       const h = Math.max(0, parseFloat(hours) || 0);
       switch (code) {
         case "annual":   return { mode: "annual",  normal: 8, paid: 0, union: 0 };
@@ -2778,12 +2795,15 @@
         case "half":     return { mode: "half_am", normal: 4, paid: 4, union: 0 };
         case "congrat":
         case "condol":
-        case "commend":  return { mode: "custom",  normal: 0, paid: 8, union: 0 };
+        case "commend":  return { mode: "custom",  normal: 0, paid: attPaidHours(h), union: 0 };
         case "health":
         case "training":
         case "trip":
         case "reserve":  return { mode: "custom",  normal: 0, paid: h, union: 0 };
-        case "union":    return { mode: "custom",  normal: 8, paid: 0, union: h };
+        // 토·일·공휴일은 자동 유급·주차 8h가 이미 기본급에 들어 있으므로 정상 8h를 겹쳐 넣지 않는다
+        case "union":    return paidHoliday
+          ? { mode: "custom", normal: 0, paid: 0, union: h }
+          : { mode: "custom", normal: 8, paid: 0, union: h };
         case "early":    return { mode: "custom",  normal: h, paid: 0, union: 0 };
         case "late":
         case "outing":   return { mode: "custom",  normal: 8, paid: 0, union: 0 };
@@ -2936,10 +2956,11 @@
     function applyAttWeb(code, hours, normalOverride) {
       const k = selectedDateStr;
       if (!k) return;
-      const sp = attSpecOf(code, hours);
+      const sp = attSpecOf(code, hours, attIsPaidHoliday(k));
       const normal = (normalOverride !== undefined && normalOverride !== null && normalOverride >= 0)
         ? normalOverride : sp.normal;
-      ["norm", "paid", "weekly", "union", "ot", "hol", "holot", "night", "extra"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+      // 이전 수동 주차·가급까지 함께 비운다 (요일 자동 인정과 겹치면 기본급·상주휴게 과다 계상)
+      ["norm", "paid", "weekly", "union", "ot", "hol", "holot", "night", "extra", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
       localStorage.setItem(`${k}-att`, code);
       localStorage.setItem(`${k}-atth`, String(hours));
       localStorage.setItem(`${k}-mode`, sp.mode);
@@ -4054,7 +4075,7 @@
       if (mode === "delete") { deleteSelectedDay(); return; }
       if (mode === "half_am") {                    // 🌗 반차: 4h 근무 + 4h 유급 연차
         const k = selectedDateStr;
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "half_am");
         localStorage.setItem(`${k}-norm`, "4");
         localStorage.setItem(`${k}-paid`, "4");
@@ -4069,7 +4090,7 @@
       }
       if (mode === "night_8") {                    // 🌙 야간 정상: 8h + 심야 6.0h
         const k = selectedDateStr;
-        ["paid", "ot", "hol", "holot", "extra", "memo", "att", "atth", "union"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["paid", "ot", "hol", "holot", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "night_8");
         localStorage.setItem(`${k}-norm`, "8");
         localStorage.setItem(`${k}-night`, "6");
@@ -4082,7 +4103,7 @@
       }
       if (mode === "holiday_night_8") {            // v1.4.1 ③ 🔥🌙 야간특근 (8h): 휴일근로 8h + 심야 6.0h
         const k = selectedDateStr;
-        ["norm", "paid", "ot", "holot", "extra", "memo", "att", "atth", "union"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["norm", "paid", "ot", "holot", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "holiday_night_8");
         localStorage.setItem(`${k}-hol`, "8");
         localStorage.setItem(`${k}-night`, "6");
@@ -4109,9 +4130,9 @@
         ["norm", "paid", "ot", "hol", "holot", "night", "extra", "union"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       }
       localStorage.setItem(`${selectedDateStr}-mode`, mode);
-      // 일반 근무 프리셋을 고르면 공식 근태 표시는 해제된다
-      localStorage.removeItem(`${selectedDateStr}-att`);
-      localStorage.removeItem(`${selectedDateStr}-atth`);
+      // v1.4.3 ⑧ — 일반 프리셋을 고르면 수동 주차·가급과 공식 근태 표시를 함께 비웁니다
+      //  (남아 있으면 요일 자동 인정과 겹쳐 기본급·상주휴게가 과다 계상됨)
+      ["weekly", "gageub", "att", "atth"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
