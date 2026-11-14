@@ -2720,23 +2720,23 @@
     //   내부 코드번호와 부서·성명은 일절 쓰지 않고 한글 명칭만 표기한다.
     // ══════════════════════════════════════════════════════════════════
     const ATT_META = {
-      annual:    { label: "연차",      tone: "green",  def: 8, hours: false },
-      summer:    { label: "휴가",      tone: "green",  def: 8, hours: false },
-      half:      { label: "반차",      tone: "green",  def: 4, hours: false },
-      congrat:   { label: "축하",      tone: "green",  def: 8, hours: true, opts: [4, 8] },
-      condol:    { label: "기복",      tone: "green",  def: 8, hours: true, opts: [4, 8] },
-      commend:   { label: "공무/포상",  tone: "green",  def: 8, hours: true, opts: [4, 8] },
-      union:     { label: "설명회",    tone: "indigo", def: 2, hours: true, opts: [1, 2, 3] },
-      health:    { label: "건강검진",  tone: "indigo", def: 4, hours: true, opts: [2, 4, 8] },
-      training:  { label: "교육",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
-      trip:      { label: "출장",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
-      reserve:   { label: "예비군",    tone: "indigo", def: 8, hours: true, opts: [4, 8] },
-      early:     { label: "조퇴",      tone: "orange", def: 4, hours: true, opts: [4, 6] },
-      late:      { label: "지각",      tone: "orange", def: 8, hours: false },
-      outing:    { label: "외출",      tone: "orange", def: 8, hours: false },
-      sick:      { label: "병가",      tone: "slate",  def: 0, hours: false },
-      absent:    { label: "결근",      tone: "slate",  def: 0, hours: true, opts: [0, 8] },
-      leavework: { label: "휴직",      tone: "slate",  def: 0, hours: false }
+      annual:    { label: "연차",     sub: "유급 8h 인정",        tone: "green",  def: 8, hours: false },
+      summer:    { label: "휴가",     sub: "하계 유급 8h",        tone: "green",  def: 8, hours: false },
+      half:      { label: "반차",     sub: "4h 근무 + 4h 유급",   tone: "green",  def: 4, hours: false },
+      congrat:   { label: "축하",     sub: "경조·포상 유급 8h",   tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      condol:    { label: "기복",     sub: "경조·포상 유급 8h",   tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      commend:   { label: "공무/포상", sub: "경조·포상 유급 8h",   tone: "green",  def: 8, hours: true, opts: [4, 8] },
+      union:     { label: "설명회",   sub: "정상 인정 (유급 100%)", tone: "indigo", def: 2, hours: true, opts: [1, 2, 3] },
+      health:    { label: "건강검진", sub: "검진시간 유급 인정",   tone: "indigo", def: 4, hours: true, opts: [2, 4, 8] },
+      training:  { label: "교육",     sub: "유급 100% 인정",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      trip:      { label: "출장",     sub: "유급 100% 인정",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      reserve:   { label: "예비군",   sub: "유급 100% 인정",      tone: "indigo", def: 8, hours: true, opts: [4, 8] },
+      early:     { label: "조퇴",     sub: "실근무 시간 연동",     tone: "orange", def: 4, hours: true, opts: [4, 6] },
+      late:      { label: "지각",     sub: "실근무 8h 유지",      tone: "orange", def: 8, hours: false },
+      outing:    { label: "외출",     sub: "실근무 8h 유지",      tone: "orange", def: 8, hours: false },
+      sick:      { label: "병가",     sub: "인정시간 없음",        tone: "slate",  def: 0, hours: false },
+      absent:    { label: "결근",     sub: "유결 8h / 무결 0h",   tone: "slate",  def: 0, hours: true, opts: [0, 8] },
+      leavework: { label: "휴직",     sub: "인정시간 없음",        tone: "slate",  def: 0, hours: false }
     };
     let attPanelCode = "";
     let attMorePage = false;
@@ -2856,9 +2856,8 @@
                       ["absent", "🚫 결근(유결/무결)"], ["leavework", "📄 휴직"], ["summer", "🏖️ 휴가(하계)"]];
         more.forEach(([c, lbl]) => {
           const m = attMetaOf(c);
-          const sub = (m.tone === "slate") ? `${m.label} · 인정시간 없음` : `${m.label} · 유급 인정`;
           html += `<button class="pcard tint-${attTint(c)}" onclick="attPick('${c}')">`
-               + `<span class="pt">${lbl}</span><span class="ps">${sub}</span></button>`;
+               + `<span class="pt">${lbl}</span><span class="ps">${m.sub}</span></button>`;
         });
         html += '</div>';
         if (attPanelCode) html += attHourPanelHtml(attPanelCode);
