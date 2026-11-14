@@ -1349,26 +1349,41 @@
 
     .spot-overlay { position: fixed; inset: 0; z-index: 100060; display: none; }
     .spot-overlay.show { display: block; }
+    /* v1.4.3 ⑧-1: 반투명 레이어 뒤 배경 스크롤 잠금 (오버레이 위 터치 드래그·바운스 차단) */
+    html.spot-lock, body.spot-on {
+      overflow: hidden !important;
+      overscroll-behavior: none !important;
+      touch-action: none !important;
+    }
+    .spot-overlay, .spot-blocker { touch-action: none; overscroll-behavior: none; }
+    /* v1.4.3 ⑧-2: 컷아웃 본체는 어두운 배경과 위치·크기 이동만 담당한다
+       (9999px 그림자를 @keyframes로 애니메이션하면 모바일에서 GPU 합성이 안 돼
+        포커스링 펄스가 사실상 보이지 않던 문제 → 펄스를 ::after로 분리) */
     .spot-hole {
       position: fixed; border-radius: 18px; pointer-events: none;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
-                  0 0 0 2.5px #38bdf8,
-                  0 0 22px 6px rgba(56, 189, 248, 0.45);
-      transition: top .34s cubic-bezier(.2,.9,.3,1), left .34s cubic-bezier(.2,.9,.3,1),
-                  width .34s cubic-bezier(.2,.9,.3,1), height .34s cubic-bezier(.2,.9,.3,1);
-      animation: spotPulse 1.6s ease-in-out infinite;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+      opacity: 0;
+      transition: top .36s cubic-bezier(.22,1,.36,1), left .36s cubic-bezier(.22,1,.36,1),
+                  width .36s cubic-bezier(.22,1,.36,1), height .36s cubic-bezier(.22,1,.36,1),
+                  opacity .3s ease;
     }
-    @keyframes spotPulse {
-      0%, 100% {
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
-                    0 0 0 2px #38bdf8,
-                    0 0 16px 4px rgba(56, 189, 248, 0.35);
-      }
-      50% {
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75),
-                    0 0 0 4.5px #7dd3fc,
-                    0 0 30px 10px rgba(56, 189, 248, 0.62);
-      }
+    .spot-hole.ready { opacity: 1; }
+    /* 선명한 포커스링 펄스 — transform·opacity(GPU 합성)만 움직인다 */
+    .spot-hole::after {
+      content: ""; position: absolute; inset: 0; box-sizing: border-box;
+      border-radius: inherit; border: 3px solid #38bdf8; pointer-events: none;
+      box-shadow: 0 0 18px 4px rgba(56, 189, 248, 0.55);
+      transform: translateZ(0) scale(1); transform-origin: 50% 50%;
+      will-change: transform, opacity;
+      animation: spotRingPulse 1.35s ease-in-out infinite;
+    }
+    @keyframes spotRingPulse {
+      0%, 100% { transform: translateZ(0) scale(1); opacity: 1; }
+      50%      { transform: translateZ(0) scale(1.04); opacity: .65; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .spot-hole { transition: none; }
+      .spot-hole::after { animation: none; }
     }
     /* v1.4.3 ②-3: 스팟라이트 투어 중에는 [▲ TOP] 플로팅 버튼을 숨긴다 */
     body.spot-on .top-float { display: none !important; }
@@ -5974,13 +5989,37 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
         desc: "시급·공제 설정을 변경하고 소중한 근무 데이터를 엑셀로 백업·복원합니다." }
     ];
     let spotIndex = 0;
+    let spotFirstDraw = false;
+
+    // v1.4.3 ⑧-1: 투어 동안 배경 스크롤·바운스 잠금 (②-3 [▲ TOP] 숨김과 함께)
+    function spotLockScroll(on) {
+      const de = document.documentElement, bd = document.body;
+      if (on) { de.classList.add("spot-lock"); bd.classList.add("spot-on"); }
+      else    { de.classList.remove("spot-lock"); bd.classList.remove("spot-on"); }
+    }
+
+    // v1.4.3 ⑧-1: 오버레이 위 터치 드래그·마우스 휠로 뒷배경이 1px도 밀리지 않게 차단
+    function bindSpotScrollBlock() {
+      const ov = document.getElementById("spotOverlay");
+      if (!ov || ov.dataset.scrollBlocked === "1") return;
+      ov.dataset.scrollBlocked = "1";
+      const block = (e) => {
+        if (!ov.classList.contains("show")) return;
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      ov.addEventListener("touchmove", block, { passive: false });
+      ov.addEventListener("wheel", block, { passive: false });
+    }
 
     function startSpotTour() {
       const ov = document.getElementById("spotOverlay");
       if (!ov) return;
-      document.body.classList.add("spot-on");   // v1.4.3 ②-3: 투어 중 [▲ TOP] 숨김
+      spotLockScroll(true);                     // v1.4.3 ⑧-1 배경 스크롤 잠금 + ②-3 [▲ TOP] 숨김
+      bindSpotScrollBlock();
       ov.classList.add("show");
       spotIndex = 0;
+      spotFirstDraw = true;
       showSpot(0);
     }
 
@@ -5997,8 +6036,12 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (r.height > vh * 0.6) need = Math.abs(r.top - 70) > 10;
       else need = (r.top < 70) || (r.bottom > vh - 200);
       if (need) {
+        // v1.4.3 ⑧-1: 프로그램적 스크롤만 되도록 잠깐 풀고 → scrollIntoView → 즉시 재잠금
+        const wasLocked = document.documentElement.classList.contains("spot-lock");
+        if (wasLocked) spotLockScroll(false);
         el.scrollIntoView({ block: r.height > vh * 0.6 ? "start" : "center", behavior: "auto" });
         if (r.height > vh * 0.6) window.scrollBy(0, -70);
+        if (wasLocked) spotLockScroll(true);
       }
       setTimeout(() => drawSpot(el, i), need ? 130 : 0);
     }
@@ -6017,10 +6060,25 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       if (right - left < 60) right = Math.min(vw - 6, left + 60);
 
       const hole = document.getElementById("spotHole");
-      hole.style.left = left + "px";
-      hole.style.top = top + "px";
-      hole.style.width = (right - left) + "px";
-      hole.style.height = (bottom - top) + "px";
+      const geo = [left + "px", top + "px", (right - left) + "px", (bottom - top) + "px"];
+      if (spotFirstDraw) {
+        // v1.4.3 ⑧-2: 첫 스텝은 트랜지션 없이 자리만 잡고,
+        //  rAF에서 포커스링을 부드럽게 띄워 이전 투어 위치에서 날아오는 현상을 막는다
+        spotFirstDraw = false;
+        hole.classList.remove("ready");
+        hole.style.transition = "none";
+        hole.style.left = geo[0]; hole.style.top = geo[1];
+        hole.style.width = geo[2]; hole.style.height = geo[3];
+        void hole.offsetWidth;
+        requestAnimationFrame(() => {
+          hole.style.transition = "";
+          hole.classList.add("ready");
+        });
+      } else {
+        hole.classList.add("ready");
+        hole.style.left = geo[0]; hole.style.top = geo[1];
+        hole.style.width = geo[2]; hole.style.height = geo[3];
+      }
 
       document.getElementById("spotCount").innerText =
         `✨ 스팟라이트 가이드  ${i + 1} / ${SPOT_STEPS.length}`;
@@ -6044,7 +6102,9 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function endSpotTour() {
       const ov = document.getElementById("spotOverlay");
       if (ov) ov.classList.remove("show");
-      document.body.classList.remove("spot-on");
+      spotLockScroll(false);                    // v1.4.3 ⑧-1: 스크롤 잠금 해제
+      const hole = document.getElementById("spotHole");
+      if (hole) { hole.classList.remove("ready"); hole.style.transition = "none"; }
       try { localStorage.setItem("onboarding_v14_completed", "1"); } catch (e) {}
     }
 
