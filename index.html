@@ -2184,7 +2184,7 @@
           최신 ShiftPay v1.5.0 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.5.0.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.5.0.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.5.0.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -2235,6 +2235,7 @@
       "2025-03-01": "삼일절",
       "2025-03-03": "삼일절 대체공휴일",
       "2025-04-19": "노조창립일",
+      "2025-04-21": "노조창립일 대체휴무", // 토요일 겹침 → 익일 평일 (HolidayCore 와 일치)
       "2025-05-01": "노동절",
       "2025-05-05": "어린이날",
       "2025-05-06": "석가탄신일 대체공휴일",
@@ -2248,6 +2249,7 @@
       "2025-10-08": "추석 대체공휴일",
       "2025-10-09": "한글날",
       "2025-10-18": "회사창립일",
+      "2025-10-20": "회사창립일 대체휴무", // 토요일 겹침 → 익일 평일 (HolidayCore 와 일치)
       "2025-12-25": "성탄절",
 
       // 2026
@@ -2271,7 +2273,7 @@
       "2026-09-24": "추석 연휴",
       "2026-09-25": "추석",
       "2026-09-26": "추석 연휴",
-      "2026-09-28": "추석 대체공휴일", // 단협 제52조: 공휴일 토·일 겹침 시 익일 평일 대체
+      "2026-09-28": "추석 대체휴무", // 단협 제52조: 공휴일 토·일 겹침 시 익일 평일 대체
       "2026-10-03": "개천절",
       "2026-10-05": "개천절 대체공휴일",
       "2026-10-09": "한글날",
@@ -2641,7 +2643,8 @@
       vibrate();
       const cnt = selectedDays.size;
       if (confirm(`선택한 ${cnt}개 날짜의 근무 및 메모 기록을 모두 삭제하시겠습니까?`)) {
-        const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
+        // v1.5.0 패치 — 수동 주차(weekly)·수동 가급(gageub)도 함께 지운다
+        const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "weekly", "gageub", "memo", "att", "atth"];
         selectedDays.forEach(d => {
           const dateKey = `${curYear}-${pad(curMonth)}-${pad(d)}`;
           subKeys.forEach(k => localStorage.removeItem(`${dateKey}-${k}`));
@@ -3366,11 +3369,12 @@
           if (dow === 0) autoWeekly = 8;
           else if (dow === 6 || isHolDay) autoPaid = 8;
         }
+        // v1.5.0 ② — 토·공휴일에 교육·출장 등 유급 근태를 직접 넣으면 자동 유급 8h와 겹쳐
+        //   16h로 2배 계상되던 결함. 유급 값이 있거나(반차 4h) 유급 칸이 저장돼 있으면('0' 포함)
+        //   자동 유급을 대체한다 — 설치형 PayCore.dayHours 와 같은 판정(2026-11-15 후속 패치).
+        if (p > 0 || localStorage.getItem(`${dateKey}-paid`) !== null) autoPaid = 0;
         if (isLeave || isHalf) annual = p;
         else paidManual = p;
-        // v1.5.0 ② — 토·공휴일에 교육·출장 등 유급 근태를 직접 넣으면 자동 유급 8h와 겹쳐
-        //   16h로 2배 계상되던 결함. 수동 유급 입력이 있으면 자동 유급을 대체한다(설치형 PayCore 동일).
-        if (paidManual > 0) autoPaid = 0;
 
         r.norm += n;
         r.annual += annual;
@@ -3724,14 +3728,14 @@
           if (dow === 0) autoWeekly = 8;
           else if (dow === 6 || isHolDay) autoPaid = 8;
         }
-        if (p > 0) autoPaid = 0;                     // 수동 유급이 자동 유급을 대체
+        // v1.5.0 패치 — 설치형 PayCore.dayHours 와 같은 판정: 유급 칸에 값이 있거나(반차 4h)
+        //   유급 칸이 저장돼 있으면('0' 포함) 토·공휴일 자동 유급 8h 를 끈다
+        if (p > 0 || mPaid !== null) autoPaid = 0;
         if (mWeekly !== null) autoWeekly = mWeekly;
 
-        let ex;
-        if (mExtra !== null) ex = Math.max(0, mExtra);
-        else if (isShift || isLeave) ex = 0;
-        else ex = (n >= 8 || holWork >= 8) ? 1 : 0;
-        gageubSum += ex;
+        // v1.5.0 패치 — 가급 합산은 설치형 PayCore.totals() 와 같게 '직접 입력값의 합'만 센다.
+        //   (일 1시간 자동 인정은 아래 max(gageubSum, workDayCount) 가 담당한다)
+        if (mExtra !== null) gageubSum += Math.max(0, mExtra);
 
         r.normal += n;
         r.paid += autoPaid + p;
@@ -4344,7 +4348,8 @@
     }
     function deleteSelectedDay() {
       if (!selectedDateStr) return;
-      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
+      // v1.5.0 패치 — 수동 주차(weekly)·수동 가급(gageub)이 남아 삭제 후에도 급여에 잡히던 결함
+      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "weekly", "gageub", "memo", "att", "atth"];
       subKeys.forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       localStorage.removeItem(selectedDateStr);
       closeShiftSheet();
@@ -4505,6 +4510,14 @@
       if (hol) localStorage.setItem(`${selectedDateStr}-hol`, hol); else localStorage.removeItem(`${selectedDateStr}-hol`);
       if (holOt) localStorage.setItem(`${selectedDateStr}-holot`, holOt); else localStorage.removeItem(`${selectedDateStr}-holot`);
       if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
+      // v1.5.0 패치 — 설치형 [세부 시간 직접 입력] 저장 규칙과 동일하게 0은 키를 지운다.
+      //   (0을 그대로 저장하면 그 날의 토·공휴일 자동 유급 8h·자동 가급 1h 판정이 설치형과 어긋난다)
+      [['norm', norm], ['paid', paid], ['ot', ot], ['night', night], ['hol', hol], ['holot', holOt], ['extra', extra]].forEach(function (pair) {
+        const v = String(pair[1] === undefined ? '' : pair[1]).trim();
+        const nv = parseFloat(v);
+        if (v !== '' && !isNaN(nv) && nv > 0) localStorage.setItem(`${selectedDateStr}-${pair[0]}`, v);
+        else localStorage.removeItem(`${selectedDateStr}-${pair[0]}`);
+      });
       if (memo) localStorage.setItem(`${selectedDateStr}-memo`, memo); else localStorage.removeItem(`${selectedDateStr}-memo`);
       // v1.5.0 ① — 직접 시간 입력으로 바꾸면 이전 근태 뱃지(att·atth)와 조합설명회(union)를 확실히 지운다
       localStorage.removeItem(`${selectedDateStr}-att`);
@@ -4937,14 +4950,21 @@
       onScroll();
     })();
 
+    // v1.5.0 — 예전에 저장된 매니저(연봉제) 직급은 사원으로 안전 폴백
+    //   (설정창을 열 때뿐 아니라 페이지 초기 로드에서도 즉시 적용해 계산부터 사원 0원으로 정리한다)
+    function migrateManagerRankWeb() {
+      try {
+        const savedRank = localStorage.getItem("user_duty") || "";
+        if (savedRank.indexOf("매니저") >= 0) {
+          localStorage.setItem("user_duty", "사원");
+          localStorage.setItem("setting_position", "0");
+        }
+      } catch (e) {}
+    }
+
     // Settings Modal
     function openSettings() {
-      // v1.5.0 — 예전에 저장된 매니저(연봉제) 직급은 사원으로 안전 폴백
-      const savedRank = localStorage.getItem("user_duty") || "";
-      if (savedRank.indexOf("매니저") >= 0) {
-        localStorage.setItem("user_duty", "사원");
-        localStorage.setItem("setting_position", "0");
-      }
+      migrateManagerRankWeb();
       document.getElementById("cfgName").value = localStorage.getItem("user_name") || "";
       document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
       document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
@@ -5259,6 +5279,7 @@
 • 🧑‍💼 직급에서 매니저(책임매니저 포함) 삭제: 연봉제라 공수계산 대상이 아니므로 사원·주임·계장·기장만 남기고, 예전 매니저 저장값은 사원으로 안전 폴백
 • 🖼️ 아이콘 피코를 우측·아래로 조금 내려 아래 입끝이 오른쪽 라운딩 모서리에 가까이 오도록 조정 (안드로이드 mipmap 5해상도 · 웹 PWA 아이콘 1:1)
 • ∑ 신규 기본값을 설치형과 통일: 기본시급 13,653원 / 통상시급 14,939원
+• 🩹 3사 재검증 후속 패치 (같은 v1.5.0 · 빌드 33): 웹 APK 직다운로드 주소를 v1.5.0으로 교정 / 날짜·일괄·월 삭제 시 수동 주차·가급 잔존 제거 / 직접 입력 유급 0·비근무일 가급의 웹↔설치형 1원 일치 / 웹 2025년 회사 대체휴무(4/21·10/20) 추가·9/28 '추석 대체휴무' 표기 / 매니저 직급 폴백을 첫 화면 로드부터 즉시 적용
 v1.4.3 (2026-11-13) — 버전 고정 재빌드 · PDF 명세서 직독 · 새 피코 · 공제 정상화 (빌드 32)
 • 🗓️ 연월 빠른 이동: 연월 창을 좌우로 밀면 전년도/다음 연도가 슬라이드로 넘어가고, 연도 숫자를 누르면 2024~2030 빠른 선택 그리드와 위아래로 굴리는 수직 연도 휠이 열립니다 — 원하는 연도를 바로 골라 이동
 • 🧭 4스텝 대화형 온보딩: ①이름·직급 ②생년월일·입사년월일 ③근무형태·통상시급 ④부양가족·자녀 — 단계마다 "000 사원님의 입력으로 …" 호칭으로 이유를 먼저 설명하고, 정년까지 남은 년·월·일(총 일수)·근속수당·가족수당·자녀 세액공제를 실시간 계산해 안내
@@ -5560,7 +5581,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     function clearCurrentMonth() {
       if (!confirm(`${curYear}년 ${curMonth}월의 모든 근무 입력을 삭제할까요?`)) return;
       const totalDays = new Date(curYear, curMonth, 0).getDate();
-      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "memo", "att", "atth"];
+      const subKeys = ["mode", "norm", "paid", "union", "ot", "hol", "holot", "night", "extra", "weekly", "gageub", "memo", "att", "atth"];
       for (let d = 1; d <= totalDays; d++) {
         const k = `${curYear}-${pad(curMonth)}-${pad(d)}`;
         subKeys.forEach(s => localStorage.removeItem(`${k}-${s}`));
@@ -6394,6 +6415,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
     // Initialize on page load
     function initApp() {
+      migrateManagerRankWeb();   // v1.5.0 패치 — 매니저 직급 폴백을 초기 로드에서도 즉시
       migratePositionDutyWeb();
       setupDateAutoHyphen("cfgBirth");
       setupDateAutoHyphen("cfgJoin");
