@@ -1569,24 +1569,36 @@
 
       <div class="pay-receipt">
         <div class="receipt-row">
-          <span>기본급 (209h 산출)</span>
+          <span>1. 기본급</span>
           <span class="receipt-val" id="valBasePay">0원</span>
         </div>
         <div class="receipt-row">
-          <span>시간외 수당 총액</span>
+          <span>2. 평일연장근로수당</span>
           <span class="receipt-val" id="valOtPay">0원</span>
         </div>
         <div class="receipt-row">
-          <span>직책수당 (직급 연동)</span>
-          <span class="receipt-val" id="valPositionPay">0원</span>
+          <span>3. 휴일근로수당(특근)</span>
+          <span class="receipt-val" id="valHolPay">0원</span>
         </div>
         <div class="receipt-row">
-          <span>직무수당 (고정수당)</span>
-          <span class="receipt-val" id="valDutyPay">0원</span>
+          <span>4. 휴일연장수당(가급)</span>
+          <span class="receipt-val" id="valHolOtPay">0원</span>
         </div>
-        <div class="receipt-row" id="rowSummerPay" style="display:none;">
-          <span>하계건강지원비 (7·8·9월)</span>
-          <span class="receipt-val" id="valSummerPay">200,000원</span>
+        <div class="receipt-row" id="rowNightPay" style="display:none;">
+          <span>5. 야간 추가수당 (<span id="valNightHours">0h</span>)</span>
+          <span class="receipt-val" id="valNightPay">0원</span>
+        </div>
+        <div class="receipt-row">
+          <span id="valFixedLabel">5. 고정 및 상주휴게수당</span>
+          <span class="receipt-val" id="valFixedPay">0원</span>
+        </div>
+        <div class="receipt-sub-row">
+          <span>└ 직책수당 (직급 연동)</span>
+          <span class="receipt-sub-val" id="valPositionPay">0원</span>
+        </div>
+        <div class="receipt-sub-row">
+          <span>└ 직무수당 (고정수당)</span>
+          <span class="receipt-sub-val" id="valDutyPay">0원</span>
         </div>
         <div class="receipt-row" id="rowRetroPay" style="display:none; color:#b46400; font-weight:600;">
           <span style="display:inline-flex; align-items:center; gap:4px;"><svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>소급분 (임단협 타결)</span>
@@ -1603,13 +1615,7 @@
         </div>
 
         <button class="accordion-btn" onclick="toggleAccordion()">▾ 단체협약 급여 산출 상세 계산식 펼치기</button>
-        <div class="accordion-content" id="accordionContent">
-          • 통상시급: <span id="accOrdinaryRate">13,500</span>원 (기본시급: <span id="accBaseRate">12,000</span>원)<br>
-          • 연장수당: 연장시간 × 통상시급 × 1.5배<br>
-          • 특근수당: 특근(8h 이내) × 통상시급 × 1.5배 + 특근연장(8h 초과) × 통상시급 × 2.0배<br>
-          • 야간수당: <span id="accNightFormula">야간시간 × 통상시급 × 0.5배</span><br>
-          • 정년 만 60세 D-Day 및 근속연차 자동 연동
-        </div>
+        <div class="accordion-content" id="accordionContent"></div>
 
         <button class="accordion-btn" onclick="toggleDedAccordion()">▾ 상세 공제 계산식 펼치기</button>
         <div class="accordion-content" id="dedAccordionContent"></div>
@@ -1663,7 +1669,7 @@
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="openPayslipPdfPicker(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg> 📄 급여명세서 PDF 불러오기</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.4.3)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.5.0)</div>
     </div>
   </div>
 
@@ -1932,10 +1938,6 @@
             <option value="주임">기술직 - 주임 (50,000원)</option>
             <option value="계장">기술직 - 계장 (100,000원)</option>
             <option value="기장">기술직 - 기장 (200,000원)</option>
-            <option value="G1 매니저">일반직 - G1</option>
-            <option value="G2 매니저">일반직 - G2</option>
-            <option value="G3 책임매니저">일반직 - G3</option>
-            <option value="G4 책임매니저">일반직 - G4</option>
           </select>
         </div>
       </div>
@@ -1955,11 +1957,11 @@
       </div>
       <div class="form-group">
         <label>기준 통상시급 (원)</label>
-        <input class="form-input" type="number" id="cfgOrdinary" placeholder="13500">
+        <input class="form-input" type="number" id="cfgOrdinary" placeholder="14939">
       </div>
       <div class="form-group">
         <label>기준 기본시급 (원)</label>
-        <input class="form-input" type="number" id="cfgBaseRate" placeholder="12000">
+        <input class="form-input" type="number" id="cfgBaseRate" placeholder="13653">
       </div>
       <div class="form-group">
         <label>직책수당 (원 — 직급 선택 시 자동)</label>
@@ -1968,6 +1970,25 @@
       <div class="form-group">
         <label>직무수당 (원 — 사원도 동일 적용)</label>
         <input class="form-input" type="number" id="cfgDutyPay" placeholder="55000">
+      </div>
+      <div class="form-group">
+        <label>가족수당 (가족) — 부양가족 수 연동</label>
+        <select class="form-input" id="cfgFamilyLink" onchange="updateFamilyLinkUI()">
+          <option value="1" selected>부양가족 수로 자동 계산 ((부양가족−1) × 10,000원)</option>
+          <option value="0">직접 입력</option>
+        </select>
+        <input class="form-input" type="number" id="cfgFamilyOther" placeholder="30000" style="margin-top:6px;">
+        <div style="font-size:11px; color:var(--sub); margin-top:4px;" id="cfgFamilyNote"></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div class="form-group">
+          <label>하계건강지원비 (7~9월)</label>
+          <input class="form-input" type="number" id="cfgSummerPay" placeholder="45000">
+        </div>
+        <div class="form-group">
+          <label>기타수당·소급분</label>
+          <input class="form-input" type="number" id="cfgOtherPay" placeholder="0">
+        </div>
       </div>
       <div class="form-group">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -2158,12 +2179,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.4.3.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.5.0.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.4.3 APK 다운로드
+          최신 ShiftPay v1.5.0 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.4.3.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.4.3.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.5.0.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -2803,17 +2824,23 @@
         case "congrat":
         case "condol":
         case "commend":  return { mode: "custom",  normal: 0, paid: attPaidHours(h), union: 0 };
+        // v1.5.0 ④ — 건강검진·교육·출장·예비군도 직접 입력 시간을 0.5~8h로 다듬는다
         case "health":
         case "training":
         case "trip":
-        case "reserve":  return { mode: "custom",  normal: 0, paid: h, union: 0 };
+        case "reserve":  return { mode: "custom",  normal: 0, paid: attPaidHours(h), union: 0 };
         // 토·일·공휴일은 자동 유급·주차 8h가 이미 기본급에 들어 있으므로 정상 8h를 겹쳐 넣지 않는다
         case "union":    return paidHoliday
           ? { mode: "custom", normal: 0, paid: 0, union: h }
           : { mode: "custom", normal: 8, paid: 0, union: h };
-        case "early":    return { mode: "custom",  normal: h, paid: 0, union: 0 };
+        // v1.5.0 ④ — 토·일·공휴일은 자동 유급·주차 8h가 이미 잡히므로 정상 8h를 겹쳐 넣지 않는다
+        case "early":    return paidHoliday
+          ? { mode: "custom", normal: 0, paid: 0, union: 0 }
+          : { mode: "custom", normal: h, paid: 0, union: 0 };
         case "late":
-        case "outing":   return { mode: "custom",  normal: 8, paid: 0, union: 0 };
+        case "outing":   return paidHoliday
+          ? { mode: "custom", normal: 0, paid: 0, union: 0 }
+          : { mode: "custom", normal: 8, paid: 0, union: 0 };
         case "sick":
         case "leavework": return { mode: "none",   normal: 0, paid: 0, union: 0 };
         case "absent":   return h > 0
@@ -3331,17 +3358,19 @@
         else if (isShift || isLeave) ex = 0;
         else ex = (n >= 8 || holWork >= 8) ? 1 : 0;
 
+        // 연차 칸: 연차·하계휴가 8h / 반차 4h, 그 외 paid 직접입력은 유급으로
+        let annual = 0, paidManual = 0;
         // 유급(토·평일 공휴일 8h) / 주차(일요일 8h) 자동 인정 — 연차일은 주차·유급 중복 없음
         let autoPaid = 0, autoWeekly = 0;
         if (!isLeave && !isNone) {
           if (dow === 0) autoWeekly = 8;
           else if (dow === 6 || isHolDay) autoPaid = 8;
         }
-
-        // 연차 칸: 연차·하계휴가 8h / 반차 4h, 그 외 paid 직접입력은 유급으로
-        let annual = 0, paidManual = 0;
         if (isLeave || isHalf) annual = p;
         else paidManual = p;
+        // v1.5.0 ② — 토·공휴일에 교육·출장 등 유급 근태를 직접 넣으면 자동 유급 8h와 겹쳐
+        //   16h로 2배 계상되던 결함. 수동 유급 입력이 있으면 자동 유급을 대체한다(설치형 PayCore 동일).
+        if (paidManual > 0) autoPaid = 0;
 
         r.norm += n;
         r.annual += annual;
@@ -3530,62 +3559,47 @@
       // 출근카드 1:1 집계 카드 (정취·유급·주차·연차 / 연장·휴일근로·휴일연장·심야 / 가급·휴일가급·환산)
       if (!light) renderCardBreakdown();
 
-      // Rates
-      const baseRate = parseFloat(localStorage.getItem("setting_base") || "12000");
-      const ordinaryRate = parseFloat(localStorage.getItem("setting_ordinary") || "13500");
-      const dutyPay = parseFloat(localStorage.getItem("setting_duty") || "55000");
-      const positionPay = parseFloat(localStorage.getItem("setting_position") || "0");
-      const userDeduction = parseFloat(localStorage.getItem("setting_deduction") || "0");
+      // ══════════════════════════════════════════════════════════════
+      // v1.5.0 — 설치형 PayCore.amounts() 와 1:1 급여 계산
+      //   · 기본급 = (정상+유급+주차+조합) × 기본시급  ← 209h 고정식 폐기
+      //   · 근속·가족(본인/가족)·상주휴게(가급)·교대·직책·직무·기타·하계 수당을 모두 지급총액에 산입
+      // ══════════════════════════════════════════════════════════════
+      const pay = computePayCoreAmounts(curYear, curMonth, isShift);
+      const pt = pay.t;
+      const fmtNum = (v) => Math.round(v).toLocaleString();
+      const won = (v) => fmtNum(v) + "원";
+      const userDeduction = parseFloat(localStorage.getItem("setting_deduction") || "0") || 0;
 
-      document.getElementById("accBaseRate").innerText = baseRate.toLocaleString();
-      document.getElementById("accOrdinaryRate").innerText = ordinaryRate.toLocaleString();
-
-      // Basic Pay (209h standard)
-      const basePay = Math.round(baseRate * 209);
-
-      // Overtime & Holiday pay (단협 제51조: 평일연장 1.5배, 휴일 1.5배, 8h초과 특근연장 2.0배, 야간 0.5배 가산)
-      const otPay = Math.round(ordinaryRate * otHours * 1.5);
-      const holPay = Math.round(ordinaryRate * holHours * 1.5);
-      const holOtPay = Math.round(ordinaryRate * holOtHours * 2.0);
-      const nightPay = Math.round(ordinaryRate * nightPayHours * 0.5);
-
-      // 상세 산출 계산식(아코디언) 야간 줄 — 교대조는 야간 일수 × 7.0h 공식을 투명하게 노출
-      const accNight = document.getElementById("accNightFormula");
-      if (accNight) {
-        if (nightPayHours > 0) {
-          accNight.innerHTML = isShift
-            ? `야간 ${shiftNightDays}일 × 7.0h = <b>${nightPayHours.toFixed(1)}h</b> × ${ordinaryRate.toLocaleString()}원 × 0.5배 = <b>${nightPay.toLocaleString()}원</b>`
-            : `${fmtH(nightHours)} × ${ordinaryRate.toLocaleString()}원 × 0.5배 = <b>${nightPay.toLocaleString()}원</b>`;
+      document.getElementById("valBasePay").innerText = won(pay.a.base);
+      document.getElementById("valOtPay").innerText = won(pay.a.ot);
+      document.getElementById("valHolPay").innerText = won(pay.a.hol);
+      document.getElementById("valHolOtPay").innerText = won(pay.a.holOt);
+      const rowNight = document.getElementById("rowNightPay");
+      if (rowNight) {
+        if (pt.night > 0) {
+          rowNight.style.display = "flex";
+          document.getElementById("valNightHours").innerText = pay.nightPayHours.toFixed(1) + "h";
+          document.getElementById("valNightPay").innerText = won(pay.a.night);
         } else {
-          accNight.textContent = "야간 기록 없음";
+          rowNight.style.display = "none";
         }
       }
-      const totalOvertimePay = otPay + holPay + holOtPay + nightPay;
+      const fixedLabel = document.getElementById("valFixedLabel");
+      if (fixedLabel) fixedLabel.innerText = (pt.night > 0 ? "6." : "5.") + (isShift ? " 고정 및 교대수당" : " 고정 및 상주휴게수당");
+      document.getElementById("valFixedPay").innerText = won(pay.a.fixed);
+      document.getElementById("valPositionPay").innerText = won(pay.position);
+      document.getElementById("valDutyPay").innerText = won(pay.duty);
 
-      // Summer Health Allowance (only July, August, Sept)
-      let summerPay = 0;
-      if (curMonth === 7 || curMonth === 8 || curMonth === 9) {
-        summerPay = 200000;
-        document.getElementById("rowSummerPay").style.display = "flex";
-      } else {
-        document.getElementById("rowSummerPay").style.display = "none";
-      }
-
-      // Shift allowance (200,000 won if shift worker)
-      const shiftPay = isShift ? 200000 : 0;
-
-      // Retroactive Pay (2026 단협 타결 소급분)
+      // 소급분 (임단협 타결)
       const retroKey = `retro_active_${curYear}_${curMonth}`;
       let isRetro = safeStorage.getItem(retroKey);
       if (isRetro === null || isRetro === undefined) {
-        // 기본값: 2026년 9월(타결월)이면 기본 ON, 그 외 달은 OFF
         isRetro = (curYear === 2026 && curMonth === 9) ? "true" : "false";
       }
       const retroActive = (isRetro === "true");
       const retroPayAmount = parseInt(safeStorage.getItem("retro_fixed_amount") || "1452800", 10);
       const retroPay = retroActive ? retroPayAmount : 0;
 
-      // 상단 바 소급 버튼 UI 상태 갱신
       const btnRetro = document.getElementById("btnRetroToggle");
       if (btnRetro) {
         const retroSvg = '<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align:-1px; margin-right:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>';
@@ -3601,7 +3615,6 @@
           btnRetro.style.background = "var(--surface)";
         }
       }
-
       if (retroActive) {
         document.getElementById("rowRetroPay").style.display = "flex";
         document.getElementById("valRetroPay").innerText = "+" + retroPay.toLocaleString() + "원";
@@ -3609,12 +3622,10 @@
         document.getElementById("rowRetroPay").style.display = "none";
       }
 
-      // Total Gross Pay
-      const grossPay = basePay + totalOvertimePay + positionPay + dutyPay + shiftPay + summerPay + retroPay;
-
-      // Deductions: 4대보험 법정 요율 + 소득세 간이세액표 + 노조회비 공식 (v1.3.5)
+      // 총지급액 → 공제 → 실수령액
+      const grossPay = pay.a.gross + retroPay;
       const dedAuto = localStorage.getItem("ded_auto") !== "0";
-      const dedDetail = computeDeduction(grossPay);
+      const dedDetail = computeDeduction(Math.round(grossPay));
       let deductions = dedAuto ? dedDetail.total : userDeduction;
       // v1.4.3 재빌드 ④: 연말정산 환급 달은 직접 입력 공제액이 마이너스 — 0처럼 덮지 않는다
       if (isNaN(deductions) || deductions === 0) deductions = dedDetail.total;
@@ -3623,29 +3634,211 @@
       const netPay = Math.max(0, grossPay - deductions);
       const refundMonth = deductions < 0;
 
-      document.getElementById("valBasePay").innerText = basePay.toLocaleString() + "원";
-      document.getElementById("valOtPay").innerText = totalOvertimePay.toLocaleString() + "원";
-      document.getElementById("valPositionPay").innerText = positionPay.toLocaleString() + "원";
-      document.getElementById("valDutyPay").innerText = dutyPay.toLocaleString() + "원";
       document.getElementById("valDeduction").innerText = refundMonth
         ? "+" + Math.abs(deductions).toLocaleString() + "원 (환급)"
-        : "-" + deductions.toLocaleString() + "원";
+        : "-" + Math.round(deductions).toLocaleString() + "원";
       document.getElementById("valDeduction").style.color = refundMonth ? "var(--emerald)" : "var(--red)";
-      document.getElementById("valNetPay").innerText = netPay.toLocaleString() + "원";
+      document.getElementById("valNetPay").innerText = won(netPay);
 
-      // v1.3.5 히어로: 소급 토글 옆에서 실수령액 변화가 바로 보이도록 동시 갱신
       const heroNet = document.getElementById("heroNetPay");
-      if (heroNet) heroNet.innerText = netPay.toLocaleString() + "원";
+      if (heroNet) heroNet.innerText = won(netPay);
       const heroGross = document.getElementById("heroGross");
-      if (heroGross) heroGross.innerText = grossPay.toLocaleString() + "원";
+      if (heroGross) heroGross.innerText = won(grossPay);
       const heroDed = document.getElementById("heroDed");
       if (heroDed) {
         heroDed.innerText = refundMonth
           ? "환급 +" + Math.abs(deductions).toLocaleString() + "원"
-          : "-" + deductions.toLocaleString() + "원";
+          : "-" + Math.round(deductions).toLocaleString() + "원";
         heroDed.style.color = refundMonth ? "var(--emerald)" : "var(--red)";
       }
+
+      renderPayFormula(pay, retroActive, retroPay);
       renderRefundNote(deductions, curYear, curMonth);
+    }
+
+    // ── 설정값 읽기 (설치형 get(key) 의 웹 대응) ──────────────────────────
+    function payCfg(key, def) {
+      const v = localStorage.getItem(key);
+      if (v === null || v === undefined || String(v).trim() === "") return def;
+      const n = parseFloat(String(v).replace(/,/g, ""));
+      return isNaN(n) ? def : n;
+    }
+    function payDependents() {
+      return Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1);
+    }
+    function payFamilyLinked() {
+      return localStorage.getItem("setting_family_link") !== "0";
+    }
+
+    /**
+     * 월 시간 집계 — 설치형 PayCore.totals()/countWorkDays()/nightPayHours() 와 같은 규칙.
+     *  · 연차·하계휴가 8h는 정상 인정시간으로 잡는다(설치형 dayHours 동일)
+     *  · 토요일·일요일·공휴일의 유급/주차 8h는 자동 인정, 수동 유급 입력이 있으면 자동을 대체
+     *  · 휴일근로 8h 초과분은 휴일연장(200%)으로 자동 분리
+     */
+    function payCoreTotals(y, m, isShift) {
+      const totalDays = new Date(y, m, 0).getDate();
+      const r = { normal: 0, paid: 0, weekly: 0, union: 0, ot: 0, hol: 0, holot: 0,
+                  night: 0, gageub: 0, workDays: 0, nightWork: 0, nightAny: 0 };
+      let gageubSum = 0, workDayCount = 0;
+      const num = (k, suffix) => {
+        const v = localStorage.getItem(`${k}-${suffix}`);
+        return (v === null || v === "") ? null : (parseFloat(v) || 0);
+      };
+      for (let d = 1; d <= totalDays; d++) {
+        const k = `${y}-${pad(m)}-${pad(d)}`;
+        const mode = localStorage.getItem(`${k}-mode`) || "";
+        const isLeave = (mode === "annual" || mode === "summer");
+        const isHalf = (mode === "half_am" || mode === "half_pm");
+        const isNone = (mode === "none");
+        const mNorm = num(k, "norm"), mPaid = num(k, "paid"), mUnion = num(k, "union");
+        const mOt = num(k, "ot"), mHol = num(k, "hol"), mHolOt = num(k, "holot"), mNight = num(k, "night");
+        const mExtra = num(k, "extra"), mWeekly = num(k, "weekly");
+
+        let n = 0, p = 0, u = 0, o = 0, h = 0, ho = 0, nt = 0;
+        if (mode === "norm") { n = 8; }
+        else if (mode === "ot") { n = 8; o = 2; }
+        else if (mode === "night_10") { n = 8; o = 2; nt = 7.5; }
+        else if (mode === "night_8") { n = 8; nt = 6.0; }
+        else if (mode === "holiday") { h = 8; }
+        else if (mode === "holiday_10") { h = 8; ho = 2; }
+        else if (mode === "night_holiday_10") { h = 8; ho = 2; nt = 7.5; }
+        else if (mode === "holiday_night_10") { h = 8; ho = 2; nt = 3.5; }
+        else if (mode === "holiday_night_8") { h = 8; nt = 6.0; }
+        else if (mode === "holiday_12") { h = 8; ho = 4; }
+        else if (isLeave) { n = (mPaid !== null ? mPaid : 8); }      // 연차·하계 = 유급 8h
+        else if (isHalf) { n = 4; p = 4; }
+        else if (isNone) { n = 0; }
+        else {
+          n = mNorm || 0; p = mPaid || 0; u = mUnion || 0;
+          o = mOt || 0; h = mHol || 0; ho = mHolOt || 0; nt = mNight || 0;
+        }
+        // ① 휴일근로 8h 초과분 → 휴일연장
+        if (h > 8) { ho += h - 8; h = 8; }
+        const holWork = h + ho;
+
+        const dow = new Date(y, m - 1, d).getDay();   // 0=일
+        const isHolDay = !!(officialHolidays[k] || localStorage.getItem(`holiday_${k.replace(/-/g, "")}`));
+        let autoPaid = 0, autoWeekly = 0;
+        if (!isLeave && !isNone) {
+          if (dow === 0) autoWeekly = 8;
+          else if (dow === 6 || isHolDay) autoPaid = 8;
+        }
+        if (p > 0) autoPaid = 0;                     // 수동 유급이 자동 유급을 대체
+        if (mWeekly !== null) autoWeekly = mWeekly;
+
+        let ex;
+        if (mExtra !== null) ex = Math.max(0, mExtra);
+        else if (isShift || isLeave) ex = 0;
+        else ex = (n >= 8 || holWork >= 8) ? 1 : 0;
+        gageubSum += ex;
+
+        r.normal += n;
+        r.paid += autoPaid + p;
+        r.weekly += autoWeekly;
+        r.union += u;
+        r.ot += o;
+        r.hol += h;
+        r.holot += ho;
+        r.night += nt;
+        if (nt > 0) {
+          r.nightAny++;
+          if (n + o + holWork > 0) r.nightWork++;
+        }
+        if (!isLeave && n > 0) r.workDays++;
+        if (!isLeave && (n >= 8 || holWork >= 8)) workDayCount++;
+      }
+      r.gageub = Math.max(gageubSum, workDayCount);
+      return r;
+    }
+
+    /** 설치형 PayCore.amounts() 와 같은 9칸 금액 (0기본급 … 8실수령) */
+    function computePayCoreAmounts(y, m, isShift) {
+      const t = payCoreTotals(y, m, isShift);
+      const base = payCfg("setting_base", 13653);
+      const ordinary = payCfg("setting_ordinary", 14939);
+      const otRate = payCfg("setting_otRate", 1.5);
+      const holidayRate = payCfg("setting_holidayRate", 1.5);
+      const holidayOTRate = payCfg("setting_holidayOTRate", 2.0);
+      const nightRate = payCfg("setting_nightRate", 0.5);
+      const tenure = payCfg("setting_tenure", calcTenureAllowance(localStorage.getItem("user_join") || ""));
+      const familySelf = payCfg("setting_familySelf", 20000);
+      const familyOther = payFamilyLinked()
+        ? Math.max(0, payDependents() - 1) * 10000
+        : payCfg("setting_familyOther", 30000);
+      const position = payCfg("setting_position", 0);
+      const duty = payCfg("setting_duty", 55000);
+      const other = payCfg("setting_other", 0);
+      const summer = payCfg("setting_summer", 45000);
+      const isSummerMonth = (m === 7 || m === 8 || m === 9);
+      const shiftPay = isShift ? 200000 : 0;
+      const breakPay = isShift ? 0 : (t.gageub * base);
+      const nightDays = t.nightWork > 0 ? t.nightWork : t.nightAny;
+      const nightPayHours = isShift ? nightDays * 7.0 : t.night;
+
+      const a = {};
+      a.base = (t.normal + t.paid + t.weekly + t.union) * base;
+      a.ot = Math.max(0, t.ot - t.union) * Math.round(ordinary * otRate);
+      a.hol = t.hol * Math.round(ordinary * holidayRate);
+      a.holOt = t.holot * Math.round(ordinary * holidayOTRate);
+      a.night = nightPayHours * Math.round(ordinary * nightRate);
+      a.breakPay = breakPay;
+      a.shift = shiftPay;
+      a.fixed = tenure + familySelf + familyOther + breakPay + shiftPay
+              + position + duty + other + (isSummerMonth ? summer : 0);
+      a.gross = a.base + a.ot + a.hol + a.holOt + a.night + a.fixed;
+      return { t, a, base, ordinary, otRate, holidayRate, holidayOTRate, nightRate,
+               tenure, familySelf, familyOther, position, duty, other, summer, isSummerMonth,
+               shiftPay, breakPay, nightPayHours, nightDays };
+    }
+
+    /** 상세 산출 계산식 — 설치형 영수증 아코디언과 같은 순서·문구 */
+    function renderPayFormula(pay, retroActive, retroPay) {
+      const box = document.getElementById("accordionContent");
+      if (!box) return;
+      const t = pay.t;
+      const num = (v) => Math.round(v).toLocaleString();
+      const h1 = (v) => (Math.round(v * 100) / 100).toString().replace(/\.0+$/, "");
+      const lines = [];
+      const baseHours = t.normal + t.paid + t.weekly + t.union;
+      lines.push(["1. 기본급 산출식",
+        `${h1(baseHours)}h × ${num(pay.base)}원 (정상 ${h1(t.normal)} + 유급 ${h1(t.paid)} + 주차 ${h1(t.weekly)}`
+        + (t.union > 0 ? ` + 조합 ${h1(t.union)}` : "") + `)`]);
+      const otH = Math.max(0, t.ot - t.union);
+      lines.push(["2. 평일연장 산출식",
+        `${h1(otH)}h × ${num(Math.round(pay.ordinary * pay.otRate))}원 (통상시급 ${num(pay.ordinary)}원 × ${pay.otRate}배)`]);
+      lines.push(["3. 휴일근로(특근) 산출식",
+        `${h1(t.hol)}h × ${num(Math.round(pay.ordinary * pay.holidayRate))}원 (통상시급 ${num(pay.ordinary)}원 × ${pay.holidayRate}배)`]);
+      lines.push(["4. 휴일연장(휴일가급) 산출식",
+        `${h1(t.holot)}h × ${num(Math.round(pay.ordinary * pay.holidayOTRate))}원 (8시간 초과분 통상시급 × ${pay.holidayOTRate * 100}%)`]);
+      if (t.night > 0) {
+        lines.push(["5. 야간근로 산출식",
+          pay.nightPayHours > 0 && (localStorage.getItem("user_shift_type") || "normal") === "shift"
+            ? `야간 ${pay.nightDays}일 × 7.0h = ${h1(pay.nightPayHours)}h × ${num(pay.ordinary)}원 × ${pay.nightRate}배`
+            : `${h1(t.night)}h × ${num(pay.ordinary)}원 × ${pay.nightRate}배`]);
+      }
+      const fixedLines = [];
+      if ((localStorage.getItem("user_shift_type") || "normal") === "shift") {
+        fixedLines.push(`교대수당 ${num(pay.shiftPay)}원 (단협 제42조 5호)`);
+      } else {
+        fixedLines.push(`상주휴게수당 ${num(pay.breakPay)}원 (실근무 ${Math.round(t.gageub)}일 × ${num(pay.base)}원)`);
+      }
+      fixedLines.push(`근속 ${num(pay.tenure)} + 본인가족 ${num(pay.familySelf)} + 가족 ${num(pay.familyOther)}`
+        + (payFamilyLinked()
+            ? ` (부양가족 ${payDependents()}명 → 본인 외 ${Math.max(0, payDependents() - 1)}명 × 10,000원)`
+            : " (직접 입력)"));
+      fixedLines.push(`└ 직책수당 ${num(pay.position)} + 직무수당 ${num(pay.duty)}`
+        + (pay.isSummerMonth ? ` + 하계지원비 ${num(pay.summer)}` : "")
+        + (pay.other > 0 ? ` + 기타수당 ${num(pay.other)}` : ""));
+      lines.push([(t.night > 0 ? "6." : "5.") + ((localStorage.getItem("user_shift_type") || "normal") === "shift"
+        ? " 고정·교대수당 산출식" : " 고정·상주휴게 산출식"), fixedLines.join("<br>")]);
+      if (retroActive) {
+        lines.push(["💰 소급분", `임단협 타결 소급 지급분 ${num(retroPay)}원 (일회성)`]);
+      }
+      box.innerHTML = lines.map(function (it) {
+        return `<div style="margin-bottom:7px;"><b style="color:var(--blue);font-size:12px;">${it[0]}</b>`
+          + `<div style="font-size:12px;color:var(--text);line-height:1.55;">${it[1]}</div></div>`;
+      }).join("");
     }
 
     /**
@@ -3766,7 +3959,7 @@
     }
 
     function computeDeduction(gross) {
-      const ordinary = parseFloat(localStorage.getItem("setting_ordinary") || "13500") || 0;
+      const ordinary = parseFloat(localStorage.getItem("setting_ordinary") || "14939") || 0;
       const dependents = Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1);
       const children = Math.max(0, Math.min(10, parseInt(localStorage.getItem("ded_children") || "0", 10) || 0));
       const advanceRate = parseFloat(localStorage.getItem("ded_advance_rate") || "1") || 1;
@@ -4082,7 +4275,7 @@
       if (mode === "delete") { deleteSelectedDay(); return; }
       if (mode === "half_am") {                    // 🌗 반차: 4h 근무 + 4h 유급 연차
         const k = selectedDateStr;
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo", "union", "weekly", "gageub", "att", "atth"].forEach(s => localStorage.removeItem(`${k}-${s}`));
         localStorage.setItem(`${k}-mode`, "half_am");
         localStorage.setItem(`${k}-norm`, "4");
         localStorage.setItem(`${k}-paid`, "4");
@@ -4122,6 +4315,8 @@
         return;
       }
       if (mode === "ot_4") {
+        // v1.5.0 ③ — 이전 가급(extra)·수동 주차·가급이 남지 않게 먼저 정리한다
+        ["paid", "hol", "holot", "night", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${selectedDateStr}-${s}`));
         localStorage.setItem(`${selectedDateStr}-mode`, "custom");
         localStorage.setItem(`${selectedDateStr}-norm`, "8");
         localStorage.setItem(`${selectedDateStr}-ot`, "4");
@@ -4134,7 +4329,8 @@
       }
       if (mode === "auto" || mode === "none") {
         // 자동인정/무급은 남아 있는 직접입력 시간값을 지워야 화면·집계가 어긋나지 않는다
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "union"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
+        // v1.5.0 ③ — 가급(extra)·수동 주차(weekly)·가급(gageub)까지 함께 지운다
+        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "union", "weekly", "gageub"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       }
       localStorage.setItem(`${selectedDateStr}-mode`, mode);
       // v1.4.3 ⑧ — 일반 프리셋을 고르면 수동 주차·가급과 공식 근태 표시를 함께 비웁니다
@@ -4310,6 +4506,12 @@
       if (holOt) localStorage.setItem(`${selectedDateStr}-holot`, holOt); else localStorage.removeItem(`${selectedDateStr}-holot`);
       if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
       if (memo) localStorage.setItem(`${selectedDateStr}-memo`, memo); else localStorage.removeItem(`${selectedDateStr}-memo`);
+      // v1.5.0 ① — 직접 시간 입력으로 바꾸면 이전 근태 뱃지(att·atth)와 조합설명회(union)를 확실히 지운다
+      localStorage.removeItem(`${selectedDateStr}-att`);
+      localStorage.removeItem(`${selectedDateStr}-atth`);
+      localStorage.removeItem(`${selectedDateStr}-union`);
+      localStorage.removeItem(`${selectedDateStr}-weekly`);
+      localStorage.removeItem(`${selectedDateStr}-gageub`);
 
       closeCustomTimeModal();
       renderCalendar();
@@ -4737,16 +4939,27 @@
 
     // Settings Modal
     function openSettings() {
+      // v1.5.0 — 예전에 저장된 매니저(연봉제) 직급은 사원으로 안전 폴백
+      const savedRank = localStorage.getItem("user_duty") || "";
+      if (savedRank.indexOf("매니저") >= 0) {
+        localStorage.setItem("user_duty", "사원");
+        localStorage.setItem("setting_position", "0");
+      }
       document.getElementById("cfgName").value = localStorage.getItem("user_name") || "";
       document.getElementById("cfgBirth").value = localStorage.getItem("user_birth") || "";
       document.getElementById("cfgJoin").value = localStorage.getItem("user_join") || "";
       document.getElementById("cfgDuty").value = localStorage.getItem("user_duty") || "사원";
       document.getElementById("cfgShiftType").value = localStorage.getItem("user_shift_type") || "normal";
-      document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "13500";
-      document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "12000";
+      document.getElementById("cfgOrdinary").value = localStorage.getItem("setting_ordinary") || "14939";
+      document.getElementById("cfgBaseRate").value = localStorage.getItem("setting_base") || "13653";
       document.getElementById("cfgPositionPay").value = localStorage.getItem("setting_position") || "0";
       document.getElementById("cfgDutyPay").value = localStorage.getItem("setting_duty") || "55000";
       document.getElementById("cfgTenurePay").value = localStorage.getItem("setting_tenure") || calcTenureAllowance(localStorage.getItem("user_join") || "");
+      document.getElementById("cfgSummerPay").value = localStorage.getItem("setting_summer") || "45000";
+      document.getElementById("cfgOtherPay").value = localStorage.getItem("setting_other") || "0";
+      document.getElementById("cfgFamilyLink").value = localStorage.getItem("setting_family_link") === "0" ? "0" : "1";
+      document.getElementById("cfgFamilyOther").value = localStorage.getItem("setting_familyOther") || ((Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1) - 1) * 10000);
+      updateFamilyLinkUI();
       document.getElementById("cfgLeaveBase").value = localStorage.getItem("user_annual_leave_base") || "15";
       document.getElementById("cfgDeduction").value = localStorage.getItem("setting_deduction") || "0";
       document.getElementById("cfgDedAuto").value = localStorage.getItem("ded_auto") === "0" ? "0" : "1";
@@ -4777,10 +4990,28 @@
       }
     }
     // 직급 선택 → 직책수당만 갱신 (직무수당 55,000원은 그대로 유지 — 단협 제42조)
+    // v1.5.0 — 매니저(책임매니저 포함)는 연봉제라 공수계산앱 대상이 아니므로 직급 목록에서 제외
     const RANK_POSITION_MAP = {
-      "사원": 0, "주임": 50000, "계장": 100000, "기장": 200000,
-      "G1 매니저": 0, "G2 매니저": 0, "G3 책임매니저": 0, "G4 책임매니저": 0
+      "사원": 0, "주임": 50000, "계장": 100000, "기장": 200000
     };
+    /** v1.5.0 — 가족수당(가족) 연동 상태에 따라 입력칸을 잠그고 계산식을 보여 준다 */
+    function updateFamilyLinkUI() {
+      const sel = document.getElementById("cfgFamilyLink");
+      const inp = document.getElementById("cfgFamilyOther");
+      const note = document.getElementById("cfgFamilyNote");
+      if (!sel || !inp) return;
+      const deps = Math.max(1, parseInt((document.getElementById("cfgDependents") || {}).value || localStorage.getItem("ded_dependents") || "1", 10) || 1);
+      const linked = sel.value === "1";
+      const amt = Math.max(0, deps - 1) * 10000;
+      inp.disabled = linked;
+      if (linked) inp.value = amt;
+      if (note) {
+        note.innerText = linked
+          ? `부양가족 ${deps}명(본인 포함) → 가족 ${Math.max(0, deps - 1)}명 × 10,000원 = ${amt.toLocaleString()}원`
+          : "직접 입력한 금액을 가족수당(가족)으로 지급합니다.";
+      }
+    }
+
     function autoFillDutyPay() {
       const rank = document.getElementById("cfgDuty").value;
       const pos = RANK_POSITION_MAP[rank] !== undefined ? RANK_POSITION_MAP[rank] : 0;
@@ -4859,6 +5090,10 @@
       localStorage.setItem("setting_position", document.getElementById("cfgPositionPay").value.trim());
       localStorage.setItem("setting_duty", document.getElementById("cfgDutyPay").value.trim());
       localStorage.setItem("setting_tenure", document.getElementById("cfgTenurePay").value.trim());
+      localStorage.setItem("setting_summer", document.getElementById("cfgSummerPay").value.trim() || "45000");
+      localStorage.setItem("setting_other", document.getElementById("cfgOtherPay").value.trim() || "0");
+      localStorage.setItem("setting_family_link", document.getElementById("cfgFamilyLink").value === "1" ? "1" : "0");
+      localStorage.setItem("setting_familyOther", document.getElementById("cfgFamilyOther").value.trim() || "0");
       localStorage.setItem("user_annual_leave_base", document.getElementById("cfgLeaveBase").value.trim());
       localStorage.setItem("setting_deduction", document.getElementById("cfgDeduction").value.trim());
       localStorage.setItem("ded_auto", document.getElementById("cfgDedAuto").value);
@@ -5727,7 +5962,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     let obStep = 1;
     let obShift = "normal";
     let obRank = "사원";
-    const OB_RANKS = ["사원", "주임", "계장", "기장", "G1 매니저", "G2 매니저", "G3 책임매니저", "G4 책임매니저"];
+    const OB_RANKS = ["사원", "주임", "계장", "기장"];   // v1.5.0 — 연봉제 매니저 직급 제외
 
     function maybeShowOnboarding() {
       try {
@@ -6212,7 +6447,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.4.3 (빌드 32) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.5.0 (빌드 33) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
