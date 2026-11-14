@@ -1472,6 +1472,15 @@
 
       <div class="calendar-grid" id="calendarGrid"></div>
 
+      <!-- v1.6.0 ② 월간 패턴 자동 채우기 (설치형과 같은 위치) -->
+      <button type="button" id="btnPatternFill" onclick="openPatternFillModal()"
+        style="width:100%; margin-top:8px; padding:10px; border-radius:12px; border:1px dashed var(--blue);
+               background:var(--surface); color:var(--blue); font-weight:800; font-size:13px; font-family:inherit;
+               display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+        ⚡ 이번 달 패턴 자동 채우기
+        <span style="font-weight:600; font-size:11px; color:var(--subtext);">· 상주 평일 / 교대 순환</span>
+      </button>
+
       <!-- Quick Action Buttons under calendar -->
       <div class="quick-actions" id="tourQuickBar" style="display:flex; gap:6px;">
         <button class="btn-quick primary" id="btnQuickInput" onclick="quickTodayShift()" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:5px; padding:10px 8px; font-size:13.5px;"><svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> 빠른 근무 입력</button>
@@ -1654,6 +1663,7 @@
       <div class="menu-item" onclick="openSettings(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> 기본정보 및 급여 설정</div>
       <div class="menu-item" onclick="openBonusCalc(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg> 2026년 성과·격려금 계산기</div>
       <div class="menu-item" onclick="openStatsModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> 근무 통계 및 분석 차트</div>
+      <div class="menu-item" onclick="openYearReport(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="15 7 21 7 21 13"></polyline></svg> 📈 연간 누적 · 연말정산</div>
       <div class="menu-item" onclick="openDataModal(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> <strong>데이터 통합 관리 (백업·복원·엑셀)</strong></div>
       <div class="menu-item" onclick="openHolidayRefresh(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path></svg> 공휴일 데이터 갱신</div>
       <div class="menu-item" onclick="openManualHoliday(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M12 14v4"></path><path d="M10 16h4"></path></svg> 휴일 수동 설정</div>
@@ -1669,7 +1679,7 @@
       <div class="menu-item" onclick="showDoc('onboarding'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> 처음 사용자 이용 가이드</div>
       <div class="menu-item" onclick="openPayslipPdfPicker(); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg> 📄 급여명세서 PDF 불러오기</div>
       <div class="menu-item" onclick="showDoc('company'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path></svg> 회사 소개 및 연혁 (1975~2024)</div>
-      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.5.0)</div>
+      <div class="menu-item" onclick="showDoc('history'); closeDrawer();"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="9"></circle></svg> 버전 업데이트 내역 (v1.6.0)</div>
     </div>
   </div>
 
@@ -2054,6 +2064,44 @@
     </div>
   </div>
 
+  <!-- v1.6.0 ② 월간 패턴 자동 채우기 Modal -->
+  <div class="sheet-overlay scale-in" id="patternOverlay" onclick="closePatternFill(event)">
+    <div class="bottom-sheet" style="max-height:92vh; padding:18px 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+        <div>
+          <div style="font-size:16px; font-weight:800; color:var(--text);">⚡ 패턴 자동 채우기</div>
+          <div id="patternSubTitle" style="font-size:11.5px; color:var(--subtext);">상주 평일 근무나 교대 순환을 한 달치 한 번에</div>
+        </div>
+        <button onclick="closePatternFill()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div id="patternBody" style="overflow-y:auto; max-height:calc(92vh - 210px); padding-right:2px;"></div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="sheet-btn" style="flex:1; background:var(--bg);" onclick="closePatternFill()">취소</button>
+        <button class="sheet-btn" id="patternApplyBtn" style="flex:1.35; background:var(--blue); color:#fff; border-color:var(--blue);" onclick="patternApply()">⚡ 적용</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- v1.6.0 ③ 연간 누적 · 연말정산 Modal -->
+  <div class="sheet-overlay scale-in" id="yearOverlay" onclick="closeYearReport(event)">
+    <div class="bottom-sheet" style="max-height:92vh; padding:18px 16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+        <div>
+          <div style="font-size:16px; font-weight:800; color:var(--text);">📈 연간 누적 · 연말정산</div>
+          <div style="font-size:11.5px; color:var(--subtext);">1~12월 누적과 다음 2월 연말정산 예상 · 참고용 시뮬레이션</div>
+        </div>
+        <button onclick="closeYearReport()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px; background:var(--bg); padding:6px 12px; border-radius:10px;">
+        <button class="nav-btn" onclick="yearRepStep(-1)" style="width:28px; height:28px; font-size:12px;">◀</button>
+        <span id="yearRepYearLabel" style="font-size:14px; font-weight:700; color:var(--text);">2026년</span>
+        <button class="nav-btn" onclick="yearRepStep(1)" style="width:28px; height:28px; font-size:12px;">▶</button>
+      </div>
+      <div id="yearRepBody" style="overflow-y:auto; max-height:calc(92vh - 200px); padding-right:2px;"></div>
+      <div style="margin-top:12px;"><button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeYearReport()">닫기</button></div>
+    </div>
+  </div>
+
   <!-- 근무 통계 & 분석 차트 Modal -->
   <div class="sheet-overlay scale-in" id="statsOverlay" onclick="closeStatsModal(event)">
     <div class="bottom-sheet" style="max-height:90vh; padding:18px 16px;">
@@ -2068,7 +2116,10 @@
             <div style="font-size:11.5px; color:var(--subtext);">근무 유형별 비율 및 요일별 근무 패턴 분석 · 좌우로 밀어 월 이동</div>
           </div>
         </div>
-        <button onclick="closeStatsModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button type="button" onclick="closeStatsModal(); openYearReport();" title="연간 누적 · 연말정산" style="background:var(--blue); border:1px solid var(--blue); color:#fff; padding:4px 8px; font-size:10.5px; font-weight:800; border-radius:8px; white-space:nowrap; font-family:inherit; cursor:pointer;">📈 연간</button>
+          <button onclick="closeStatsModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
       </div>
 
       <!-- Month Navigation Bar inside modal -->
@@ -2211,12 +2262,12 @@
       <div id="docBody" style="font-size:13px; line-height:1.6; color:var(--text); white-space:pre-wrap; margin-bottom:16px;"></div>
       <!-- 안드로이드 전용 앱(APK) 안내 모달에만 표시되는 통합 다운로드 영역 -->
       <div id="docApkActions" style="display:none; margin-bottom:14px;">
-        <a class="sheet-btn" href="downloads/ShiftPay_v1.5.0.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
+        <a class="sheet-btn" href="downloads/ShiftPay_v1.6.0.apk" download style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none; font-size:14.5px; font-weight:800; padding:16px 10px; margin-bottom:8px; border-radius:12px; background:linear-gradient(135deg,#005BAC 0%,#0A3D74 100%); color:#ffffff; border:1px solid #005BAC; box-shadow:0 3px 10px rgba(0,91,172,0.28);">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          최신 ShiftPay v1.5.0 APK 다운로드
+          최신 ShiftPay v1.6.0 APK 다운로드
         </a>
         <div style="font-size:11px; color:var(--subtext); line-height:1.6; margin-bottom:8px; word-break:break-all;">
-          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.5.0.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.5.0.apk</a><br>
+          직다운로드 주소: <a href="https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.6.0.apk" style="color:var(--blue); font-weight:700;" download>ShiftPay_v1.6.0.apk</a><br>
           웹 버전 주소: <a href="https://realcheol.github.io/shiftpay/" style="color:var(--blue); font-weight:700;">https://realcheol.github.io/shiftpay/</a>
         </div>
         <a class="sheet-btn" href="https://realcheol.github.io/shiftpay/" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; box-sizing:border-box; text-decoration:none;">
@@ -5275,8 +5326,15 @@
 • 월말에 [급여명세서 엑셀 내보내기]로 회사 제출용 대장을 출력하거나 데이터를 안전하게 저장하세요.`
       },
       history: {
-        title: "📋 버전 업데이트 내역 (v1.5.0)",
-        body: `v1.5.0 (2026-11-14) — 마일스톤: 웹 급여 1:1 일치 · 매니저 직급 삭제 · 피코 아이콘 위치 조정 (빌드 33)
+        title: "📋 버전 업데이트 내역 (v1.6.0)",
+        body: `v1.6.0 (2026-11-15) — 2단계 월간 패턴 자동 채우기 · 3단계 연간 누적·연말정산 (빌드 34)
+• ⚡ 패턴 자동 채우기: 달력 아래 [⚡ 이번 달 패턴 자동 채우기] 한 번으로 상주 평일(8+2h 또는 8h)이나 교대 순환(4조 3교대 주주야야비비 · 4조 2교대 주5·비2·야5·비2 · 사용자 정의)을 한 달치 채웁니다
+• 🛡️ 기존 입력 보존: 연차·특근·조합설명회처럼 이미 찍어 둔 날은 기본적으로 건너뛰고 [이번 달 총 OO일 적용 (기존 입력 X일 유지)]를 미리 보여 줍니다 — 체크를 풀면 덮어쓰기
+• 🔥 휴일 자동 구분: 교대 순환에서 주말·공휴일에 근무하는 날은 휴일특근(150%) 프리셋으로 넣어 정상근무와 섞이지 않습니다 (끄면 주간/야간 그대로)
+• 📈 연간 누적·연말정산: 1~12월 세전 총지급액·기납부 세금·4대보험·실수령액과 급여 인정시간·연장·휴일특근·심야·출근일수를 한 화면에서 보고, 월별 막대로 어느 달이 비었는지 확인합니다
+• 🧾 2월 연말정산 예상: 부양가족·자녀·4대보험을 급여 설정에서 자동 연동하고 추가 소득·세액공제를 넣으면 근로소득공제 → 기본세율 → 근로소득세액공제·자녀세액공제·표준세액공제(13만) → 결정세액 → 지방소득세까지 계산해 [예상 환급 +O]·[예상 추가납부 −O]을 보여 줍니다
+• 🤝 설치형과 1원 일치: 같은 공식을 같은 순서로 계산합니다 (설치형 PatternFillCore·YearCore ↔ 웹 pfPlanOf·yearSettle)
+v1.5.0 (2026-11-14) — 마일스톤: 웹 급여 1:1 일치 · 매니저 직급 삭제 · 피코 아이콘 위치 조정 (빌드 33)
 • 💰 웹 급여 엔진을 설치형과 1:1로 일치: 기본급이 '시급 × 209h' 고정식이 아니라 실제 인정시간(정정+유급+주차+조합) × 기본시급으로 계산되고, 근속수당·가족수당(본인/가족)·상주휴게(가급)수당·교대수당·직책수당·직무수당·기타수당·하계지원비가 모두 지급총액에 들어갑니다 — 영수증 행 순서·항목명·상세 산출식도 설치형과 동일
 • 🛠️ 3사 교차검증 4대 버그 수정 (웹·설치형 대칭): 직접 시간 입력 저장 시 근태 뱃지(att·atth·union) 잔존 / 토·공휴일 유급 근태 16h 이중 계상 / 프리셋 전환 시 가급(extra)·수동 주차·가급 잔존 / 유급휴일 지각·외출·조퇴 8h 중복 + 건강검진·교육·출장·예비군 직접입력 0.5~8h 클램프
 • 🧑‍💼 직급에서 매니저(책임매니저 포함) 삭제: 연봉제라 공수계산 대상이 아니므로 사원·주임·계장·기장만 남기고, 예전 매니저 저장값은 사원으로 안전 폴백
@@ -5409,7 +5467,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
 안드로이드(삼성 갤럭시 등) 스마트폰을 사용하시는 임직원분들은 100% 오프라인 전용 앱을 설치하여 출근카드 자동 스캔을 가장 편리하게 이용하실 수 있습니다.
 
-※ 최신 정식 버전: v1.5.0 (빌드 33 — 웹·설치형 급여 1:1 일치, 매니저 직급 삭제, 피코 아이콘 위치 조정)
+※ 최신 정식 버전: v1.6.0 (빌드 34 — 월간 패턴 자동 채우기, 연간 누적·연말정산 예측, 웹·설치형 1원 일치)
 
 ▼ 아래 파란 버튼을 누르면 최신 APK를 바로 받을 수 있습니다.
 
@@ -5604,7 +5662,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     // ══════════════════════════════════════════════════════════════════
     const SP_BACKUP_APP = "ShiftPay";
     const SP_BACKUP_FORMAT = 1;
-    const SP_APP_VERSION_NAME = "1.5.0";
+    const SP_APP_VERSION_NAME = "1.6.0";
     const SP_APP_VERSION_CODE = 33;
     const SP_DATE_KEY_RE = /^\d{4}-\d{2}-\d{2}(-(mode|norm|paid|union|ot|hol|holot|night|extra|weekly|gageub|memo|att|atth))?$/;
     const SP_KEY_PREFIXES = ["user_", "setting_", "ded_", "retro_", "bonus_", "payslip_", "holiday_"];
@@ -6179,6 +6237,611 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
     }
 
     // 데이터 통합 관리 모달
+
+    // ══════════════════════════════════════════════════════════════════
+    // v1.6.0 ② — 월간 패턴 자동 채우기 (설치형 PatternFillCore 와 1:1)
+    //   요일 기반(상주) · 순환 기반(교대) 계획을 만들고, 이미 입력한 날은 기본적으로 건너뛴다.
+    // ══════════════════════════════════════════════════════════════════
+    const PF_PRESET_LABEL = {
+      norm: "정상 8h", ot: "주간 8+2h", night8: "야간 8h", night10: "야간 10h",
+      hol8: "휴일특근 8h", hol10: "휴일특근 10h", holnight8: "휴일 야간 8h", holnight10: "휴일 야간 10h"
+    };
+    const PF_WEB_PRESET = {
+      norm: "norm", ot: "ot", night8: "night_8", night10: "night_10",
+      hol8: "holiday", hol10: "holiday_10", holnight8: "holiday_night_8", holnight10: "holiday_night_10"
+    };
+    const PF_PATTERNS = [
+      { id: "resident_ot", label: "상주조 기본 · 평일 8+2h",
+        desc: "월~금(공휴일·대체휴무 제외)에 8시간 + 연장 2시간", weekday: "ot" },
+      { id: "resident_norm", label: "상주조 정취 · 평일 8h",
+        desc: "월~금(공휴일·대체휴무 제외)에 정상 8시간", weekday: "norm" },
+      { id: "shift_222", label: "4조 3교대 · 주주야야비비 (6일)",
+        desc: "주간 8+2h 2일 → 야간 10h 2일 → 휴무 2일",
+        slots: ["ot", "ot", "night10", "night10", null, null] },
+      { id: "shift_222_norm", label: "4조 3교대 · 주주야야비비 8h (6일)",
+        desc: "주간 8h 2일 → 야간 8h 2일 → 휴무 2일",
+        slots: ["norm", "norm", "night8", "night8", null, null] },
+      { id: "shift_5_2_5_2", label: "4조 2교대 · 주5·비2·야5·비2 (14일)",
+        desc: "주간 8+2h 5일 → 휴무 2일 → 야간 10h 5일 → 휴무 2일",
+        slots: ["ot", "ot", "ot", "ot", "ot", null, null,
+                "night10", "night10", "night10", "night10", "night10", null, null] },
+      { id: "custom", label: "사용자 정의 (주/야/정/비)",
+        desc: "예: 주주야야비비 → 6일 주기. 주=8+2h · 야=야간 10h · 정=8h · 심=야간 8h · 비=휴무",
+        custom: true }
+    ];
+    let pfSel = "resident_ot";
+    let pfYear = null, pfMonth = null;
+    let pfAnchor = "", pfCustom = "";
+    let pfPlan = null;
+
+    function pfPattern(id) {
+      return PF_PATTERNS.find(function (p) { return p.id === id; }) || PF_PATTERNS[0];
+    }
+    function pfParseCustom(text) {
+      if (!text) return null;
+      const sText = String(text).replace(/[-\s,]/g, "").trim();
+      if (!sText) return null;
+      const out = [];
+      for (const ch of sText) {
+        if (ch === "주") out.push("ot");
+        else if (ch === "야") out.push("night10");
+        else if (ch === "정") out.push("norm");
+        else if (ch === "심") out.push("night8");
+        else if (ch === "비" || ch === "휴" || ch === "0") out.push(null);
+        else return null;
+      }
+      return out.some(function (v) { return !!v; }) ? out : null;
+    }
+    function pfHolidayVariant(p) {
+      switch (p) {
+        case "ot": return "hol10";
+        case "norm": return "hol8";
+        case "night10": return "holnight10";
+        case "night8": return "holnight8";
+        default: return p;
+      }
+    }
+    function pfIsHolidayPreset(p) {
+      return p === "hol8" || p === "hol10" || p === "holnight8" || p === "holnight10";
+    }
+    function dayHasInputWeb(dateKey) {
+      const sub = ["mode", "norm", "paid", "ot", "hol", "holot", "night", "extra",
+                   "union", "weekly", "gageub", "att"];
+      return sub.some(function (k) { return localStorage.getItem(dateKey + "-" + k) !== null; });
+    }
+    function pfHolidaySet(y, m) {
+      const set = new Set();
+      const days = new Date(y, m, 0).getDate();
+      for (let d = 1; d <= days; d++) {
+        const dateKey = y + "-" + pad(m) + "-" + pad(d);
+        if (officialHolidays[dateKey] || localStorage.getItem("holiday_" + dateKey.replace(/-/g, ""))) {
+          set.add("" + y + pad(m) + pad(d));
+        }
+      }
+      return set;
+    }
+    /** 설치형 PatternFillCore.plan() 과 같은 규칙의 계획 생성 */
+    function pfPlanOf(y, m, patternId, anchorYmd, holidayAware, skipExisting, customText) {
+      const pat = pfPattern(patternId);
+      let slots = pat.slots || null;
+      if (pat.custom) slots = pfParseCustom(customText) || [];
+      const days = new Date(y, m, 0).getDate();
+      const hols = pfHolidaySet(y, m);
+      const plan = { days: days, preset: new Array(days + 1).fill(null), applyList: [],
+                     applyDays: 0, fillDays: 0, keptDays: 0, overwriteDays: 0,
+                     holidayDays: 0, byPreset: {}, cycle: 0 };
+      let anchor = null;
+      if ((pat.slots || pat.custom) && anchorYmd) {
+        const parsed = new Date(String(anchorYmd).replace(/\./g, "-").replace(/\//g, "-") + "T00:00:00");
+        if (!isNaN(parsed.getTime())) anchor = parsed;
+      }
+      if (slots && slots.length > 0) plan.cycle = slots.length;
+      for (let d = 1; d <= days; d++) {
+        const dt = new Date(y, m - 1, d);
+        const dow = dt.getDay();
+        const isHolDay = (dow === 0 || dow === 6) || hols.has("" + y + pad(m) + pad(d));
+        const existed = dayHasInputWeb(y + "-" + pad(m) + "-" + pad(d));
+        let preset = null;
+        if (pat.weekday) {
+          if (!isHolDay) preset = pat.weekday;
+        } else if (slots && slots.length > 0) {
+          let idx;
+          if (anchor) {
+            const diff = Math.round((dt.getTime() - anchor.getTime()) / 86400000);
+            idx = ((diff % slots.length) + slots.length) % slots.length;
+          } else {
+            idx = (d - 1) % slots.length;
+          }
+          const slot = slots[idx];
+          if (slot) preset = (holidayAware && isHolDay) ? pfHolidayVariant(slot) : slot;
+        }
+        if (!preset) continue;
+        plan.preset[d] = preset;
+        plan.fillDays++;
+        let write = true;
+        if (existed) {
+          if (skipExisting) { plan.keptDays++; write = false; }
+          else { plan.overwriteDays++; }
+        }
+        if (write) {
+          plan.applyList.push(d);
+          plan.applyDays++;
+          plan.byPreset[preset] = (plan.byPreset[preset] || 0) + 1;
+          if (pfIsHolidayPreset(preset)) plan.holidayDays++;
+        }
+      }
+      return plan;
+    }
+    function pfPreviewText(plan, skipExisting) {
+      if (!plan) return "";
+      if (plan.applyDays === 0) {
+        if (plan.fillDays === 0) return "이번 달에는 적용할 근무일이 없습니다.";
+        return "이미 입력된 " + plan.fillDays + "일을 그대로 둡니다. (새로 채울 날 없음)";
+      }
+      let out = "이번 달 총 " + plan.applyDays + "일 적용";
+      if (skipExisting && plan.keptDays > 0) out += " (기존 입력 " + plan.keptDays + "일 유지)";
+      else if (!skipExisting && plan.overwriteDays > 0) out += " (기존 입력 " + plan.overwriteDays + "일 덮어쓰기)";
+      const parts = Object.keys(plan.byPreset).map(function (k) {
+        return (PF_PRESET_LABEL[k] || k) + " " + plan.byPreset[k] + "일";
+      });
+      if (parts.length) out += "\n" + parts.join(" · ");
+      if (plan.holidayDays > 0) {
+        out += "\n주말·공휴일 근무일 " + plan.holidayDays + "일은 휴일특근(150%)으로 들어갑니다.";
+      }
+      return out;
+    }
+
+    function openPatternFillModal() {
+      pfYear = curYear;
+      pfMonth = curMonth;
+      pfSel = (localStorage.getItem("user_shift_type") || "normal") === "shift" ? "shift_222" : "resident_ot";
+      pfAnchor = pfYear + "-" + pad(pfMonth) + "-01";
+      pfCustom = "주주야야비비";
+      document.getElementById("patternSubTitle").innerText =
+        pfYear + "년 " + pfMonth + "월 · 상주 평일 근무나 교대 순환을 한 달치 한 번에 채웁니다";
+      document.getElementById("patternOverlay").style.display = "flex";
+      renderPatternFill();
+      vibrate();
+    }
+    function closePatternFill(e) {
+      if (e && e.target && e.target.id !== "patternOverlay") return;
+      document.getElementById("patternOverlay").style.display = "none";
+    }
+    function pfPick(id) {
+      pfSel = id;
+      renderPatternFill();
+      vibrate();
+    }
+    function pfSyncInputs() {
+      const a = document.getElementById("pfAnchor");
+      const c = document.getElementById("pfCustom");
+      if (a) pfAnchor = a.value;
+      if (c) pfCustom = c.value;
+    }
+    function renderPatternFill() {
+      const body = document.getElementById("patternBody");
+      const pat = pfPattern(pfSel);
+      const cycle = !!(pat.slots || pat.custom);
+      const cards = PF_PATTERNS.map(function (p) {
+        const on = p.id === pfSel;
+        return '<div onclick="pfPick(\'' + p.id + '\')" style="cursor:pointer; padding:9px 11px; border-radius:11px; margin-bottom:6px;'
+          + 'border:' + (on ? "2px solid var(--blue)" : "1px solid var(--border)") + ';'
+          + 'background:' + (on ? "rgba(0,91,172,0.08)" : "var(--surface)") + ';">'
+          + '<div style="font-size:13px; font-weight:800; color:' + (on ? "var(--blue)" : "var(--text)") + ';">'
+          + (on ? "✓ " : "") + p.label + "</div>"
+          + '<div style="font-size:10.5px; color:var(--subtext); margin-top:2px; line-height:1.35;">' + p.desc + "</div>"
+          + "</div>";
+      }).join("");
+
+      let html = cards;
+      if (cycle) {
+        html += '<div style="display:flex; align-items:center; gap:8px; margin-top:6px;">'
+          + '<div style="font-size:12px; font-weight:700; color:var(--text); flex:1;">기준 시작일 (주기 첫날)</div>'
+          + '<input id="pfAnchor" type="text" inputmode="numeric" placeholder="YYYY-MM-DD" value="' + pfAnchor + '"'
+          + ' oninput="pfUpdatePreview()" onclick="event.stopPropagation()"'
+          + ' style="width:130px; padding:7px 8px; border-radius:9px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; text-align:right;">'
+          + "</div>";
+        html += '<div id="pfAnchorNote" style="font-size:10.5px; color:var(--subtext); margin:3px 0 6px;"></div>';
+      }
+      if (pat.custom) {
+        html += '<div style="display:flex; align-items:center; gap:8px; margin-top:4px;">'
+          + '<div style="font-size:12px; font-weight:700; color:var(--text); flex:1;">패턴 글자</div>'
+          + '<input id="pfCustom" type="text" placeholder="주주야야비비" value="' + pfCustom + '"'
+          + ' oninput="pfUpdatePreview()" onclick="event.stopPropagation()"'
+          + ' style="width:150px; padding:7px 8px; border-radius:9px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; text-align:right;">'
+          + "</div>";
+      }
+      html += '<label style="display:flex; align-items:center; gap:7px; margin-top:8px; font-size:12px; color:var(--text); cursor:pointer;">'
+        + '<input type="checkbox" id="pfSkip" checked onchange="pfUpdatePreview()" style="width:16px; height:16px;">'
+        + "기존 입력이 있는 날은 건너뛰기 (권장)</label>";
+      if (cycle) {
+        html += '<label style="display:flex; align-items:center; gap:7px; margin-top:4px; font-size:12px; color:var(--text); cursor:pointer;">'
+          + '<input type="checkbox" id="pfHol" checked onchange="pfUpdatePreview()" style="width:16px; height:16px;">'
+          + "주말·공휴일 근무일은 휴일특근(150%)으로 채우기</label>";
+      }
+      html += '<div id="pfPreview" style="margin-top:10px; padding:10px 12px; border-radius:11px; border:1px solid var(--blue);'
+        + 'background:rgba(0,91,172,0.06); color:var(--blue); font-size:12.5px; font-weight:800; line-height:1.5; white-space:pre-line;"></div>';
+      body.innerHTML = html;
+      pfUpdatePreview();
+    }
+    function pfUpdatePreview() {
+      pfSyncInputs();
+      const pat = pfPattern(pfSel);
+      const cycle = !!(pat.slots || pat.custom);
+      let anchor = (pfAnchor || "").trim();
+      if (cycle && !anchor) anchor = pfYear + "-" + pad(pfMonth) + "-01";
+      let custom = (pfCustom || "").trim();
+      if (pat.custom && !custom) custom = "주주야야비비";
+      const skipEl = document.getElementById("pfSkip");
+      const holEl = document.getElementById("pfHol");
+      const skip = skipEl ? skipEl.checked : true;
+      const holAware = holEl ? holEl.checked : true;
+      const customOk = !pat.custom || !!pfParseCustom(custom);
+      pfPlan = pfPlanOf(pfYear, pfMonth, pfSel, anchor, holAware, skip, custom);
+
+      const noteEl = document.getElementById("pfAnchorNote");
+      let note = "";
+      if (cycle) {
+        const ad = new Date(String(anchor).replace(/\./g, "-").replace(/\//g, "-") + "T00:00:00");
+        if (isNaN(ad.getTime())) {
+          note = "기준일을 YYYY-MM-DD 형식으로 입력해 주세요.";
+        } else {
+          const dowNames = ["일", "월", "화", "수", "목", "금", "토"];
+          note = "주기 " + pfPlan.cycle + "일 · 기준일 " + anchor + " (" + dowNames[ad.getDay()] + ")";
+        }
+        if (noteEl) noteEl.innerText = note;
+      }
+      const pv = document.getElementById("pfPreview");
+      if (pv) {
+        pv.innerText = customOk
+          ? pfPreviewText(pfPlan, skip) + (cycle && note ? "\n" + note : "")
+          : "패턴 글자를 확인하세요. 주 · 야 · 정 · 심 · 비 만 쓸 수 있습니다.";
+      }
+      const btn = document.getElementById("patternApplyBtn");
+      if (btn) {
+        const can = customOk && pfPlan.applyDays > 0;
+        btn.disabled = !can;
+        btn.style.opacity = can ? "1" : "0.45";
+      }
+    }
+    function patternApply() {
+      if (!pfPlan || pfPlan.applyDays === 0) { showToast("적용할 근무일이 없습니다."); return; }
+      const days = pfPlan.applyList.slice();
+      days.forEach(function (d) {
+        const k = pfYear + "-" + pad(pfMonth) + "-" + pad(d);
+        const def = PRESET_DEF[PF_WEB_PRESET[pfPlan.preset[d]]];
+        if (!def) return;
+        clearPresetDayKeys(k);
+        localStorage.setItem(k + "-mode", def.mode);
+        Object.keys(def.times).forEach(function (sub) {
+          localStorage.setItem(k + "-" + sub, def.times[sub]);
+        });
+      });
+      const applied = pfPlan.applyDays;
+      const kept = pfPlan.keptDays;
+      closePatternFill();
+      renderCalendar();
+      updateDdayAndUserSummary();
+      calculateMonthlyPayroll();
+      showToast(applied + "일 근무를 채웠습니다." + (kept > 0 ? " (기존 입력 " + kept + "일 유지)" : ""));
+      vibrate();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // v1.6.0 ③ — 연간 누적 · 연말정산 예측 (설치형 YearCore 와 1:1)
+    // ══════════════════════════════════════════════════════════════════
+    function hasMonthDataWeb(y, m) {
+      const days = new Date(y, m, 0).getDate();
+      for (let d = 1; d <= days; d++) {
+        if (dayHasInputWeb(y + "-" + pad(m) + "-" + pad(d))) return true;
+      }
+      return false;
+    }
+    function retroForMonth(y, m) {
+      let v = localStorage.getItem("retro_active_" + y + "_" + m);
+      if (v === null || v === undefined) v = (y === 2026 && m === 9) ? "true" : "false";
+      if (v !== "true") return 0;
+      return parseInt(localStorage.getItem("retro_fixed_amount") || "1452800", 10) || 0;
+    }
+    /** 한 달치 집계 (설치형 monthFigure 와 같은 항목) */
+    function yearMonthFigure(y, m) {
+      const f = { month: m, hasData: false, gross: 0, incomeTax: 0, localTax: 0, pension: 0,
+                  health: 0, longterm: 0, employ: 0, unionFee: 0, deduction: 0, net: 0,
+                  lumpSum: 0, normalHours: 0, otHours: 0, holidayHours: 0, nightHours: 0,
+                  paidHours: 0, gageubDays: 0, workDays: 0 };
+      if (!hasMonthDataWeb(y, m)) return f;
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      const pay = computePayCoreAmounts(y, m, isShift);
+      const retro = retroForMonth(y, m);
+      const gross = Math.round(pay.a.gross + retro);
+      const cb = computeCardBreakdown(y, m);
+      const dd = computeDeduction(gross);
+      const dedAuto = localStorage.getItem("ded_auto") !== "0";
+      const userDed = parseFloat(localStorage.getItem("setting_deduction") || "0") || 0;
+      let deduction = dedAuto ? dd.total : userDed;
+      if (isNaN(deduction) || deduction === 0) deduction = dd.total;
+
+      f.hasData = true;
+      f.gross = gross;
+      f.deduction = Math.round(deduction);
+      f.net = gross - f.deduction;
+      f.incomeTax = dd.incomeTax;
+      f.localTax = dd.localTax;
+      f.pension = dd.pension;
+      f.health = dd.health;
+      f.longterm = dd.longterm;
+      f.employ = dd.employ;
+      f.unionFee = dd.unionFee;
+      f.lumpSum = retro;
+      f.normalHours = cb.norm;
+      f.otHours = cb.ot;
+      f.holidayHours = cb.hol + cb.holot;
+      f.nightHours = cb.night;
+      f.paidHours = cb.pay;
+      f.gageubDays = cb.gageub;
+      f.workDays = cb.workDays;
+      return f;
+    }
+    function yearAnnualWeb(y) {
+      const an = { year: y, months: [null], filledMonths: 0, lastFilledMonth: 0,
+                   gross: 0, incomeTax: 0, localTax: 0, pension: 0, health: 0, longterm: 0,
+                   employ: 0, unionFee: 0, deduction: 0, net: 0, lumpSum: 0,
+                   normalHours: 0, otHours: 0, holidayHours: 0, nightHours: 0,
+                   paidHours: 0, gageubDays: 0, workDays: 0 };
+      for (let m = 1; m <= 12; m++) {
+        const f = yearMonthFigure(y, m);
+        an.months[m] = f;
+        if (!f.hasData) continue;
+        an.filledMonths++;
+        an.lastFilledMonth = m;
+        an.gross += f.gross; an.incomeTax += f.incomeTax; an.localTax += f.localTax;
+        an.pension += f.pension; an.health += f.health; an.longterm += f.longterm;
+        an.employ += f.employ; an.unionFee += f.unionFee; an.deduction += f.deduction;
+        an.net += f.net; an.lumpSum += f.lumpSum;
+        an.normalHours += f.normalHours; an.otHours += f.otHours;
+        an.holidayHours += f.holidayHours; an.nightHours += f.nightHours;
+        an.paidHours += f.paidHours; an.gageubDays += f.gageubDays; an.workDays += f.workDays;
+      }
+      an.insuranceTotal = an.pension + an.health + an.longterm + an.employ;
+      return an;
+    }
+    function yearEarnedDeduction(gross) {
+      if (gross <= 0) return 0;
+      if (gross <= 5000000) return Math.floor(gross * 0.70);
+      if (gross <= 15000000) return 3500000 + Math.floor((gross - 5000000) * 0.40);
+      if (gross <= 45000000) return 7500000 + Math.floor((gross - 15000000) * 0.15);
+      if (gross <= 100000000) return 12000000 + Math.floor((gross - 45000000) * 0.05);
+      return 14750000 + Math.floor((gross - 100000000) * 0.02);
+    }
+    function yearBasicTax(taxBase) {
+      if (taxBase <= 0) return 0;
+      if (taxBase <= 14000000) return Math.floor(taxBase * 0.06);
+      if (taxBase <= 50000000) return 840000 + Math.floor((taxBase - 14000000) * 0.15);
+      if (taxBase <= 88000000) return 6240000 + Math.floor((taxBase - 50000000) * 0.24);
+      if (taxBase <= 150000000) return 15360000 + Math.floor((taxBase - 88000000) * 0.35);
+      if (taxBase <= 300000000) return 37060000 + Math.floor((taxBase - 150000000) * 0.38);
+      if (taxBase <= 500000000) return 94060000 + Math.floor((taxBase - 300000000) * 0.40);
+      if (taxBase <= 1000000000) return 174060000 + Math.floor((taxBase - 500000000) * 0.42);
+      return 384060000 + Math.floor((taxBase - 1000000000) * 0.45);
+    }
+    function yearEarnedCredit(calc, gross) {
+      if (calc <= 0) return 0;
+      const credit = calc <= 1300000 ? calc * 0.55 : 1300000 * 0.55 + (calc - 1300000) * 0.30;
+      const limit = gross <= 33000000 ? 740000 : (gross <= 70000000 ? 660000 : 500000);
+      return Math.min(Math.floor(credit), limit);
+    }
+    function yearChildCredit(n) {
+      if (n <= 0) return 0;
+      if (n === 1) return 150000;
+      if (n === 2) return 350000;
+      return 350000 + (n - 2) * 300000;
+    }
+    function yearFloor10(v) { return v <= 0 ? 0 : Math.floor(v / 10) * 10; }
+    function yearFloor1000(v) { return v <= 0 ? 0 : Math.floor(v / 1000) * 1000; }
+    function yearSettle(inp) {
+      const s = {};
+      s.gross = Math.max(0, Math.round(inp.gross || 0));
+      s.earnedDeduction = yearEarnedDeduction(s.gross);
+      const dep = Math.max(1, inp.dependents || 1);
+      s.personalDeduction = dep * 1500000;
+      s.insuranceDeduction = Math.max(0, Math.round(inp.insurance || 0));
+      s.extraDeduction = Math.max(0, Math.round(inp.extraIncomeDeduction || 0));
+      s.totalDeduction = s.personalDeduction + s.insuranceDeduction + s.extraDeduction;
+      s.taxBase = yearFloor1000(Math.max(0, s.gross - s.earnedDeduction - s.totalDeduction));
+      s.calculatedTax = yearBasicTax(s.taxBase);
+      s.earnedTaxCredit = yearEarnedCredit(s.calculatedTax, s.gross);
+      s.childTaxCredit = yearChildCredit(Math.max(0, Math.min(20, inp.children || 0)));
+      s.standardTaxCredit = 130000;
+      const special = Math.max(0, Math.round(inp.extraTaxCredit || 0));
+      s.usedSpecialCredit = special > 130000;
+      s.appliedTaxCredit = Math.max(130000, special);
+      s.creditTotal = s.earnedTaxCredit + s.childTaxCredit + s.appliedTaxCredit;
+      s.determinedTax = yearFloor10(Math.max(0, s.calculatedTax - s.creditTotal));
+      s.localTax = yearFloor10(Math.floor(s.determinedTax * 0.10));
+      s.totalBurden = s.determinedTax + s.localTax;
+      s.prepaid = Math.max(0, Math.round(inp.prepaidIncomeTax || 0)) + Math.max(0, Math.round(inp.prepaidLocalTax || 0));
+      s.settlement = s.prepaid - s.totalBurden;
+      s.effectiveRate = s.gross > 0 ? s.totalBurden / s.gross : 0;
+      return s;
+    }
+
+    let yearRepYear = null;
+    function openYearReport() {
+      yearRepYear = curYear;
+      document.getElementById("yearOverlay").style.display = "flex";
+      renderYearReport();
+      vibrate();
+    }
+    function closeYearReport(e) {
+      if (e && e.target && e.target.id !== "yearOverlay") return;
+      document.getElementById("yearOverlay").style.display = "none";
+    }
+    function yearRepStep(delta) {
+      yearRepYear += delta;
+      renderYearReport();
+      vibrate();
+    }
+    function yearRepInput(key, def) {
+      const v = localStorage.getItem(key);
+      return (v === null || v === undefined || v === "") ? def : v;
+    }
+    function yearRepNum(id) {
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      const v = String(el.value || "").replace(/[^0-9]/g, "");
+      return v ? parseInt(v, 10) : 0;
+    }
+    function renderYearReport() {
+      const y = yearRepYear;
+      document.getElementById("yearRepYearLabel").innerText = y + "년";
+      const an = yearAnnualWeb(y);
+      const body = document.getElementById("yearRepBody");
+      const isShift = (localStorage.getItem("user_shift_type") || "normal") === "shift";
+      const dep = Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1);
+      const kids = Math.max(0, Math.min(10, parseInt(localStorage.getItem("ded_children") || "0", 10) || 0));
+      const taxPaid = an.incomeTax + an.localTax;
+
+      let maxGross = 0;
+      for (let m = 1; m <= 12; m++) {
+        const f = an.months[m];
+        if (f && f.hasData && f.gross > maxGross) maxGross = f.gross;
+      }
+
+      let rows = "";
+      for (let m = 1; m <= 12; m++) {
+        const f = an.months[m];
+        const has = !!(f && f.hasData);
+        const ratio = has && maxGross > 0 ? Math.max(0.03, Math.min(1, f.gross / maxGross)) : 0;
+        rows += '<div style="display:flex; align-items:center; gap:6px; padding:2px 0;">'
+          + '<div style="width:32px; font-size:11px; font-weight:800; color:' + (has ? "var(--text)" : "var(--subtext)") + ';">' + m + "월</div>"
+          + '<div style="flex:1; height:9px; border-radius:4px; background:' + (has ? "rgba(0,91,172,0.12)" : "rgba(148,163,184,0.22)") + '; overflow:hidden;">'
+          + (has ? '<div style="width:' + (ratio * 100).toFixed(1) + '%; height:9px; border-radius:4px; background:var(--blue);"></div>' : "")
+          + "</div>"
+          + '<div style="width:96px; text-align:right; font-size:11px; font-weight:' + (has ? "800" : "600") + '; color:' + (has ? "var(--text)" : "var(--subtext)") + ';">'
+          + (has ? fmtWon(f.gross) : "미입력") + "</div></div>";
+      }
+
+      const chip = function (label, value, color) {
+        return '<div style="flex:1; min-width:0; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:8px 6px; text-align:center;">'
+          + '<div style="font-size:14px; font-weight:800; color:' + color + ';">' + value + "</div>"
+          + '<div style="font-size:10px; font-weight:700; color:var(--subtext); margin-top:2px;">' + label + "</div></div>";
+      };
+
+      let html = "";
+      html += '<div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px;">'
+        + '<div style="font-size:13px; font-weight:800; color:var(--text);">연간 누적 (' + an.filledMonths + '/12개월 입력)</div>'
+        + '<div style="font-size:22px; font-weight:800; color:var(--blue); margin-top:4px;">' + fmtWon(an.gross) + '</div>'
+        + '<div style="font-size:10.5px; font-weight:700; color:var(--subtext);">연간 세전 총지급액</div>'
+        + '<div style="display:flex; gap:6px; margin-top:8px;">'
+        + chip("기납부 세금", fmtWon(taxPaid), "var(--red)")
+        + chip("4대보험", fmtWon(an.insuranceTotal), "#d97706")
+        + chip("연간 실수령", fmtWon(an.net), "#059669")
+        + "</div></div>";
+
+      html += '<div style="display:flex; gap:6px; margin-bottom:6px;">'
+        + chip("급여 인정", fmtH(an.paidHours), "var(--blue)")
+        + chip("연장", fmtH(an.otHours), "#d97706")
+        + chip("휴일특근", fmtH(an.holidayHours), "var(--red)")
+        + "</div>";
+      html += '<div style="display:flex; gap:6px; margin-bottom:10px;">'
+        + chip("심야", fmtH(an.nightHours), "#6d28d9")
+        + chip("출근일수", an.workDays + "일", "var(--text)")
+        + chip("상주휴게", Math.round(an.gageubDays) + "일", "#059669")
+        + "</div>";
+
+      html += '<div style="font-size:12px; font-weight:800; color:var(--text); margin-bottom:4px;">월별 추이 (입력된 달만 막대로 표시)</div>';
+      html += rows;
+      if (an.filledMonths > 0 && an.filledMonths < 12) {
+        html += '<div style="font-size:10.5px; color:var(--subtext); margin:4px 0 8px; line-height:1.4;">'
+          + "※ 입력되지 않은 달(" + (12 - an.filledMonths) + "개월)은 0원으로 합산됩니다. 그 달 근무를 입력하면 연간 누적과 연말정산 예상액이 더 정확해집니다.</div>";
+      }
+
+      html += '<div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:12px; margin-top:6px;">'
+        + '<div style="font-size:13px; font-weight:800; color:var(--text);">🧾 ' + (y + 1) + '년 2월 연말정산 예상</div>'
+        + '<div style="font-size:10.5px; color:var(--subtext); margin-top:2px; line-height:1.4;">부양가족 ' + dep + '명 · 8~20세 자녀 ' + kids
+        + '명 · 4대보험 ' + fmtWon(an.insuranceTotal) + ' (급여 설정에서 자동 연동)</div>'
+        + '<div style="display:flex; align-items:center; gap:8px; margin-top:8px;">'
+        + '<div style="flex:1; font-size:11.5px; color:var(--subtext);">추가 소득공제 (신용카드·주택자금)</div>'
+        + '<input id="yearExtraDed" type="text" inputmode="numeric" value="' + yearRepInput("year_extra_ded_" + y, "0") + '" oninput="renderYearSettle()" style="width:118px; padding:6px 8px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; text-align:right;"></div>'
+        + '<div style="display:flex; align-items:center; gap:8px; margin-top:6px;">'
+        + '<div style="flex:1; font-size:11.5px; color:var(--subtext);">특별세액공제 (의료비·연금저축)</div>'
+        + '<input id="yearExtraCredit" type="text" inputmode="numeric" value="' + yearRepInput("year_extra_credit_" + y, "0") + '" oninput="renderYearSettle()" style="width:118px; padding:6px 8px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; text-align:right;"></div>'
+        + '<div style="display:flex; align-items:center; gap:8px; margin-top:6px;">'
+        + '<div style="flex:1; font-size:11.5px; color:var(--subtext);">연간 추가 지급액 (성과격려금·상여)</div>'
+        + '<input id="yearLumpExtra" type="text" inputmode="numeric" value="' + yearRepInput("year_lump_extra_" + y, "0") + '" oninput="renderYearSettle()" style="width:118px; padding:6px 8px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; text-align:right;"></div>'
+        + '<div style="display:flex; align-items:center; gap:8px; margin-top:6px;">'
+        + '<div style="flex:1; font-size:11.5px; color:var(--subtext);">그 추가분의 기납부 세액</div>'
+        + '<input id="yearLumpPrepaid" type="text" inputmode="numeric" value="' + yearRepInput("year_lump_prepaid_" + y, "0") + '" oninput="renderYearSettle()" style="width:118px; padding:6px 8px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; text-align:right;"></div>';
+      if (an.lumpSum > 0) {
+        html += '<div style="font-size:10.5px; color:var(--subtext); margin-top:6px; line-height:1.4;">※ 월별 급여에 이미 포함된 소급·일시금 ' + fmtWon(an.lumpSum) + '은 위 누적에 반영되어 있습니다. 추가 지급분만 입력하세요.</div>';
+      }
+      html += '<div id="yearSettleResult" style="margin-top:8px;"></div>'
+        + '<div style="font-size:9.5px; color:var(--subtext); margin-top:8px; line-height:1.45;">※ 현행 소득세법(2026) 근로소득공제·기본세율·근로소득세액공제·자녀세액공제·표준세액공제 13만 원 기준의 참고용 시뮬레이션입니다. 실제 환급액은 회사·국세청 확정 자료에 따릅니다.</div>'
+        + "</div>";
+
+      body.innerHTML = html;
+      window._yearAnnual = an;
+      renderYearSettle();
+    }
+    function renderYearSettle() {
+      const an = window._yearAnnual;
+      const box = document.getElementById("yearSettleResult");
+      if (!an || !box) return;
+      const y = yearRepYear;
+      // 입력값을 연도별로 보관한다 (다시 열어도 유지)
+      ["yearExtraDed", "yearExtraCredit", "yearLumpExtra", "yearLumpPrepaid"].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const keyMap = { yearExtraDed: "year_extra_ded_", yearExtraCredit: "year_extra_credit_",
+                         yearLumpExtra: "year_lump_extra_", yearLumpPrepaid: "year_lump_prepaid_" };
+        localStorage.setItem(keyMap[id] + y, String(el.value || "").replace(/[^0-9]/g, ""));
+      });
+      const lumpExtra = yearRepNum("yearLumpExtra");
+      const lumpPrepaid = yearRepNum("yearLumpPrepaid");
+      const s = yearSettle({
+        gross: an.gross + lumpExtra,
+        dependents: Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1),
+        children: Math.max(0, Math.min(10, parseInt(localStorage.getItem("ded_children") || "0", 10) || 0)),
+        insurance: an.insuranceTotal,
+        extraIncomeDeduction: yearRepNum("yearExtraDed"),
+        extraTaxCredit: yearRepNum("yearExtraCredit"),
+        prepaidIncomeTax: an.incomeTax + lumpPrepaid,
+        prepaidLocalTax: an.localTax
+      });
+      const line = function (label, value, bold, color) {
+        return '<div style="display:flex; align-items:center; justify-content:space-between; padding:3px 0;">'
+          + '<div style="font-size:' + (bold ? "12" : "11") + 'px; font-weight:' + (bold ? "800" : "600") + '; color:' + (bold ? "var(--text)" : "var(--subtext)") + ';">' + label + "</div>"
+          + '<div style="font-size:' + (bold ? "13" : "12") + 'px; font-weight:800; color:' + color + ';">' + value + "</div></div>";
+      };
+      let html = "";
+      html += line("총급여", fmtWon(s.gross), true, "var(--text)");
+      html += line("(−) 근로소득공제", fmtWon(s.earnedDeduction), false, "var(--subtext)");
+      html += line("(−) 인적공제", fmtWon(s.personalDeduction), false, "var(--subtext)");
+      html += line("(−) 4대보험 소득공제", fmtWon(s.insuranceDeduction), false, "var(--subtext)");
+      if (s.extraDeduction > 0) html += line("(−) 추가 소득공제", fmtWon(s.extraDeduction), false, "var(--subtext)");
+      html += line("= 과세표준", fmtWon(s.taxBase), true, "var(--text)");
+      html += line("산출세액 (기본세율)", fmtWon(s.calculatedTax), false, "var(--text)");
+      html += line("(−) 근로소득세액공제", fmtWon(s.earnedTaxCredit), false, "var(--subtext)");
+      html += line("(−) 자녀세액공제", s.childTaxCredit > 0 ? fmtWon(s.childTaxCredit) : "해당 없음", false, "var(--subtext)");
+      html += line("(−) " + (s.usedSpecialCredit ? "특별세액공제" : "표준세액공제 13만"), fmtWon(s.appliedTaxCredit), false, "var(--subtext)");
+      html += line("= 결정세액 (소득세)", fmtWon(s.determinedTax), true, "var(--text)");
+      html += line("(+) 지방소득세 10%", fmtWon(s.localTax), false, "var(--subtext)");
+      html += line("= 총 부담", fmtWon(s.totalBurden), true, "var(--text)");
+      html += line("기납부 (연간 원천징수)", fmtWon(s.prepaid), false, "var(--subtext)");
+
+      const refund = s.settlement >= 0;
+      html += '<div style="margin-top:8px; padding:10px; border-radius:11px; text-align:center; font-size:17px; font-weight:800;'
+        + 'color:' + (refund ? "#059669" : "var(--red)") + ";"
+        + 'background:' + (refund ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)") + ";"
+        + 'border:1px solid ' + (refund ? "rgba(16,185,129,0.45)" : "rgba(239,68,68,0.45)") + ';">'
+        + (refund ? "🎉 예상 환급 +" + fmtWon(Math.abs(s.settlement))
+                  : "예상 추가납부 −" + fmtWon(Math.abs(s.settlement)))
+        + "</div>";
+      html += '<div style="text-align:center; font-size:10px; color:var(--subtext); margin-top:4px;">실효세율 '
+        + (s.effectiveRate * 100).toFixed(2) + "% · 총급여 대비 총부담</div>";
+      box.innerHTML = html;
+    }
+
     function openDataModal() {
       refreshBackupStatusUI();
       document.getElementById("dataOverlay").style.display = "flex";
@@ -6733,7 +7396,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       <img src="pico/pico_splash.gif?v=276312" alt="현대스틸파이프 피코" style="width:100%; aspect-ratio:276/312; height:auto; display:block; border-radius:20px;">
     </div>
     <div style="color:#fff; font-size:21px; font-weight:800; margin-top:22px; letter-spacing:-0.3px;">나의 근무·급여 관리</div>
-    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.5.0 (빌드 33) · 현대스틸파이프</div>
+    <div style="color:#B0CDF0; font-size:12px; font-weight:600; margin-top:4px;">ShiftPay v1.6.0 (빌드 34) · 현대스틸파이프</div>
     <div style="color:#78BEFF; font-size:12px; font-weight:700; margin-top:18px;">피코와 함께 오늘도 안전하게! 화이팅 💪</div>
     <div style="color:rgba(176,205,240,0.75); font-size:10.5px; margin-top:10px;">화면을 터치하면 바로 시작됩니다</div>
   </div>
