@@ -6798,6 +6798,11 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       });
       const lumpExtra = yearRepNum("yearLumpExtra");
       const lumpPrepaid = yearRepNum("yearLumpPrepaid");
+      if (an.gross <= 0 && lumpExtra <= 0) {
+        box.innerHTML = '<div style="padding:16px 10px; text-align:center; color:var(--subtext); font-size:12px; line-height:1.5;">'
+          + '이 해에는 입력된 근무 기록이 없어 연말정산을 계산할 수 없습니다.<br>달력에서 근무를 입력하면 예상 환급·추납이 자동으로 계산됩니다.</div>';
+        return;
+      }
       const s = yearSettle({
         gross: an.gross + lumpExtra,
         dependents: Math.max(1, parseInt(localStorage.getItem("ded_dependents") || "1", 10) || 1),
@@ -6829,13 +6834,18 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       html += line("= 총 부담", fmtWon(s.totalBurden), true, "var(--text)");
       html += line("기납부 (연간 원천징수)", fmtWon(s.prepaid), false, "var(--subtext)");
 
-      const refund = s.settlement >= 0;
+      const zero = s.settlement === 0;
+      const refund = s.settlement > 0;
+      const badgeColor = zero ? "var(--subtext)" : (refund ? "#059669" : "var(--red)");
+      const badgeBg = zero ? "rgba(148,163,184,0.12)" : (refund ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)");
+      const badgeBorder = zero ? "rgba(148,163,184,0.4)" : (refund ? "rgba(16,185,129,0.45)" : "rgba(239,68,68,0.45)");
       html += '<div style="margin-top:8px; padding:10px; border-radius:11px; text-align:center; font-size:17px; font-weight:800;'
-        + 'color:' + (refund ? "#059669" : "var(--red)") + ";"
-        + 'background:' + (refund ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)") + ";"
-        + 'border:1px solid ' + (refund ? "rgba(16,185,129,0.45)" : "rgba(239,68,68,0.45)") + ';">'
-        + (refund ? "🎉 예상 환급 +" + fmtWon(Math.abs(s.settlement))
-                  : "예상 추가납부 −" + fmtWon(Math.abs(s.settlement)))
+        + 'color:' + badgeColor + ";"
+        + 'background:' + badgeBg + ";"
+        + 'border:1px solid ' + badgeBorder + ';">'
+        + (zero ? "예상 환급·추납 없음 (0원)"
+                : (refund ? "🎉 예상 환급 +" + fmtWon(Math.abs(s.settlement))
+                          : "예상 추가납부 −" + fmtWon(Math.abs(s.settlement))))
         + "</div>";
       html += '<div style="text-align:center; font-size:10px; color:var(--subtext); margin-top:4px;">실효세율 '
         + (s.effectiveRate * 100).toFixed(2) + "% · 총급여 대비 총부담</div>";

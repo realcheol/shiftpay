@@ -5,5 +5,5 @@
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.6.0_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
   "note": "v1.6.0 · 2단계 월간 패턴 자동 채우기(상주 평일 8+2h/8h · 4조 3교대 주주야야비비 · 4조 2교대 주5·비2·야5·비2 · 사용자 정의, 기존 입력 보존·휴일특근 자동) + 3단계 연간 누적·연말정산 예측 리포트(1~12월 누적·월별 추이·근로소득공제·기본세율·근로소득세액공제·자녀/표준세액공제·지방소득세·예상 환급/추납) · 설치형↔웹 신규 코어 12,104 시나리오 1:1 일치",
-  "releasedAt": "2026-11-15T02:48:10+09:00"
+  "releasedAt": "2026-11-15T02:53:15+09:00"
 }
