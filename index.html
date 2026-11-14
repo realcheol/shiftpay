@@ -4274,72 +4274,50 @@
         document.getElementById("shiftSheetOverlay").style.display = "none";
       }
     }
+    // ══════════════════════════════════════════════════════════════════
+    // v1.5.0 후속 패치 ① — 프리셋 적용 시 이전 수동 입력값을 항상 먼저 지운다
+    //   설치형 MainActivity.applyPreset() 과 같은 규약: 어떤 프리셋(norm·ot·holiday·holiday_10·
+    //   night_8·night_10·holiday_night_*·annual·summer·half_am·auto·none)을 고르더라도 그 날짜의
+    //   수동 시간(norm·paid·ot·hol·holot·night)·가급(extra)·조합(union)·수동 주차(weekly)·
+    //   수동 가급(gageub)·공식 근태(att·atth)를 모두 지우고, 프리셋이 정한 값만 남긴다.
+    //   (남아 있던 paid="0" 이 그날의 토·공휴일 자동 유급 8h 판정을 꺼 버리던 결함의 원인)
+    // ══════════════════════════════════════════════════════════════════
+    const PRESET_DAY_KEYS = ["norm", "paid", "ot", "hol", "holot", "night",
+                             "extra", "union", "weekly", "gageub", "att", "atth"];
+    // 프리셋 정의 — 모드와 그 프리셋이 저장하는 시간값 (설치형 applyPreset 인자와 1:1)
+    const PRESET_DEF = {
+      norm:              { mode: "norm",             times: { norm: "8" } },
+      ot:                { mode: "ot",               times: { norm: "8", ot: "2" } },
+      ot_4:              { mode: "custom",           times: { norm: "8", ot: "4" } },
+      night_8:           { mode: "night_8",          times: { norm: "8", night: "6" } },
+      night_10:          { mode: "night_10",         times: { norm: "8", ot: "2", night: "7.5" } },
+      holiday:           { mode: "holiday",          times: { hol: "8" } },
+      holiday_10:        { mode: "holiday_10",       times: { hol: "8", holot: "2" } },
+      holiday_night_8:   { mode: "holiday_night_8",  times: { hol: "8", night: "6" } },
+      holiday_night_10:  { mode: "holiday_night_10", times: { hol: "8", holot: "2", night: "3.5" } },
+      annual:            { mode: "annual",           times: {} },
+      summer:            { mode: "summer",           times: {} },
+      half_am:           { mode: "half_am",          times: { norm: "4", paid: "4" }, att: "half", atth: "4" },
+      auto:              { mode: "auto",             times: {} },
+      none:              { mode: "none",             times: {} }
+    };
+    /** 그 날짜의 수동 입력 키를 모두 지운다 (메모는 설치형과 같이 보존) */
+    function clearPresetDayKeys(k) {
+      PRESET_DAY_KEYS.forEach(s => localStorage.removeItem(`${k}-${s}`));
+    }
     function selectPreset(mode) {
       if (!selectedDateStr) return;
       if (mode === "delete") { deleteSelectedDay(); return; }
-      if (mode === "half_am") {                    // 🌗 반차: 4h 근무 + 4h 유급 연차
-        const k = selectedDateStr;
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "memo", "union", "weekly", "gageub", "att", "atth"].forEach(s => localStorage.removeItem(`${k}-${s}`));
-        localStorage.setItem(`${k}-mode`, "half_am");
-        localStorage.setItem(`${k}-norm`, "4");
-        localStorage.setItem(`${k}-paid`, "4");
-        localStorage.setItem(`${k}-att`, "half");     // 달력에 [반차 4h] 뱃지
-        localStorage.setItem(`${k}-atth`, "4");
-        closeShiftSheet();
-        renderCalendar();
-        updateDdayAndUserSummary();
-        calculateMonthlyPayroll();
-        vibrate();
-        return;
+      const def = PRESET_DEF[mode];
+      if (!def) return;                        // 모르는 프리셋 이름이면 기존 기록을 건드리지 않는다
+      const k = selectedDateStr;
+      clearPresetDayKeys(k);                   // ① 이전 수동 입력 전부 비우기
+      localStorage.setItem(`${k}-mode`, def.mode);
+      Object.keys(def.times).forEach(s => localStorage.setItem(`${k}-${s}`, def.times[s]));
+      if (def.att) {                           // 🌗 반차만 공식 근태 뱃지를 함께 남긴다 (설치형 applyHalfDay)
+        localStorage.setItem(`${k}-att`, def.att);
+        localStorage.setItem(`${k}-atth`, String(def.atth));
       }
-      if (mode === "night_8") {                    // 🌙 야간 정상: 8h + 심야 6.0h
-        const k = selectedDateStr;
-        ["paid", "ot", "hol", "holot", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
-        localStorage.setItem(`${k}-mode`, "night_8");
-        localStorage.setItem(`${k}-norm`, "8");
-        localStorage.setItem(`${k}-night`, "6");
-        closeShiftSheet();
-        renderCalendar();
-        updateDdayAndUserSummary();
-        calculateMonthlyPayroll();
-        vibrate();
-        return;
-      }
-      if (mode === "holiday_night_8") {            // v1.4.1 ③ 🔥🌙 야간특근 (8h): 휴일근로 8h + 심야 6.0h
-        const k = selectedDateStr;
-        ["norm", "paid", "ot", "holot", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${k}-${s}`));
-        localStorage.setItem(`${k}-mode`, "holiday_night_8");
-        localStorage.setItem(`${k}-hol`, "8");
-        localStorage.setItem(`${k}-night`, "6");
-        closeShiftSheet();
-        renderCalendar();
-        updateDdayAndUserSummary();
-        calculateMonthlyPayroll();
-        vibrate();
-        return;
-      }
-      if (mode === "ot_4") {
-        // v1.5.0 ③ — 이전 가급(extra)·수동 주차·가급이 남지 않게 먼저 정리한다
-        ["paid", "hol", "holot", "night", "extra", "memo", "att", "atth", "union", "weekly", "gageub"].forEach(s => localStorage.removeItem(`${selectedDateStr}-${s}`));
-        localStorage.setItem(`${selectedDateStr}-mode`, "custom");
-        localStorage.setItem(`${selectedDateStr}-norm`, "8");
-        localStorage.setItem(`${selectedDateStr}-ot`, "4");
-        closeShiftSheet();
-        renderCalendar();
-        updateDdayAndUserSummary();
-        calculateMonthlyPayroll();
-        vibrate();
-        return;
-      }
-      if (mode === "auto" || mode === "none") {
-        // 자동인정/무급은 남아 있는 직접입력 시간값을 지워야 화면·집계가 어긋나지 않는다
-        // v1.5.0 ③ — 가급(extra)·수동 주차(weekly)·가급(gageub)까지 함께 지운다
-        ["norm", "paid", "ot", "hol", "holot", "night", "extra", "union", "weekly", "gageub"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
-      }
-      localStorage.setItem(`${selectedDateStr}-mode`, mode);
-      // v1.4.3 ⑧ — 일반 프리셋을 고르면 수동 주차·가급과 공식 근태 표시를 함께 비웁니다
-      //  (남아 있으면 요일 자동 인정과 겹쳐 기본급·상주휴게가 과다 계상됨)
-      ["weekly", "gageub", "att", "atth"].forEach(k => localStorage.removeItem(`${selectedDateStr}-${k}`));
       closeShiftSheet();
       renderCalendar();
       updateDdayAndUserSummary();
@@ -4503,14 +4481,7 @@
       const extra = document.getElementById("customExtraHours").value.trim();
       const memo = document.getElementById("customMemo").value.trim();
 
-      if (norm) localStorage.setItem(`${selectedDateStr}-norm`, norm); else localStorage.removeItem(`${selectedDateStr}-norm`);
-      if (paid) localStorage.setItem(`${selectedDateStr}-paid`, paid); else localStorage.removeItem(`${selectedDateStr}-paid`);
-      if (ot) localStorage.setItem(`${selectedDateStr}-ot`, ot); else localStorage.removeItem(`${selectedDateStr}-ot`);
-      if (night) localStorage.setItem(`${selectedDateStr}-night`, night); else localStorage.removeItem(`${selectedDateStr}-night`);
-      if (hol) localStorage.setItem(`${selectedDateStr}-hol`, hol); else localStorage.removeItem(`${selectedDateStr}-hol`);
-      if (holOt) localStorage.setItem(`${selectedDateStr}-holot`, holOt); else localStorage.removeItem(`${selectedDateStr}-holot`);
-      if (extra) localStorage.setItem(`${selectedDateStr}-extra`, extra); else localStorage.removeItem(`${selectedDateStr}-extra`);
-      // v1.5.0 패치 — 설치형 [세부 시간 직접 입력] 저장 규칙과 동일하게 0은 키를 지운다.
+      // v1.5.0 패치 — 설치형 [세부 시간 직접 입력] 저장 규칙과 1:1: 0·빈값은 키를 지운다.
       //   (0을 그대로 저장하면 그 날의 토·공휴일 자동 유급 8h·자동 가급 1h 판정이 설치형과 어긋난다)
       [['norm', norm], ['paid', paid], ['ot', ot], ['night', night], ['hol', hol], ['holot', holOt], ['extra', extra]].forEach(function (pair) {
         const v = String(pair[1] === undefined ? '' : pair[1]).trim();
@@ -6413,8 +6384,35 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       }
     });
 
+    // ══════════════════════════════════════════════════════════════════
+    // v1.5.0 후속 패치 ② — 예전 버전 웹이 localStorage 에 남긴 수동 키 정리
+    //   값이 "0" 또는 ""(빈 문자열)인 YYYY-MM-DD-{norm|paid|ot|hol|holot|night|extra|union|
+    //   weekly|gageub} 키를 앱 시작 시 자동 삭제한다. 설치형은 직접 입력에서 0을 저장하지 않으므로,
+    //   남아 있던 paid="0" 하나 때문에 그날의 토·공휴일 자동 유급 8h·자동 가급 1h 가 꺼지던 결함이
+    //   새로고침 즉시 복구된다 (예: 10월 창립기념일 대체휴무 19일 → 유급 64h).
+    // ══════════════════════════════════════════════════════════════════
+    const STALE_ZERO_KEY_RE = /^\d{4}-\d{2}-\d{2}-(norm|paid|ot|hol|holot|night|extra|union|weekly|gageub)$/;
+    function migrateStaleZeroKeysWeb() {
+      try {
+        if (typeof localStorage === "undefined" || typeof localStorage.key !== "function") return 0;
+        const stale = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!k || !STALE_ZERO_KEY_RE.test(k)) continue;
+          const raw = localStorage.getItem(k);
+          if (raw === null) continue;
+          const v = String(raw).trim();
+          const nv = parseFloat(v);
+          if (v === "" || (isFinite(nv) && nv === 0)) stale.push(k);
+        }
+        stale.forEach(k => localStorage.removeItem(k));
+        return stale.length;
+      } catch (e) { return 0; }
+    }
+
     // Initialize on page load
     function initApp() {
+      migrateStaleZeroKeysWeb(); // v1.5.0 후속 패치 ② — 예전 버전이 남긴 "0" 키 정리
       migrateManagerRankWeb();   // v1.5.0 패치 — 매니저 직급 폴백을 초기 로드에서도 즉시
       migratePositionDutyWeb();
       setupDateAutoHyphen("cfgBirth");

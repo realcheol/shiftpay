@@ -4,6 +4,6 @@
   "apkUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.5.0.apk",
   "sourceUrl": "https://realcheol.github.io/shiftpay/downloads/ShiftPay_v1.5.0_source.zip",
   "webUrl": "https://realcheol.github.io/shiftpay/",
-  "note": "v1.5.0 마일스톤 · 웹 급여 엔진 설치형 1:1 일치(실제 인정시간+근속·가족·상주휴게·교대·직책·직무·하계) · 매니저 직급 삭제 · 3사 검증 4대 버그 수정 · 피코 아이콘 우측·아래 조정 · 3사 재검증 후속 패치(웹 APK 링크·삭제 키·무작위 1,500건 엣지 2건·카메라 권한·공휴일 명칭)",
-  "releasedAt": "2026-11-15T00:13:16+09:00"
+  "note": "v1.5.0 마일스톤 · 웹 급여 엔진 설치형 1:1 일치(실제 인정시간+근속·가족·상주휴게·교대·직책·직무·하계) · 매니저 직급 삭제 · 3사 검증 4대 버그 수정 · 피코 아이콘 우측·아래 조정 · 3사 재검증 후속 패치(웹 APK 링크·삭제 키·무작위 1,500건 엣지 2건·카메라 권한·공휴일 명칭) · 웹 후속 패치⑵(프리셋 적용 시 이전 수동 키 전부 정리 · 예전 버전이 남긴 0/빈값 키 자동 정리)",
+  "releasedAt": "2026-11-15T00:42:42+09:00"
 }
