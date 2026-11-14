@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=20261114_icon">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=20261114_icon">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261114_icon">
-  <link rel="manifest" href="manifest.json?v=20261111">
+  <link rel="manifest" href="manifest.json?v=20261115_sw">
 
   <style>
     :root {
@@ -2105,6 +2105,22 @@
         <button onclick="closeDataModal()" style="background:none; border:none; color:var(--subtext); cursor:pointer; padding:4px;"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
 
+      <!-- 저장 현황 (모달을 열 때마다 갱신) -->
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <div style="flex:1; min-width:0; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:9px 11px;">
+          <div style="font-size:10.5px; font-weight:700; color:var(--subtext);">저장된 근무 기록</div>
+          <div id="backupStatDays" style="font-size:15px; font-weight:800; color:var(--text); margin-top:1px;">-</div>
+        </div>
+        <div style="flex:1; min-width:0; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:9px 11px;">
+          <div style="font-size:10.5px; font-weight:700; color:var(--subtext);">설정 항목</div>
+          <div id="backupStatSettings" style="font-size:15px; font-weight:800; color:var(--text); margin-top:1px;">-</div>
+        </div>
+        <div style="flex:1; min-width:0; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:9px 11px;">
+          <div style="font-size:10.5px; font-weight:700; color:var(--subtext);">오프라인 실행</div>
+          <div id="backupStatOffline" style="font-size:15px; font-weight:800; color:var(--text); margin-top:1px;">-</div>
+        </div>
+      </div>
+
       <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
         <!-- Card 1: Excel Export -->
         <div onclick="closeDataModal(); exportExcel();" style="display:flex; align-items:center; gap:12px; padding:14px 12px; background:var(--surface); border:1.5px solid rgba(16,185,129,0.3); border-radius:12px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.06);">
@@ -2127,10 +2143,10 @@
           </div>
           <div style="flex:1;">
             <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
-              <span>데이터 전체 백업 (저장)</span>
+              <span>💾 데이터 백업 (JSON 저장)</span>
               <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(0,91,172,0.15); color:var(--blue); font-weight:700;">.JSON</span>
             </div>
-            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">기본 급여 설정 및 모든 월의 근무기록 파일로 저장</div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">기본정보·시급 설정·모든 월 근무기록을 ShiftPay_백업_날짜.json 으로 저장</div>
           </div>
         </div>
 
@@ -2141,11 +2157,25 @@
           </div>
           <div style="flex:1;">
             <div style="font-size:14px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:space-between;">
-              <span>백업 데이터 복원하기</span>
+              <span>📂 백업 불러오기 (복원)</span>
               <span style="font-size:11px; padding:2px 6px; border-radius:6px; background:rgba(99,102,241,0.15); color:#6366f1; font-weight:700;">가져오기</span>
             </div>
-            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">보관 중인 백업 파일을 불러와 앱 기록 100% 복원</div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">백업 파일을 골라 기록을 되살립니다 (달력·급여 즉시 재계산)</div>
           </div>
+        </div>
+      </div>
+
+      <!-- 오프라인(PWA) 안내 -->
+      <div style="display:flex; align-items:flex-start; gap:11px; padding:12px; background:var(--surface); border:1.5px solid rgba(2,132,199,0.28); border-radius:12px; margin-bottom:12px;">
+        <div style="width:38px; height:38px; border-radius:10px; background:rgba(2,132,199,0.12); color:var(--blue-sub); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:13.5px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span>인터넷이 끊겨도 열립니다</span>
+            <span id="pwaStateBadge" style="font-size:10.5px; padding:2px 6px; border-radius:6px; background:var(--bg); color:var(--subtext); font-weight:700;">확인 중</span>
+          </div>
+          <div id="pwaHintText" style="font-size:11.5px; color:var(--subtext); line-height:1.6; margin-top:3px;">홈 화면에 추가해 두면 현장·지하에서도 앱처럼 켜집니다. (삼성 인터넷 ☰ → 홈 화면에 추가 / 아이폰 Safari 공유 → 홈 화면에 추가)</div>
         </div>
       </div>
 
@@ -2155,7 +2185,9 @@
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--blue)" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> 백업 안내 사항
         </div>
         <div>✓ 기기 변경이나 브라우저 캐시 삭제 전에 꼭 백업해 두세요.</div>
-        <div>✓ 백업 파일에는 기본정보, 시급/수당 및 모든 월의 근무기록이 안전하게 포함됩니다.</div>
+        <div>✓ 백업 파일 하나에 기본정보, 시급·수당 설정, 모든 월의 근무기록이 담깁니다.</div>
+        <div>✓ 복원하면 예전 버전 기록도 v1.5.0 규칙으로 자동 보정됩니다.</div>
+        <div>✓ 백업 파일은 카카오톡 나에게 보내기나 드라이브에 두면 기기를 바꿔도 그대로 살릴 수 있습니다.</div>
       </div>
 
       <button class="sheet-btn" style="width:100%; background:var(--bg);" onclick="closeDataModal()">닫기</button>
@@ -5564,36 +5596,241 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       alert("이번 달 근무 기록이 초기화되었습니다.");
       vibrate();
     }
-    function backupData() {
-      const dump = JSON.stringify(localStorage, null, 2);
-      const blob = new Blob([dump], { type: "application/json" });
+    // ══════════════════════════════════════════════════════════════════
+    // v1.5.0 — 웹 데이터 백업(JSON) / 복원
+    //  · localStorage 는 GitHub Pages 같은 오리진(realcheol.github.io)의 다른 페이지와 섞일 수 있어
+    //    ShiftPay 키만 골라 담는다(임시 UI 상태·타 사이트 키 제외).
+    //  · 복원은 형식 검증 → 기존 ShiftPay 키 정리 → 적용 → v1.5.0 마이그레이션 → 즉시 재계산 순서.
+    // ══════════════════════════════════════════════════════════════════
+    const SP_BACKUP_APP = "ShiftPay";
+    const SP_BACKUP_FORMAT = 1;
+    const SP_APP_VERSION_NAME = "1.5.0";
+    const SP_APP_VERSION_CODE = 33;
+    const SP_DATE_KEY_RE = /^\d{4}-\d{2}-\d{2}(-(mode|norm|paid|union|ot|hol|holot|night|extra|weekly|gageub|memo|att|atth))?$/;
+    const SP_KEY_PREFIXES = ["user_", "setting_", "ded_", "retro_", "bonus_", "payslip_", "holiday_"];
+    const SP_STATE_FLAGS = ["onboarding_v14_completed", "migrated_position_duty_v132"];
+
+    function isShiftPayKey(k) {
+      if (!k) return false;
+      if (SP_DATE_KEY_RE.test(k)) return true;
+      if (SP_STATE_FLAGS.indexOf(k) >= 0) return true;
+      return SP_KEY_PREFIXES.some(p => k.indexOf(p) === 0);
+    }
+
+    function collectShiftPayData() {
+      const out = {};
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (!isShiftPayKey(k)) continue;
+          const v = localStorage.getItem(k);
+          if (v === null) continue;
+          out[k] = v;
+        }
+      } catch (e) {}
+      return out;
+    }
+
+    // 날짜별 기록을 하루로 세어 "근무 N일" 로 보여준다 (한 날짜에 mode·norm·ot 등 여러 키가 있어도 1일)
+    function countBackupDays(data) {
+      const days = {};
+      Object.keys(data || {}).forEach(k => {
+        const m = k.match(/^(\d{4}-\d{2}-\d{2})(?:-|$)/);
+        if (m) days[m[1]] = 1;
+      });
+      return Object.keys(days).length;
+    }
+
+    function countBackupSettings(data) {
+      let n = 0;
+      Object.keys(data || {}).forEach(k => { if (!/^\d{4}-\d{2}-\d{2}(?:-|$)/.test(k)) n++; });
+      return n;
+    }
+
+    function formatBackupTime(iso) {
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "";
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      } catch (e) { return ""; }
+    }
+
+    function backupFileName(d) {
+      return `ShiftPay_백업_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`;
+    }
+
+    function downloadTextFile(text, filename, mime) {
+      const blob = new Blob([text], { type: mime || "application/json;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `ShiftPay_백업_${curYear}-${pad(curMonth)}.json`;
+      a.download = filename;
+      a.rel = "noopener";
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
-      vibrate();
+      setTimeout(() => { try { a.remove(); URL.revokeObjectURL(url); } catch (e) {} }, 4000);
     }
+
+    // 모달의 저장 현황·오프라인 상태 표시
+    function refreshBackupStatusUI() {
+      try {
+        const data = collectShiftPayData();
+        const days = countBackupDays(data);
+        const settings = countBackupSettings(data);
+        const elDays = document.getElementById("backupStatDays");
+        const elSet = document.getElementById("backupStatSettings");
+        const elOff = document.getElementById("backupStatOffline");
+        const badge = document.getElementById("pwaStateBadge");
+        if (elDays) elDays.innerText = `${days}일`;
+        if (elSet) elSet.innerText = `${settings}건`;
+        const swOn = ("serviceWorker" in navigator) && !!(navigator.serviceWorker && navigator.serviceWorker.controller);
+        if (elOff) elOff.innerText = swOn ? "가능" : "준비중";
+        if (badge) {
+          badge.innerText = swOn ? "오프라인 준비 완료" : ("serviceWorker" in navigator ? "준비 중" : "미지원 브라우저");
+          badge.style.background = swOn ? "rgba(16,185,129,0.15)" : "var(--bg)";
+          badge.style.color = swOn ? "#0f766e" : "var(--subtext)";
+        }
+      } catch (e) {}
+    }
+
+    function backupData() {
+      const data = collectShiftPayData();
+      const keyCount = Object.keys(data).length;
+      const dayCount = countBackupDays(data);
+      const settings = countBackupSettings(data);
+      if (!keyCount) {
+        alert("백업할 ShiftPay 기록이 없습니다.\n기본정보나 근무 기록을 먼저 입력해 주세요.");
+        return;
+      }
+      const now = new Date();
+      const payload = {
+        app: SP_BACKUP_APP,
+        format: SP_BACKUP_FORMAT,
+        storage: "web-localStorage",
+        versionName: SP_APP_VERSION_NAME,
+        versionCode: SP_APP_VERSION_CODE,
+        exportedAt: now.toISOString(),
+        counts: { days: dayCount, settings: settings, keys: keyCount },
+        data: data
+      };
+      const filename = backupFileName(now);
+      downloadTextFile(JSON.stringify(payload, null, 2), filename);
+      vibrate();
+      showToast(`백업 저장 완료 · 근무 ${dayCount}일 · 설정 ${settings}건`);
+      refreshBackupStatusUI();
+    }
+
+    // 백업 파일 → { data, meta }.  예전 버전(localStorage 통째 덤프)도 받아준다.
+    function parseBackupObject(obj) {
+      if (!obj || typeof obj !== "object" || Array.isArray(obj)) throw new Error("not-object");
+      if (obj.app === SP_BACKUP_APP && obj.data && typeof obj.data === "object" && !Array.isArray(obj.data)) {
+        return {
+          data: sanitizeBackupData(obj.data),
+          meta: { exportedAt: obj.exportedAt || "", versionName: obj.versionName || "", versionCode: obj.versionCode || 0, legacy: false }
+        };
+      }
+      const keys = Object.keys(obj);
+      if (!keys.length) throw new Error("empty");
+      const stringsOnly = keys.every(k => typeof obj[k] === "string");
+      if (stringsOnly && keys.some(k => isShiftPayKey(k))) {
+        // v1.4.x 이하 웹: JSON.stringify(localStorage) 통째 덤프 → ShiftPay 키만 골라 복원
+        return { data: sanitizeBackupData(obj), meta: { exportedAt: "", versionName: "", versionCode: 0, legacy: true } };
+      }
+      throw new Error("unknown-format");
+    }
+
+    function sanitizeBackupData(raw) {
+      const out = {};
+      Object.keys(raw || {}).forEach(k => {
+        if (!isShiftPayKey(k)) return;
+        const v = raw[k];
+        if (v === null || v === undefined) return;
+        if (typeof v === "object") return;   // 저장소 값은 항상 문자열 — 객체·배열은 받지 않는다
+        out[k] = String(v);
+      });
+      return out;
+    }
+
+    function clearShiftPayKeys() {
+      let removed = 0;
+      try {
+        const old = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (isShiftPayKey(k)) old.push(k);
+        }
+        old.forEach(k => { localStorage.removeItem(k); removed++; });
+      } catch (e) {}
+      return removed;
+    }
+
     function restoreDataPrompt() {
       const input = document.createElement("input");
       input.type = "file";
-      input.accept = ".json";
+      input.accept = ".json,application/json";
+      input.style.display = "none";
+      document.body.appendChild(input);
       input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const file = e.target.files && e.target.files[0];
+        if (!file) { try { input.remove(); } catch (err) {} return; }
+        if (file.size > 20 * 1024 * 1024) {
+          alert("백업 파일이 너무 큽니다(20MB 초과).\nShiftPay 백업 JSON 파일이 맞는지 확인해 주세요.");
+          try { input.remove(); } catch (err) {}
+          return;
+        }
         const reader = new FileReader();
         reader.onload = (ev) => {
+          let parsed;
           try {
-            const data = JSON.parse(ev.target.result);
-            for (let k in data) {
-              localStorage.setItem(k, data[k]);
-            }
-            alert("성공적으로 복원되었습니다!");
-            location.reload();
+            parsed = parseBackupObject(JSON.parse(ev.target.result));
           } catch (err) {
-            alert("복원 실패: 올바른 JSON 백업 파일이 아닙니다.");
+            alert("복원 실패: ShiftPay 백업 파일이 아닙니다.\n\n[드로어 → 데이터 통합 관리]의 [💾 데이터 백업 (JSON 저장)]으로 만든 파일을 골라 주세요.");
+            try { input.remove(); } catch (e2) {}
+            return;
           }
+          const data = parsed.data;
+          const keyCount = Object.keys(data).length;
+          if (!keyCount) {
+            alert("복원 실패: 파일 안에 ShiftPay 기록이 없습니다.");
+            try { input.remove(); } catch (e2) {}
+            return;
+          }
+          const dayCount = countBackupDays(data);
+          const settings = countBackupSettings(data);
+          const when = formatBackupTime(parsed.meta.exportedAt);
+          let msg = `백업 파일로 복원할까요?\n\n· 파일: ${file.name}\n· 근무 기록: ${dayCount}일\n· 설정 항목: ${settings}건`;
+          if (when) msg += `\n· 백업 시각: ${when}`;
+          if (parsed.meta.legacy) msg += "\n· 예전 버전 백업 파일 (자동 호환)";
+          msg += "\n\n지금 기기에 저장된 ShiftPay 기록은 지워지고 이 파일 내용으로 바뀝니다.";
+          if (!confirm(msg)) { try { input.remove(); } catch (e2) {} return; }
+
+          clearShiftPayKeys();
+          Object.keys(data).forEach(k => { try { localStorage.setItem(k, data[k]); } catch (e2) {} });
+
+          // v1.5.0 규칙 자동 보정 (매니저 직급·구버전 "0" 키)
+          try { migrateManagerRankWeb(); } catch (e2) {}
+          try { migrateStaleZeroKeysWeb(); } catch (e2) {}
+          try { migratePositionDutyWeb(); } catch (e2) {}
+
+          // 화면·급여 즉시 재계산
+          try {
+            if (typeof updateFactoryUI === "function") updateFactoryUI();
+            if (localStorage.getItem("setting_dark_mode") === "true") document.body.classList.add("dark");
+            else document.body.classList.remove("dark");
+          } catch (e2) {}
+          try { renderCalendar(); } catch (e2) {}
+          try { updateDdayAndUserSummary(); } catch (e2) {}
+          try { calculateMonthlyPayroll(); } catch (e2) {}
+
+          vibrate();
+          refreshBackupStatusUI();
+          const after = collectShiftPayData();
+          alert(`복원 완료!\n\n· 근무 기록: ${countBackupDays(after)}일\n· 설정 항목: ${countBackupSettings(after)}건\n\n달력·근무 요약·급여를 이 기록으로 다시 계산했습니다.`);
+          try { input.remove(); } catch (e2) {}
+        };
+        reader.onerror = () => {
+          alert("복원 실패: 파일을 읽지 못했습니다. 다시 시도해 주세요.");
+          try { input.remove(); } catch (e2) {}
         };
         reader.readAsText(file);
       };
@@ -5943,6 +6180,7 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
 
     // 데이터 통합 관리 모달
     function openDataModal() {
+      refreshBackupStatusUI();
       document.getElementById("dataOverlay").style.display = "flex";
       vibrate();
     }
@@ -6432,12 +6670,34 @@ v1.3.1 (2026-11-03) — 완성판 릴리즈
       maybeShowOnboarding();   // v1.4.0: 최초 방문 시 3스텝 온보딩 마법사
     }
 
+    // ══════════════════════════════════════════════════════════════════
+    // v1.5.0 PWA — 오프라인 지원 Service Worker 등록
+    //   · https(GitHub Pages)·localhost 에서만 동작하고, 실패해도 앱은 그대로 쓴다.
+    //   · 네트워크 우선 정책이라 새 배포가 막히지 않는다.
+    // ══════════════════════════════════════════════════════════════════
+    function registerShiftPayServiceWorker() {
+      if (!("serviceWorker" in navigator)) return;
+      try {
+        navigator.serviceWorker.register("./sw.js", { scope: "./" }).then((reg) => {
+          try { reg.update(); } catch (e) {}
+          navigator.serviceWorker.ready.then(() => {
+            refreshBackupStatusUI();
+            if (reg.waiting) { try { reg.waiting.postMessage({ type: "SKIP_WAITING" }); } catch (e) {} }
+          });
+        }).catch((err) => {
+          console.warn("ShiftPay Service Worker 등록 실패:", err);
+        });
+        navigator.serviceWorker.addEventListener("controllerchange", () => refreshBackupStatusUI());
+      } catch (e) {}
+    }
+
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initApp);
     } else {
       initApp();
     }
     window.addEventListener("load", initApp);
+    window.addEventListener("load", registerShiftPayServiceWorker);
   </script>
   <!-- Floating Action Bar for Multi-Select Input & Delete -->
   <div id="multiSelectBar" class="multi-select-bar">

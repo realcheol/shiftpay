@@ -2,6 +2,7 @@
   "name": "나의 근무·급여 관리 (ShiftPay)",
   "short_name": "ShiftPay",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#142035",
   "theme_color": "#142035",
