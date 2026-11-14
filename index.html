@@ -2680,12 +2680,15 @@
     const BATCH_PRESET_MAP = {
       'ot':           { mode: 'ot',       times: { norm: '8', ot: '2' } },
       'normal':       { mode: 'norm',     times: { norm: '8' } },
+      'norm':         { mode: 'norm',     times: { norm: '8' } },          // 카드 id 와 일치
+      'night_10':     { mode: 'night_10', times: { norm: '8', ot: '2', night: '7.5' } },
       'night_ot':     { mode: 'night_10', times: { norm: '8', ot: '2', night: '7.5' } },
       'night_normal': { mode: 'night_8',  times: { norm: '8', night: '6' } },
       'holiday':      { mode: 'holiday',  times: { hol: '8' } },
       'holiday_10':   { mode: 'holiday_10', times: {} },
       'holiday_night_10': { mode: 'holiday_night_10', times: {} },
       'holiday_night_8':  { mode: 'holiday_night_8', times: { hol: '8', night: '6' } },
+      'night_8':      { mode: 'night_8',  times: { norm: '8', night: '6' } },
       'summer':       { mode: 'summer',   times: {} },
       'annual':       { mode: 'annual',   times: {} },
       'half_am':      { mode: 'half_am',  times: { norm: '4', paid: '4' } },
@@ -2713,6 +2716,10 @@
         if (preset === 'delete') return;             // 🗑️ 선택 날짜 기록 삭제
         localStorage.setItem(`${k}-mode`, def.mode);
         Object.keys(def.times).forEach(suffix => localStorage.setItem(`${k}-${suffix}`, def.times[suffix]));
+        if (preset === 'half_am') {                  // 일괄 반차도 단일 입력과 동일하게 근태 뱃지 저장
+          localStorage.setItem(`${k}-att`, "half");
+          localStorage.setItem(`${k}-atth`, "4");
+        }
       });
 
       const count = days.length;
